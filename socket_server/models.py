@@ -22,6 +22,9 @@ class Server:
         events = selectors.EVENT_READ | selectors.EVENT_WRITE
         self.selector.register(connection, events, data=data)
 
+    def get_message(self, sock):
+        pass
+
     def service_connection(self, key, mask):
         sock = key.fileobj
         data = key.data
@@ -122,5 +125,4 @@ class Client:
 
     def send_buffer(self, sock):
 
-        remaining = sock.send(self.buffer)
-        self.buffer = self.buffer[remaining:]
+        self.buffer = self.buffer[sock.send(self.buffer):]
