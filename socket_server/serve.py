@@ -1,5 +1,7 @@
-from .models import Server
+from models import Server
+import sys
 
-PORT = 8081
-
-server = Server(8081)
+if len(sys.argv) > 1:
+    server = Server(*sys.argv[1:])
+else:
+    server = Server()
