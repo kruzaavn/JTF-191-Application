@@ -1,3 +1,5 @@
 # JTF-70 Application Server
 
-errata to follow
+#### this repository contains
+    - DCS export data server
+    - Ground Control Intercept application
