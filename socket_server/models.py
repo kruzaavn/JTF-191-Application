@@ -4,6 +4,9 @@ import types
 import json
 import time
 import random
+import asyncio
+import websocket
+
 
 class Server:
 
@@ -82,7 +85,7 @@ class Server:
             self.selector.register(s, selectors.EVENT_READ, data=None)
 
             while True:
-                time.sleep(1)
+                time.sleep(.05)
                 events = self.selector.select(timeout=None)
                 
                 try:
@@ -92,6 +95,7 @@ class Server:
                             self.service_connection(key, mask)
                         else:
                             self.accept_connection(key.fileobj)
+
                 except KeyboardInterrupt:
                     print('disconnecting clients and stopping server')
                     quit()
