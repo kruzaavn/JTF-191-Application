@@ -22,26 +22,33 @@ class Server:
         events = selectors.EVENT_READ | selectors.EVENT_WRITE
         self.selector.register(connection, events, data=data)
 
-    def get_message(self, sock):
-        pass
+    def get_message(self, sock, data):
+
+        buffer = sock.recv(1024)
+
+        if buffer:
+            header = int(buffer[:10].decode('utf-8'))
+            buffer = buffer[10:]
+
+            while len(buffer) < header:
+                buffer += sock.recv(1024)
+
+            self.process_data(buffer)
+
+        else:
+            print(f'closing connection to {data.addr}')
+            self.selector.unregister(sock)
+            sock.close()
+
+
 
     def service_connection(self, key, mask):
         sock = key.fileobj
         data = key.data
 
         if mask & selectors.EVENT_READ:
-            print(mask)
-            inbound_data = sock.recv(100)
-            if inbound_data:
-                print(inbound_data)
-                self.process_data(inbound_data)
-            else:
-                print(f'closing connection to {data.addr}')
-                self.selector.unregister(sock)
-                sock.close()
 
-        if mask & selectors.EVENT_WRITE:
-            print('here')
+            self.get_message(sock, data)
 
     def process_data(self, data):
         chunks = data.split(b'\n')
@@ -63,6 +70,8 @@ class Server:
 
         for item in cull_list:
             self.data.pop(item)
+
+        print(self.data)
 
     def listen_to_port(self):
         self.selector = selectors.DefaultSelector()

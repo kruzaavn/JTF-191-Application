@@ -1,6 +1,6 @@
-local export_file = nil
-local c = nil
-local socket = nil
+local export_file
+local c
+local socket
 
 function prepend_header(message)
 
@@ -29,12 +29,12 @@ end
 
 function LuaExportStart()
 -- Works once just before mission start.
--- Make initializations of your files or connections here.
--- For example:
+
 -- 1) File
 
 	export_file = io.open("C:/Users/Aleks/Saved Games/DCS/Logs/Export.log", "w")
-	export_file:write("begin export \n")
+	export_file:write(prepend_header("begin export \n"))
+
 -- 2) Socket
 
 	package.path  = package.path..";"..lfs.currentdir().."/LuaSocket/?.lua"
@@ -78,13 +78,12 @@ function LuaExportStop()
 -- Close files and/or connections here.
 -- 1) File
 	if export_file then
-		export_file:write("end export")
+		export_file:write(prepend_header("end export\n"))
 		export_file:close()
 		export_file = nil
 	end
 -- 2) Socket
 	if c then
-		socket.try(c:send(prepend_header("quit"))) -- to close the listener socket
 		c:close()
 		c = nil
 	end
