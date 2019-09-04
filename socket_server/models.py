@@ -2,7 +2,8 @@ import socket
 import selectors
 import types
 import json
-
+import time
+import random
 
 class Server:
 
@@ -24,14 +25,11 @@ class Server:
 
     def get_message(self, sock, data):
 
-        buffer = sock.recv(1024)
+        buffer = sock.recv(10)
 
         if buffer:
-            header = int(buffer[:10].decode('utf-8'))
-            buffer = buffer[10:]
-
-            while len(buffer) < header:
-                buffer += sock.recv(1024)
+            header = int(buffer.decode('utf-8'))
+            buffer = sock.recv(header)
 
             self.process_data(buffer)
 
@@ -39,8 +37,6 @@ class Server:
             print(f'closing connection to {data.addr}')
             self.selector.unregister(sock)
             sock.close()
-
-
 
     def service_connection(self, key, mask):
         sock = key.fileobj
@@ -85,9 +81,9 @@ class Server:
             self.selector.register(s, selectors.EVENT_READ, data=None)
 
             while True:
-
+                time.sleep(1)
                 events = self.selector.select(timeout=None)
-
+                
                 try:
                     for key, mask in events:
 
@@ -106,6 +102,7 @@ class Client:
         self.port = int(port)
         self.host = host
         self.buffer = b''
+        self.time = 0
         self.connect()
 
 
@@ -115,17 +112,17 @@ class Client:
             print(f'connecting to {self.host}: {self.port}')
             s.connect((self.host, self.port))
 
-            msg = b'{"id": 1, "simtime": 1, "message": "test test"}'
-
-            self.construct_message(msg)
-
             while True:
                 try:
-                    if self.buffer:
-                        self.send_buffer(s)
+                    time.sleep(1)
+                    if not self.buffer:
+                        self.gen_random_message()
 
-                except KeyboardInterrupt:
+                    self.send_buffer(s)
+                    self.time += 1
+                except (KeyboardInterrupt, BrokenPipeError):
                     print(f'disconnecting from {self.host}: {self.port}')
+                    s.close()
 
     def construct_message(self, msg):
 
@@ -134,4 +131,14 @@ class Client:
 
     def send_buffer(self, sock):
 
+        print(f"sending {self.buffer}")
         self.buffer = self.buffer[sock.send(self.buffer):]
+
+    def gen_random_message(self):
+
+        data = {'id': random.randint(1, 11),
+                'simtime': self.time,
+                'message': "test test"}
+
+        self.construct_message(bytes(json.dumps(data), 'utf-8'))
+
