@@ -9,6 +9,9 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
+    "leaflet": "^1.5.1",
+    "milsymbol": "^2.0.0",
+    "socket.io": "^2.2.0",
     "vue": "^2.6.10"
   },
   "devDependencies": {

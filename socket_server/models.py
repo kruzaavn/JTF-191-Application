@@ -37,6 +37,7 @@ class Server:
             print(f'closing connection to {data.addr}')
             self.selector.unregister(sock)
             sock.close()
+            self.data = {}
 
     def service_connection(self, key, mask):
         sock = key.fileobj
@@ -105,7 +106,6 @@ class Client:
         self.time = 0
         self.connect()
 
-
     def connect(self):
 
         with socket.socket() as s:
@@ -138,7 +138,7 @@ class Client:
 
         data = {'id': random.randint(1, 11),
                 'simtime': self.time,
-                'message': "test test"}
+                'message': "test " * random.randint(1, 10)}
 
         self.construct_message(bytes(json.dumps(data), 'utf-8'))
 
