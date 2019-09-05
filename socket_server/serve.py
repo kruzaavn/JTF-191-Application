@@ -1,22 +1,22 @@
-from models import SocketServer
+from models import TCPProtocol, WSHandler
+import tornado.platform.asyncio as tp
+import tornado.httpserver
+import tornado.web as web
 import asyncio
-import websockets
 
+application = web.Application([(r'/', WSHandler)])
+tp.AsyncIOMainLoop().install()
 
-async def hello(websocket, path):
+loop = asyncio.get_event_loop()
 
-    server = SocketServer()
+# Create tornado HTTP server
+http_server = tornado.httpserver.HTTPServer(application)
+http_server.listen(8082)
 
-    while True:
+# Start asyncio TCP server
 
-        server.poll_connections()
-        data = server.get_data()
+coro = loop.create_server(TCPProtocol, 'localhost', 8081)
+server = loop.run_until_complete(coro)
 
-        if data:
-            await websocket.send(data)
-
-
-start_server = websockets.serve(hello, "localhost", 8765)
-
-asyncio.get_event_loop().run_until_complete(start_server)
-asyncio.get_event_loop().run_forever()
+# Run forever
+loop.run_forever()
