@@ -1,3 +1,4 @@
+
 local export_file
 local c
 local socket
@@ -53,7 +54,7 @@ function LuaExportActivityNextEvent(t)
 
 	end
 
-	message[-1] = '}'
+	message = string.sub(message,1, -2) ..'}'
 
 	if c then
 		socket.try(c:send(message))
