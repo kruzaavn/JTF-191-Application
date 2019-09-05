@@ -1,1 +1,2 @@
-websocket
+python-socketio
+websockets

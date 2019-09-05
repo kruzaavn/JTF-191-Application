@@ -8,7 +8,7 @@ import asyncio
 import websocket
 
 
-class Server:
+class SocketServer:
 
     def __init__(self, host=socket.gethostname(), port=8081, ):
         self.data = {}
@@ -16,6 +16,7 @@ class Server:
         self.host = host
         self.selector = None
         self.purge_time = 3  # seconds
+        self.socket = None
         self.listen_to_port()
 
     def accept_connection(self, sock):
@@ -63,7 +64,7 @@ class Server:
         self.cull_data()
 
     def cull_data(self):
-
+        # consider deprecating
         max_time = max([self.data[x]['simtime'] for x in self.data])
 
         cull_list = [x for x in self.data if max_time - self.data[x]['simtime'] > self.purge_time]
@@ -73,32 +74,35 @@ class Server:
 
         print(self.data)
 
+    def get_data(self):
+        return json.dumps(self.data)
+
     def listen_to_port(self):
         self.selector = selectors.DefaultSelector()
+        self.socket = socket.socket()
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.socket.bind((self.host, self.port))
+        self.socket.listen(5)
+        print(f'listening on {self.host}: {self.port}')
+        self.socket.setblocking(False)
+        self.selector.register(self.socket, selectors.EVENT_READ, data=None)
 
-        with socket.socket() as s:
-            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            s.bind((self.host, self.port))
-            s.listen(5)
-            print(f'listening on {self.host}: {self.port}')
-            s.setblocking(False)
-            self.selector.register(s, selectors.EVENT_READ, data=None)
+    def poll_connections(self):
 
-            while True:
-                time.sleep(.05)
-                events = self.selector.select(timeout=None)
-                
-                try:
-                    for key, mask in events:
+        events = self.selector.select(timeout=None)
 
-                        if key.data:
-                            self.service_connection(key, mask)
-                        else:
-                            self.accept_connection(key.fileobj)
+        for key, mask in events:
 
-                except KeyboardInterrupt:
-                    print('disconnecting clients and stopping server')
-                    quit()
+            if key.data:
+                self.service_connection(key, mask)
+            else:
+                self.accept_connection(key.fileobj)
+
+    def disconnect(self):
+        pass
+        # except KeyboardInterrupt:
+        #     print('disconnecting clients and stopping server')
+        #     quit()
 
 
 class Client:
