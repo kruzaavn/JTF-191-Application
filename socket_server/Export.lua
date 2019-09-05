@@ -2,38 +2,25 @@ local export_file
 local c
 local socket
 
-function prepend_header(message)
-
-	local message_header = string.len(message)
-
-	while string.len(message_header) < 10 do
-		message_header = message_header .. ' '
-
-	end
-
-	return message_header .. message
-end
-
-
+-- helper functions
 function convert2json(k,v,t)
+
 	-- convert LoGetWorldObjects into json format
 
-	local template = '{"id": %d, "simtime": %.2f, "name": "%s", "country": %s, "coalition_id": %d, "position": [%f,%f,%f], "heading": %f}\n'
+	local template = ' "%d": {"simtime": %.2f, "name": "%s", "country": %s, "coalition_id": %d, "position": [%f,%f,%f], "heading": %f} '
 	local output =  string.format(template, k, t, v.Name, v.Country, v.CoalitionID, v.LatLongAlt.Lat, v.LatLongAlt.Long, v.LatLongAlt.Alt, v.Heading)
-
-	output = prepend_header(output)
 
 	return output
 end
 
+-- export required functions
 
 function LuaExportStart()
 -- Works once just before mission start.
 
--- 1) File
+-- 1) File options, if you dont want to export a file to the hard drive comment the flowing line out
 
 	export_file = io.open("C:/Users/Aleks/Saved Games/DCS/Logs/Export.log", "w")
-	export_file:write(prepend_header("begin export \n"))
 
 -- 2) Socket
 
@@ -49,22 +36,28 @@ end
 
 function LuaExportActivityNextEvent(t)
 	local tNext = t
+	local message = '{'
 
 -- 1) get world objects
 
-		local o = LoGetWorldObjects()
-		for k,v in pairs(o) do
+	local o = LoGetWorldObjects()
+	for k,v in pairs(o) do
 
-			json = convert2json(k,v,t)
-			message = prepend_header(json)
+		json = convert2json(k,v,t)
 
-			if export_file then
-				export_file:write(message)
-			end
-			if c then
-				socket.try(c:send(message))
-			end
+		message = message .. json .. ','
+
+		if export_file then
+			export_file:write(json)
 		end
+
+	end
+
+	message[-1] = '}'
+
+	if c then
+		socket.try(c:send(message))
+	end
 
 	-- increment time
 	tNext = tNext + 1.0
@@ -78,7 +71,6 @@ function LuaExportStop()
 -- Close files and/or connections here.
 -- 1) File
 	if export_file then
-		export_file:write(prepend_header("end export\n"))
 		export_file:close()
 		export_file = nil
 	end
