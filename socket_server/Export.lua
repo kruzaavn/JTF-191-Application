@@ -1,18 +1,9 @@
 
+local JSON = require('json')
+
 local export_file
 local c
 local socket
-
--- helper functions
-function convert2json(k,v,t)
-
-	-- convert LoGetWorldObjects into json format
-
-	local template = ' "%d": {"simtime": %.2f, "name": "%s", "country": %s, "coalition_id": %d, "position": [%f,%f,%f], "heading": %f} '
-	local output =  string.format(template, k, t, v.Name, v.Country, v.CoalitionID, v.LatLongAlt.Lat, v.LatLongAlt.Long, v.LatLongAlt.Alt, v.Heading)
-
-	return output
-end
 
 -- export required functions
 
@@ -21,7 +12,7 @@ function LuaExportStart()
 
 -- 1) File options, if you dont want to export a file to the hard drive comment the flowing line out
 
-	export_file = io.open("C:/Users/Aleks/Saved Games/DCS/Logs/Export.log", "w")
+	-- export_file = io.open("C:/Users/Aleks/Saved Games/DCS/Logs/Export.log", "w")
 
 -- 2) Socket
 
@@ -37,16 +28,16 @@ end
 
 function LuaExportActivityNextEvent(t)
 	local tNext = t
-	local message = '{'
+	local message = string.format('{"sim_time": %d,', t)
 
 -- 1) get world objects
 
 	local o = LoGetWorldObjects()
 	for k,v in pairs(o) do
 
-		json = convert2json(k,v,t)
+		json_string = JSON:encode(v)
 
-		message = message .. json .. ','
+		message = message .. string.format('"%d": %s,', k, json_string)
 
 		if export_file then
 			export_file:write(json)
