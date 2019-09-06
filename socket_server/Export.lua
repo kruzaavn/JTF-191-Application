@@ -1,5 +1,5 @@
 
-local JSON = require('json')
+local JSON = require('JSON')
 
 local export_file
 local c
