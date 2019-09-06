@@ -5,6 +5,52 @@ local export_file
 local c
 local socket
 
+-- helper functions
+
+function LuaObject2Json(object)
+
+	local o = object
+
+	local message = '{'
+
+	for k,v in pairs(o) do
+
+		json = JSON:encode(v)
+		json = string.format('"%d": %s,', k, json)
+		message = message .. json
+
+	end
+	message = string.sub(message,1, -2) ..'}'
+
+	return message
+end
+
+function Export2File(message)
+
+	if export_file then
+		export_file:write(message)
+	end
+
+end
+
+function Export2Socket(message)
+
+	if c then
+		socket.try(c:send(message))
+	end
+
+end
+
+function ExportWorldObjects(t)
+	local o = LoGetWorldObjects()
+	o = LuaObject2Json(o)
+
+	local message = string.format('{"sim_time": %d, "states": %s}', t, o)
+
+	Export2File(message)
+	Export2Socket(message)
+end
+
 -- export required functions
 
 function LuaExportStart()
@@ -28,28 +74,9 @@ end
 
 function LuaExportActivityNextEvent(t)
 	local tNext = t
-	local message = string.format('{"sim_time": %d,', t)
 
--- 1) get world objects
-
-	local o = LoGetWorldObjects()
-	for k,v in pairs(o) do
-
-		json_string = JSON:encode(v)
-
-		message = message .. string.format('"%d": %s,', k, json_string)
-
-		if export_file then
-			export_file:write(json)
-		end
-
-	end
-
-	message = string.sub(message,1, -2) ..'}'
-
-	if c then
-		socket.try(c:send(message))
-	end
+	-- export functions
+	ExportWorldObjects(t)
 
 	-- increment time
 	tNext = tNext + 1.0
