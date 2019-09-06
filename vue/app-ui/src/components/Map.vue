@@ -1,11 +1,12 @@
 <template>
-    <v-container class="container">
-        <div id="map" class="map"></div>
+    <v-container id="map" class="map" fluid="true" fill-height="true">
+        <v-spacer></v-spacer>
         <ul>
             <li v-for="(item, key) in dcs">
                 {{item}}
             </li>
         </ul>
+
     </v-container>
 </template>
 
@@ -40,9 +41,7 @@
 
 <style scoped>
     .map {
-        height: 90vh;
-        width: 100%;
-        padding: 0;
+
     }
 
 </style>
