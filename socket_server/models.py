@@ -62,7 +62,7 @@ class WSHandler(ws.WebSocketHandler):
 
     def open(self):
         print(f'New Connection Established, clients connected {len(self.clients)}')
-        self.write_message("Connected Server...")
+        self.set_nodelay(True)
         WSHandler.clients.append(self)
 
     def on_close(self):
