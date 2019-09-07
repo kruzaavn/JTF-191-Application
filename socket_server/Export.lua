@@ -52,6 +52,14 @@ function ExportWorldObjects(t)
 	Export2Socket(message)
 end
 
+function connect_socket()
+
+	if not c then
+		c = socket.try(socket.connect(host, port)) -- connect to the listener socket
+		c:setoption("tcp-nodelay",true) -- set immediate transmission mode
+	end
+end
+
 -- export required functions
 
 function LuaExportStart()
@@ -59,7 +67,7 @@ function LuaExportStart()
 
 -- 1) File options, if you dont want to export a file to the hard drive comment the flowing line out
 
-	-- export_file = io.open("C:/Users/Aleks/Saved Games/DCS/Logs/Export.log", "w")
+	-- export_file = io.open("C:/Users/Administrator/Saved Games/DCS.openbeta_server/Logs/Export.log", "w")
 
 -- 2) Socket
 
@@ -68,14 +76,17 @@ function LuaExportStart()
 	socket = require("socket")
 	host = host or "localhost"
 	port = port or 8081
-	c = socket.try(socket.connect(host, port)) -- connect to the listener socket
-	c:setoption("tcp-nodelay",true) -- set immediate transmission mode
+	connect_socket()
 	JSON = require('JSON')
 end
 
 
 function LuaExportActivityNextEvent(t)
 	local tNext = t
+
+	if t % 30 == 0 then
+		connect_socket()
+	end
 
 	-- export functions
 	ExportWorldObjects(t)
