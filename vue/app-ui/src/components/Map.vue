@@ -1,5 +1,5 @@
 <template>
-    <v-container id="map" class="map" fluid="true" fill-height="true">
+    <v-container id="map" class="map" :fluid="true" :fill-height="true">
         <v-spacer></v-spacer>
         <ul>
             <li v-for="(item, key) in dcs">

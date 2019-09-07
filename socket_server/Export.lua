@@ -1,9 +1,10 @@
 
-local JSON = require('JSON')
+
 
 local export_file
 local c
 local socket
+local JSON
 
 -- helper functions
 
@@ -28,7 +29,7 @@ end
 function Export2File(message)
 
 	if export_file then
-		export_file:write(message)
+		export_file:write(message .. '\n')
 	end
 
 end
@@ -62,13 +63,14 @@ function LuaExportStart()
 
 -- 2) Socket
 
-	package.path  = package.path..";"..lfs.currentdir().."/LuaSocket/?.lua"
+	package.path  = package.path..";"..lfs.currentdir().."/LuaSocket/?.lua" .. ';' ..lfs.currentdir().. '/Scripts/?.lua'
 	package.cpath = package.cpath..";"..lfs.currentdir().."/LuaSocket/?.dll"
 	socket = require("socket")
 	host = host or "localhost"
 	port = port or 8081
 	c = socket.try(socket.connect(host, port)) -- connect to the listener socket
 	c:setoption("tcp-nodelay",true) -- set immediate transmission mode
+	JSON = require('JSON')
 end
 
 

@@ -1,4 +1,6 @@
 import L from 'leaflet'
+import ms from "milsymbol";
+
 
 export default class Map {
     constructor(container_id) {
@@ -16,5 +18,22 @@ export default class Map {
 
     }
 
+    update_icons(objects) {
+
+        for (object in objects) {
+
+            this.plot_icons(object)
+        }
+
+    }
+
+    plot_icons(object) {
+
+        let a = codes['one'];
+
+
+    }
 
 }
+
+let codes = {'one': 1};

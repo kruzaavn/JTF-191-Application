@@ -73,7 +73,7 @@ class WSHandler(ws.WebSocketHandler):
     @classmethod
     def write_to_clients(cls, message):
         for client in cls.clients:
-            client.write_message(message)
+            client.write_message(message, True)
 
 
 class TCPProtocol(asyncio.Protocol):
