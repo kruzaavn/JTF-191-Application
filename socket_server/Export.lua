@@ -44,12 +44,21 @@ end
 
 function ExportWorldObjects(t)
 	local o = LoGetWorldObjects()
-	o = LuaObject2Json(o)
+	local message
+	local json
 
-	local message = string.format('{"sim_time": %d, "states": %s}', t, o)
+	for k,v in pairs(o) do
 
-	Export2File(message)
-	Export2Socket(message)
+		json = JSON:encode(v)
+
+		message = string.format('{"%d":{"sim_time": %d, "states": %s}}',k, t, o)
+
+		Export2File(message)
+		Export2Socket(message)
+
+	end
+
+
 end
 
 function connect_socket()
