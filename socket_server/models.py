@@ -86,5 +86,6 @@ class TCPProtocol(asyncio.Protocol):
         self.transport = transport
 
     def data_received(self, data):
+        print(data)
         WSHandler.write_to_clients(data.decode())
 
