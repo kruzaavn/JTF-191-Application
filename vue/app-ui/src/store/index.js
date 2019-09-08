@@ -29,9 +29,9 @@ export const store = new Vuex.Store({
     },
     // default handler called for all methods
     SOCKET_ONMESSAGE (state, message)  {
-
-      console.log(message);
-      state.dcs = JSON.parse(message.data);
+      let json = JSON.parse(message.data);
+      let key = Object.keys(json);
+      state.dcs[key[0]] = json[key[0]];
     },
     // mutations for reconnect methods
     SOCKET_RECONNECT(state, count) {
