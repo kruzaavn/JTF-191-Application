@@ -12,7 +12,7 @@ export const store = new Vuex.Store({
       message: '',
       reconnectError: false
     },
-    dcs: {}
+    dcs: {current: {}, prev: {}, sim_time: -1}
   },
   getters : {},
   mutations:{
@@ -29,9 +29,21 @@ export const store = new Vuex.Store({
     },
     // default handler called for all methods
     SOCKET_ONMESSAGE (state, message)  {
-      let json = JSON.parse(message.data);
-      let key = Object.keys(json);
-      state.dcs[key[0]] = json[key[0]];
+      let dcs_obj;
+      dcs_obj = JSON.parse(message.data);
+
+
+      let key = Object.keys(dcs_obj)[0];
+
+      dcs_obj = dcs_obj[key];
+
+      if (state.dcs.sim_time !== dcs_obj.sim_time) {
+        state.dcs.sim_time = dcs_obj.sim_time;
+        state.dcs.prev = state.dcs.current;
+        state.dcs.current = {};
+      }
+
+      state.dcs.current[key] = dcs_obj;
     },
     // mutations for reconnect methods
     SOCKET_RECONNECT(state, count) {

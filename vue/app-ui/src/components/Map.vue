@@ -1,12 +1,5 @@
 <template>
     <v-container id="map" class="map" :fluid="true" :fill-height="true">
-        <v-spacer></v-spacer>
-        <ul>
-            <li v-for="(item, key) in dcs">
-                {{item}}
-            </li>
-        </ul>
-
     </v-container>
 </template>
 
@@ -15,7 +8,7 @@
     import Map from '../plugins/map.js'
     export default {
         name: "Map",
-        computed: mapState({dcs: state => state.dcs}),
+        computed: mapState({dcs: state => state.dcs.current}),
         data: function () {
             return {
                 map: null
