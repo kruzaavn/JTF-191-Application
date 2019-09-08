@@ -29,7 +29,8 @@ export const store = new Vuex.Store({
     },
     // default handler called for all methods
     SOCKET_ONMESSAGE (state, message)  {
-      console.log(message.data);
+
+      console.log(message);
       state.dcs = JSON.parse(message.data);
     },
     // mutations for reconnect methods

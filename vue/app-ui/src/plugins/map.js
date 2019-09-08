@@ -15,7 +15,7 @@ export default class Map {
         this.container_id = container_id;
         this.map = L.map(this.container_id).setView([0,0], 0);
         L.tileLayer(defaults.tile_provider, defaults.tile_options).addTo(this.map)
-
+        this.focused = false;
     }
 
     update_icons(objects) {
@@ -25,12 +25,23 @@ export default class Map {
             this.plot_icons(object)
         }
 
+        if (!this.focused) {
+
+            this.focus()
+        }
     }
 
     plot_icons(object) {
 
         let a = codes['one'];
 
+
+    }
+
+    focus(){
+
+
+        this.focused = true;
 
     }
 
