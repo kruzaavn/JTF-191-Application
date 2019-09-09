@@ -1,8 +1,10 @@
 <template>
     <v-app-bar app>
       <v-toolbar-title class="headline text-uppercase" >
-        <span>JTF-70 Live Server</span>
+          <span>JTF-70 Live Server</span>
       </v-toolbar-title>
+        <v-spacer></v-spacer>
+        <div>Alpha 0.1</div>
     </v-app-bar>
 </template>
 

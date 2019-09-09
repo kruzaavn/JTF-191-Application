@@ -16,10 +16,12 @@ export default class Map {
         this.map = L.map(this.container_id).setView([0,0], 0);
         L.tileLayer(defaults.tile_provider, defaults.tile_options).addTo(this.map)
         this.focused = false;
-        this.marker_layer = L.layerGroup().addTo(this.map)
+        this.marker_layer = L.featureGroup().addTo(this.map)
     }
 
     update_icons(objects) {
+
+
         this.marker_layer.clearLayers();
 
         for (let object in objects) {
@@ -35,7 +37,7 @@ export default class Map {
 
     plot_icons(object) {
 
-        let symbol = ms.Symbol('SHAP--------', {size: 10});
+        let symbol = new ms.Symbol('SHAP--------', {size:20});
 
         let icon = L.divIcon({
             className: '',
@@ -43,16 +45,20 @@ export default class Map {
             iconAnchor: new L.Point(symbol.getAnchor().x, symbol.getAnchor().y)
           });
 
-        L.marker([object.LatLongAlt.Long, object.LatLongAlt.Long], { icon: icon }).addTo(this.marker_layer)
+        L.marker([object.states.LatLongAlt.Lat, object.states.LatLongAlt.Long], { icon: icon }).addTo(this.marker_layer)
     }
 
     focus(){
 
 
-        this.focused = true;
+        try {
 
-        this.map.flyTo(this.marker_layer.getBounds().getCenter())
+            let bounds = this.marker_layer.getBounds();
+            this.map.flyToBounds(bounds);
+            this.focused = true
+        } catch (e) {
 
+        }
     }
 
 }
