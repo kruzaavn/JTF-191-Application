@@ -12,7 +12,9 @@ export const store = new Vuex.Store({
       message: '',
       reconnectError: false
     },
-    dcs: {current: {}, prev: {}, sim_time: -1}
+    current: {},
+    buffer: {},
+    sim_time: -1
   },
   getters : {},
   mutations:{
@@ -37,13 +39,13 @@ export const store = new Vuex.Store({
 
       dcs_obj = dcs_obj[key];
 
-      if (state.dcs.sim_time !== dcs_obj.sim_time) {
-        state.dcs.sim_time = dcs_obj.sim_time;
-        state.dcs.prev = state.dcs.current;
-        state.dcs.current = {};
+      if (state.sim_time !== dcs_obj.sim_time) {
+        state.sim_time = dcs_obj.sim_time;
+        state.current = state.buffer;
+        state.buffer = {};
       }
 
-      state.dcs.current[key] = dcs_obj;
+      state.buffer[key] = dcs_obj;
     },
     // mutations for reconnect methods
     SOCKET_RECONNECT(state, count) {

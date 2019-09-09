@@ -16,26 +16,34 @@ export default class Map {
         this.map = L.map(this.container_id).setView([0,0], 0);
         L.tileLayer(defaults.tile_provider, defaults.tile_options).addTo(this.map)
         this.focused = false;
+        this.marker_layer = L.layerGroup().addTo(this.map)
     }
 
     update_icons(objects) {
+        this.marker_layer.clearLayers();
 
-        for (object in objects) {
-
-            this.plot_icons(object)
+        for (let object in objects) {
+            this.plot_icons(objects[object])
         }
 
         if (!this.focused) {
 
             this.focus()
+
         }
     }
 
     plot_icons(object) {
 
-        let a = codes['one'];
+        let symbol = ms.Symbol('SHAP--------', {size: 10});
 
+        let icon = L.divIcon({
+            className: '',
+            html: symbol.asSVG(),
+            iconAnchor: new L.Point(symbol.getAnchor().x, symbol.getAnchor().y)
+          });
 
+        L.marker([object.LatLongAlt.Long, object.LatLongAlt.Long], { icon: icon }).addTo(this.marker_layer)
     }
 
     focus(){
@@ -43,8 +51,8 @@ export default class Map {
 
         this.focused = true;
 
+        this.map.flyTo(this.marker_layer.getBounds().getCenter())
+
     }
 
 }
-
-let codes = {'one': 1};

@@ -8,7 +8,7 @@
     import Map from '../plugins/map.js'
     export default {
         name: "Map",
-        computed: mapState({dcs: state => state.dcs.current}),
+        computed: mapState(['current']),
         data: function () {
             return {
                 map: null
@@ -25,8 +25,14 @@
                     this.map = new Map('map')
 
                 }
-
             }
+
+        },
+        watch: {
+            current: function () {
+                this.map.update_icons(this.current)
+            }
+
         }
 
     }
