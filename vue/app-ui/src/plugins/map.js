@@ -37,7 +37,13 @@ export default class Map {
 
     plot_icons(object) {
 
-        let symbol = new ms.Symbol('SHAP--------', {size:20});
+        let symbol = new ms.Symbol(icon_dict[object.states.CoalitionID],
+            {
+                size:20,
+                direction: object.states.Heading * (180/Math.PI),
+                altitudeDepth: Math.round(object.states.LatLongAlt.Alt / 10) *10,
+                additionalInformation: object.states.Name}
+            );
 
         let icon = L.divIcon({
             className: '',
@@ -62,3 +68,5 @@ export default class Map {
     }
 
 }
+
+let icon_dict = {1: 'SHAP--------', 2: 'SFAP--------'};
