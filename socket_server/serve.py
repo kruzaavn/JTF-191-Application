@@ -5,6 +5,7 @@ import tornado.web as web
 import asyncio
 
 application = web.Application([(r'/', WSHandler)])
+
 tp.AsyncIOMainLoop().install()
 
 loop = asyncio.get_event_loop()

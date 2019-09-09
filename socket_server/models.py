@@ -61,13 +61,13 @@ class WSHandler(ws.WebSocketHandler):
         return True
 
     def open(self):
-        print(f'New Connection Established, clients connected {len(self.clients)}')
         self.set_nodelay(True)
         WSHandler.clients.append(self)
+        print(f'New Connection Established, clients connected {len(self.clients)}')
 
     def on_close(self):
-        print(f'Connection Closed, clients connected {len(self.clients)}')
         WSHandler.clients.remove(self)
+        print(f'Connection Closed, clients connected {len(self.clients)}')
         del self
 
     @classmethod
