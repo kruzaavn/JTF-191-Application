@@ -41,7 +41,7 @@ export default class Map {
             {
                 size:20,
                 direction: object.states.Heading * (180/Math.PI),
-                altitudeDepth: Math.round(object.states.LatLongAlt.Alt *3.28084 / 10) *10,
+                altitudeDepth: Math.round(object.states.LatLongAlt.Alt * 3.28084 / 10) *10,
                 additionalInformation: object.states.Name}
             );
 
