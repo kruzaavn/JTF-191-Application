@@ -19,6 +19,28 @@ function process_message(message) {
   return process
 }
 
+function get_active_pilots(data) {
+
+  let store = {};
+
+  for (let id in data) {
+
+
+
+    if (data[id].states.Flags.Human) {
+
+
+      store[id] = data[id];
+
+    }
+
+
+  }
+
+  return store
+
+}
+
 
 export const store = new Vuex.Store({
   state: {
@@ -59,17 +81,14 @@ export const store = new Vuex.Store({
 
         if (state.sim_time !== dcs_obj.sim_time) {
           state.sim_time = dcs_obj.sim_time;
+          state.active = get_active_pilots(state.buffer);
           state.current = state.buffer;
           state.buffer = {};
         }
 
         state.buffer[key] = dcs_obj;
+        // state.active[key] = dcs_obj;
 
-        if (dcs_obj.states.Flags.Human) {
-
-          state.active[key] = dcs_obj
-
-        }
 
       }
     },

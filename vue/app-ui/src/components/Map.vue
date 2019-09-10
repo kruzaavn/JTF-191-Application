@@ -4,7 +4,9 @@
         <v-card id="roster" class="elevation-1">
             <v-subheader id="header" class="subtitle-2">Active Pilots</v-subheader>
             <v-list>
-            <v-list-item v-for="(pilot, key) in active" onclick="this.center_on_pilot(pilot)">{{pilot.states.UnitName}}</v-list-item>
+            <v-list-item v-bind:onclick="center_on_pilot(pilot)"
+                         v-bind:key="key"
+                         v-for="(pilot, key) in active" >{{pilot.states.UnitName}}</v-list-item>
             </v-list>
         </v-card>
     </v-container>
