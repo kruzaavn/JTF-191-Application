@@ -54,8 +54,6 @@ export const store = new Vuex.Store({
 
       for (let msg of data) {
 
-
-      if (msg) {
         console.log(msg);
         dcs_obj = JSON.parse(msg);
         let key = Object.keys(dcs_obj)[0];
@@ -69,7 +67,7 @@ export const store = new Vuex.Store({
         }
 
         state.buffer[key] = dcs_obj;
-      }
+
       }
     },
     // mutations for reconnect methods
