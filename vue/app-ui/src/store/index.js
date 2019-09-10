@@ -32,6 +32,7 @@ export const store = new Vuex.Store({
     // default handler called for all methods
     SOCKET_ONMESSAGE (state, message)  {
       let dcs_obj;
+      console.log(message.data);
       dcs_obj = JSON.parse(message.data);
 
 
