@@ -5,17 +5,18 @@ import VueNativeSock from "vue-native-websocket";
 Vue.use(Vuex);
 
 function process_message(message) {
+  let process;
+  process = message;
+  process = process.replace('}{', '}\n{');
+  process = process.split('\n');
 
-  message = message.replace('}{', '}\n{');
-  message = message.split('\n');
+  if (process[-1] === '') {
 
-  if (message[-1] === '') {
-
-    message[-1].pop()
+    process[-1].pop()
 
   }
 
-  return message
+  return process
 }
 
 
@@ -28,7 +29,8 @@ export const store = new Vuex.Store({
     },
     current: {},
     buffer: {},
-    sim_time: -1
+    sim_time: -1,
+    active: {}
   },
   getters : {},
   mutations:{
@@ -50,7 +52,6 @@ export const store = new Vuex.Store({
 
       for (let msg of data) {
 
-        console.log(msg);
         dcs_obj = JSON.parse(msg);
         let key = Object.keys(dcs_obj)[0];
 
@@ -64,11 +65,17 @@ export const store = new Vuex.Store({
 
         state.buffer[key] = dcs_obj;
 
+        if (dcs_obj.states.Flags.Human) {
+
+          state.active[key] = dcs_obj
+
+        }
+
       }
     },
     // mutations for reconnect methods
     SOCKET_RECONNECT(state, count) {
-      console.info(state, count)
+      console.log(state, count)
     },
     SOCKET_RECONNECT_ERROR(state) {
       state.socket.reconnectError = true;

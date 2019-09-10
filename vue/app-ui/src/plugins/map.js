@@ -60,11 +60,17 @@ export default class Map {
         try {
 
             let bounds = this.marker_layer.getBounds();
-            this.map.flyToBounds(bounds);
+            this.map.flyToBounds(bounds, {padding: L.point(20,20)});
             this.focused = true
         } catch (e) {
 
         }
+    }
+
+    center_on_point(latlng) {
+
+        this.map.flyTo(latlng)
+
     }
 
 }
