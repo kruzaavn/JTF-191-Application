@@ -6,20 +6,16 @@ Vue.use(Vuex);
 
 function process_message(message) {
 
-  let messages = [];
+  message = message.replace('}{', '}\n{');
+  message = message.split('\n');
 
-  while (message.indexOf('}{')) {
+  if (message[-1] === '') {
 
-    let indx = message.indexOf('}{') +1;
-
-    messages.push(message.substring(0, indx));
-    message = message.substring(indx)
+    message[-1].pop()
 
   }
 
-  messages.push(message);
-
-  return messages
+  return message
 }
 
 
