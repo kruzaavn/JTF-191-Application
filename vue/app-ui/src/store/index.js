@@ -32,21 +32,27 @@ export const store = new Vuex.Store({
     // default handler called for all methods
     SOCKET_ONMESSAGE (state, message)  {
       let dcs_obj;
-      console.log(message.data);
-      dcs_obj = JSON.parse(message.data);
+      let data =  message.data.split('|');
+
+      for (let msg of data) {
 
 
-      let key = Object.keys(dcs_obj)[0];
+      if (msg) {
+        console.log(msg);
+        dcs_obj = JSON.parse(msg);
+        let key = Object.keys(dcs_obj)[0];
 
-      dcs_obj = dcs_obj[key];
+        dcs_obj = dcs_obj[key];
 
-      if (state.sim_time !== dcs_obj.sim_time) {
-        state.sim_time = dcs_obj.sim_time;
-        state.current = state.buffer;
-        state.buffer = {};
+        if (state.sim_time !== dcs_obj.sim_time) {
+          state.sim_time = dcs_obj.sim_time;
+          state.current = state.buffer;
+          state.buffer = {};
+        }
+
+        state.buffer[key] = dcs_obj;
       }
-
-      state.buffer[key] = dcs_obj;
+      }
     },
     // mutations for reconnect methods
     SOCKET_RECONNECT(state, count) {
