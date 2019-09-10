@@ -1,0 +1,22 @@
+-- wType_Air
+wsType_Airplane   = 1
+wsType_Helicopter = 2
+wsType_Free_Fall  = 3
+-- wsType_Weapon
+wsType_Missile    = 4
+wsType_Bomb       = 5
+wsType_Shell    = 6
+wsType_NURS       = 7
+-- wsType_Ground
+wsType_Moving   = 8
+wsType_Standing   = 9
+wsType_Tank     = 17
+wsType_SAM      = 16
+--  wsType_Navy
+wsType_Ship         = 12
+--  wsType_Static
+wsType_Airdrome   = 13
+wsType_Explosion    = 14
+wsType_GContainer   = 15
+wsType_AirdromePart = 18
+wsType_WingPart   = 19
