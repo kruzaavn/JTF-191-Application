@@ -4,6 +4,24 @@ import VueNativeSock from "vue-native-websocket";
 
 Vue.use(Vuex);
 
+function process_message(message) {
+
+  let messages = [];
+
+  while (message.indexOf('}{')) {
+
+    let indx = message.indexOf('}{') +1;
+
+    messages.push(message.substring(0, indx));
+    message = message.substring(indx)
+
+  }
+
+  messages.push(message);
+
+  return messages
+}
+
 
 export const store = new Vuex.Store({
   state: {
@@ -32,7 +50,7 @@ export const store = new Vuex.Store({
     // default handler called for all methods
     SOCKET_ONMESSAGE (state, message)  {
       let dcs_obj;
-      let data =  message.data.split('|');
+      let data =  process_message(message.data);
 
       for (let msg of data) {
 
@@ -64,5 +82,9 @@ export const store = new Vuex.Store({
   },
   actions : {}
 });
+
+
+
+
 
 Vue.use(VueNativeSock, 'ws://173.234.25.42:8082', {store:store});
