@@ -4,23 +4,22 @@
         <v-card id="roster" class="elevation-1">
             <v-subheader id="header" class="subtitle-2">Active Pilots</v-subheader>
             <v-list>
-            <v-list-item v-bind:onclick="center_on_pilot(pilot)"
+            <v-list-item v-show="active_pilots" v-bind:onclick="center_on_pilot(pilot)"
                          v-bind:key="key"
-                         v-for="(pilot, key) in active" >{{pilot.states.UnitName}}</v-list-item>
+                         v-for="(pilot, key) in active_pilots" >{{pilot.states.UnitName}}</v-list-item>
             </v-list>
         </v-card>
     </v-container>
-
-
-
 </template>
 
 <script>
-    import {mapState} from 'vuex'
+    import {mapState, mapGetters} from 'vuex'
     import Map from '../plugins/map.js'
     export default {
         name: "Map",
-        computed: mapState(['current', 'active']),
+        computed: {...mapState(['current']),  ...mapGetters(['active_pilots'])},
+            // ...mapGetters(['active_pilots'])
+
         data: function () {
             return {
                 map: null,

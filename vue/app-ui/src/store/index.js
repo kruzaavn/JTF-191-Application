@@ -19,29 +19,6 @@ function process_message(message) {
   return process
 }
 
-function get_active_pilots(data) {
-
-  let store = {};
-
-  for (let id in data) {
-
-
-
-    if (data[id].states.Flags.Human) {
-
-
-      store[id] = data[id];
-
-    }
-
-
-  }
-
-  return store
-
-}
-
-
 export const store = new Vuex.Store({
   state: {
     socket: {
@@ -54,7 +31,25 @@ export const store = new Vuex.Store({
     sim_time: -1,
     active: {}
   },
-  getters : {},
+  getters : {
+    active_pilots: function (state) {
+
+      let active = {};
+
+      for (let id in state.current) {
+
+        if (state.current[id].states.Flags.Human) {
+
+          active[id] = state.current[id]
+
+        }
+
+      }
+
+
+      return active
+    }
+  },
   mutations:{
     SOCKET_ONOPEN (state, event)  {
       Vue.prototype.$socket = event.currentTarget;
@@ -81,7 +76,6 @@ export const store = new Vuex.Store({
 
         if (state.sim_time !== dcs_obj.sim_time) {
           state.sim_time = dcs_obj.sim_time;
-          state.active = get_active_pilots(state.buffer);
           state.current = state.buffer;
           state.buffer = {};
         }
