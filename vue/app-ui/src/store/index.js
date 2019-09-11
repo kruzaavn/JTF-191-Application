@@ -46,8 +46,9 @@ export const store = new Vuex.Store({
 
       }
 
-
-      return active
+      if (Object.keys(active).length > 0) {
+        return active
+      } else {return null}
     }
   },
   mutations:{

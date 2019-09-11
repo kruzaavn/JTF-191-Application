@@ -4,7 +4,7 @@
           <span>JTF-70 Live Server</span>
       </v-toolbar-title>
         <v-spacer></v-spacer>
-        <div>Alpha 0.1</div>
+        <div>Alpha 0.2</div>
     </v-app-bar>
 </template>
 

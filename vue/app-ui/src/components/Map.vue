@@ -1,7 +1,7 @@
 <template>
 
     <v-container id="map" class="map" :fluid="true" :fill-height="true">
-        <v-card id="roster" class="elevation-1">
+        <v-card v-show="active_pilots" id="roster" class="elevation-1">
             <v-subheader id="header" class="subtitle-2">Active Pilots</v-subheader>
             <v-list>
             <v-list-item  v-on:click="center_on_pilot(key, current)"

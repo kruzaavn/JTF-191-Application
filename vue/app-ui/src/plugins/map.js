@@ -41,7 +41,7 @@ export default class Map {
 
     plot_icons(object) {
 
-        let symbol = new ms.Symbol(icon_dict[object.states.CoalitionID],
+        let symbol = new ms.Symbol(icon_dict[object.states.Type['level1']][object.states.CoalitionID],
             {
                 size:20,
                 direction: object.states.Heading * (180/Math.PI),
@@ -73,10 +73,15 @@ export default class Map {
 
     center_on_point(latlng) {
 
-        this.map.flyTo(latlng)
+        this.map.flyTo(latlng, 12)
 
     }
 
 }
 
-let icon_dict = {1: 'SHAP--------', 2: 'SFAP--------'};
+let icon_dict = {
+    1:{1: 'SHAP--------', 2: 'SFAP--------'},
+    2:{1: 'SHGPU-------', 2: 'SFGPU-------'},
+    3:{1: 'SHSP--------', 2: 'SFSP--------'},
+    4:{1: 'SHAPW-------', 2: 'SFAPW-------'},
+    5:{1: 'SHGPI-----H-', 2: 'SFGPI-----H-'}, };
