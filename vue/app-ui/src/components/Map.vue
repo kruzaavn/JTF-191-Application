@@ -4,9 +4,9 @@
         <v-card id="roster" class="elevation-1">
             <v-subheader id="header" class="subtitle-2">Active Pilots</v-subheader>
             <v-list>
-            <v-list-item v-show="active_pilots" v-bind:onclick="center_on_pilot(pilot)"
-                         v-bind:key="key"
-                         v-for="(pilot, key) in active_pilots" >{{pilot.states.UnitName}}</v-list-item>
+            <v-list-item  onclick="this.center_on_pilot(key, current)"
+                          v-bind:key="key"
+                         v-for="(pilot, key) in active_pilots" >{{pilot}}</v-list-item>
             </v-list>
         </v-card>
     </v-container>
@@ -38,8 +38,9 @@
                 }
             },
 
-            center_on_pilot(pilot) {
+            center_on_pilot(key, current) {
 
+                let pilot = current[key];
                 let latlng = [pilot.states.LatLongAlt.Lat, pilot.states.LatLongAlt.Long];
 
                 this.map.center_on_point(latlng)
@@ -67,7 +68,7 @@
         position: absolute;
         background: white;
         opacity: .8;
-        width: fit-content;
+        width: 15vw;
         top: 0vh;
         left: 85vw;
         z-index: 10000;

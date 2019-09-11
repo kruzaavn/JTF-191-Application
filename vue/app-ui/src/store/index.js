@@ -40,7 +40,7 @@ export const store = new Vuex.Store({
 
         if (state.current[id].states.Flags.Human) {
 
-          active[id] = state.current[id]
+          active[id] = state.current[id].states.UnitName
 
         }
 
