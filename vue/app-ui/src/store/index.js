@@ -7,7 +7,7 @@ Vue.use(Vuex);
 function process_message(message) {
 
   const pre_process = message;
-  let process = pre_process.replace(/}{/g, '}\n{').split('\n');
+  let process = pre_process.replace(new RegExp('}{', 'gi'), '}\n{').split('\n');
 
   if (process[-1] === '') {
 
