@@ -5,10 +5,9 @@ import VueNativeSock from "vue-native-websocket";
 Vue.use(Vuex);
 
 function process_message(message) {
-  let process;
-  process = message;
-  process = process.replace('}{', '}\n{');
-  process = process.split('\n');
+
+  const pre_process = message;
+  let process = pre_process.replace(/}{/g, '}\n{').split('\n');
 
   if (process[-1] === '') {
 
@@ -66,26 +65,25 @@ export const store = new Vuex.Store({
     // default handler called for all methods
     SOCKET_ONMESSAGE (state, message)  {
       let dcs_obj;
-      let data =  process_message(message.data);
+      let data = process_message(message.data);
 
       for (let msg of data) {
 
-        dcs_obj = JSON.parse(msg);
-        let key = Object.keys(dcs_obj)[0];
+          dcs_obj = JSON.parse(msg);
+          let key = Object.keys(dcs_obj)[0];
 
-        dcs_obj = dcs_obj[key];
+          dcs_obj = dcs_obj[key];
 
-        if (state.sim_time !== dcs_obj.sim_time) {
-          state.sim_time = dcs_obj.sim_time;
-          state.current = state.buffer;
-          state.buffer = {};
-        }
+          if (state.sim_time !== dcs_obj.sim_time) {
+            state.sim_time = dcs_obj.sim_time;
+            state.current = state.buffer;
+            state.buffer = {};
+          }
 
-        state.buffer[key] = dcs_obj;
-        // state.active[key] = dcs_obj;
+          state.buffer[key] = dcs_obj;
+          // state.active[key] = dcs_obj;
 
-
-      }
+       }
     },
     // mutations for reconnect methods
     SOCKET_RECONNECT(state, count) {
