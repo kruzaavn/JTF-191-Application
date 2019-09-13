@@ -6,7 +6,6 @@ import asyncio
 
 import tornado.websocket as ws
 
-
 class DummyClient:
 
     def __init__(self, host=socket.gethostname(), port=8081):
@@ -70,10 +69,18 @@ class WSHandler(ws.WebSocketHandler):
         print(f'Connection Closed, clients connected {len(self.clients)}')
         del self
 
+    def close(self, code: int = None, reason: str = None) -> None:
+        WSHandler.clients.remove(self)
+        print(f'Connection Closed, clients connected {len(self.clients)}')
+        del self
+
     @classmethod
     def write_to_clients(cls, message):
         for client in cls.clients:
-            client.write_message(message)
+            try:
+                client.write_message(message)
+            except ws.WebSocketClosedError:
+                client.close()
 
 
 class TCPProtocol(asyncio.Protocol):
