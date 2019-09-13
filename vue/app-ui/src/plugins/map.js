@@ -17,7 +17,7 @@ export default class Map {
 
         this.container_id = container_id;
         this.map = L.map(this.container_id).setView([0,0], 0);
-        L.tileLayer(defaults.tile_provider, defaults.tile_options).addTo(this.map)
+        L.tileLayer(defaults.tile_provider, defaults.tile_options).addTo(this.map);
         this.focused = false;
         this.marker_layer = L.featureGroup().addTo(this.map);
         // L.control.polylineMeasure(options).addTo(this.map)
@@ -36,6 +36,10 @@ export default class Map {
 
             this.focus()
 
+        }
+
+        if (this.focused && this.marker_layer.getBounds().getCenter().distanceTo(this.map.getCenter()) > 1000 * 1500.0) {
+            this.focused = false
         }
     }
 
