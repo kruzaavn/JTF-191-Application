@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import VueNativeSock from "vue-native-websocket";
-
+import L from 'leaflet'
 Vue.use(Vuex);
 
 function process_message(message) {
@@ -17,6 +17,23 @@ function process_message(message) {
 
   return process
 }
+
+
+function get_velocity(new_state, old_state) {
+
+  let to = L.latLng([new_state.states.LatLongAlt.Lat, new_state.states.LatLongAlt.Long]);
+  let froms = L.latLng([old_state.states.LatLongAlt.Lat, old_state.states.LatLongAlt.Long]);
+
+  let distance = froms.distanceTo(to);
+  let vel_kts = Math.round((distance * 3.6 * 0.539957)/10)*10;
+
+  new_state.states.Velocity = vel_kts;
+
+  return new_state
+
+
+}
+
 
 export const store = new Vuex.Store({
   state: {
@@ -79,6 +96,13 @@ export const store = new Vuex.Store({
             state.current = state.buffer;
             state.buffer = {};
           }
+
+          if (key in state.current) {
+
+            dcs_obj = get_velocity(dcs_obj, state.current[key])
+
+          }
+
 
           state.buffer[key] = dcs_obj;
           // state.active[key] = dcs_obj;

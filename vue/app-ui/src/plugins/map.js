@@ -20,7 +20,7 @@ export default class Map {
         L.tileLayer(defaults.tile_provider, defaults.tile_options).addTo(this.map);
         this.focused = false;
         this.marker_layer = L.featureGroup().addTo(this.map);
-        // L.control.polylineMeasure(options).addTo(this.map)
+        this.map.on('click', this.onClick)
     }
 
     update_icons(objects) {
@@ -45,12 +45,23 @@ export default class Map {
 
     plot_icons(object) {
 
-        let symbol = new ms.Symbol(icon_dict[object.states.Type['level1']][object.states.CoalitionID],
-            {
+
+        let options = {
                 size:20,
-                direction: object.states.Heading * (180/Math.PI),
                 altitudeDepth: Math.round(object.states.LatLongAlt.Alt * 3.28084 / 10) *10,
-                additionalInformation: object.states.Name}
+                additionalInformation: object.states.Name,
+
+            };
+
+
+            if (object.states.Velocity > 0) {
+                options.direction = object.states.Heading * (180/Math.PI);
+                options.speed = object.states.Velocity;
+
+            }
+
+        let symbol = new ms.Symbol(icon_dict[object.states.Type['level1']][object.states.CoalitionID],
+                                   options
             );
 
         let icon = L.divIcon({
@@ -78,6 +89,12 @@ export default class Map {
     center_on_point(latlng) {
 
         this.map.flyTo(latlng, 12)
+
+    }
+
+    onClick(e) {
+
+        console.log('click')
 
     }
 
