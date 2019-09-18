@@ -72,7 +72,7 @@
         width: 15vw;
         top: 0vh;
         left: 85vw;
-
+        z-index: 100000;
         margin: 1em;
     }
 </style>
