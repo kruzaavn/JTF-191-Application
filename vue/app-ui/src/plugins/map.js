@@ -45,7 +45,6 @@ export default class Map {
 
     plot_icons(object) {
 
-
         let options = {
                 size:20,
                 altitudeDepth: Math.round(object.states.LatLongAlt.Alt * 3.28084 / 10) *10,
@@ -101,6 +100,7 @@ export default class Map {
 }
 
 let icon_dict = {
+    0:{1: 'SHGPU-------', 2: 'SFGPU-------'},
     1:{1: 'SHAP--------', 2: 'SFAP--------'},
     2:{1: 'SHGPU-------', 2: 'SFGPU-------'},
     3:{1: 'SHSP--------', 2: 'SFSP--------'},
