@@ -5,19 +5,25 @@ import ms from "milsymbol";
 export default class Map {
     constructor(container_id) {
         let defaults = {
-            tile_provider: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+            tile_provider: {
+                light: 'https://maps.heigit.org/openmapsurfer/tiles/roads/webmercator/{z}/{x}/{y}.png',
+                dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+                topographic: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+                imagery: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
+            },
             tile_options: {
-                attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                attribution: 'Map tiles  <a href="https://leaflet-extras.github.io/leaflet-providers/preview/">attribution</a>',
 	            minZoom: 4,
 	            maxZoom: 18,
-            }
+            },
+            theme: 'light'
         };
 
 
 
         this.container_id = container_id;
         this.map = L.map(this.container_id).setView([0,0], 0);
-        L.tileLayer(defaults.tile_provider, defaults.tile_options).addTo(this.map);
+        L.tileLayer(defaults.tile_provider[defaults.theme], defaults.tile_options).addTo(this.map);
         this.focused = false;
         this.marker_layer = L.featureGroup().addTo(this.map);
         this.map.on('click', this.onClick)
