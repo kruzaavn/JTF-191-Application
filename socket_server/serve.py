@@ -1,4 +1,4 @@
-from .models import TCPProtocol, WSHandler
+from models import TCPProtocol, WSHandler
 import tornado.platform.asyncio as tp
 import tornado.httpserver
 import tornado.web as web
