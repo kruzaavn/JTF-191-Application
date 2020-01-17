@@ -1,55 +1,6 @@
-import socket
-import json
-import time
-import random
 import asyncio
 
 import tornado.websocket as ws
-
-class DummyClient:
-
-    def __init__(self, host=socket.gethostname(), port=8081):
-        self.port = int(port)
-        self.host = host
-        self.buffer = b''
-        self.time = 0
-        self.connect()
-
-    def connect(self):
-
-        with socket.socket() as s:
-            print(f'connecting to {self.host}: {self.port}')
-            s.connect((self.host, self.port))
-
-            while True:
-                try:
-                    time.sleep(1)
-                    if not self.buffer:
-                        self.gen_random_message()
-
-                    self.send_buffer(s)
-                    self.time += 1
-                except (KeyboardInterrupt, BrokenPipeError):
-                    print(f'disconnecting from {self.host}: {self.port}')
-                    s.close()
-
-    def construct_message(self, msg):
-
-        header = bytes(f'{len(msg):< 10}', 'utf-8')
-        self.buffer = header + msg
-
-    def send_buffer(self, sock):
-
-        print(f"sending {self.buffer}")
-        self.buffer = self.buffer[sock.send(self.buffer):]
-
-    def gen_random_message(self):
-
-        data = {'id': random.randint(1, 11),
-                'simtime': self.time,
-                'message': "test " * random.randint(1, 10)}
-
-        self.construct_message(bytes(json.dumps(data), 'utf-8'))
 
 
 class WSHandler(ws.WebSocketHandler):

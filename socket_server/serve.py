@@ -13,6 +13,7 @@ loop = asyncio.get_event_loop()
 # Create tornado HTTP server
 http_server = tornado.httpserver.HTTPServer(application)
 http_server.listen(8082)
+print('listening on 8082 for clients')
 
 # Start asyncio TCP server
 
