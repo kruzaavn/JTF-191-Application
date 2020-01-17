@@ -124,4 +124,4 @@ export const store = new Vuex.Store({
 
 
 
-Vue.use(VueNativeSock, 'ws://173.234.25.42:8082', {store:store});
+Vue.use(VueNativeSock, 'ws://103.214.109.26:8082', {store:store});
