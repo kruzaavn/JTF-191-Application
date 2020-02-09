@@ -16,7 +16,7 @@ export default class Map {
 	            minZoom: 4,
 	            maxZoom: 18,
             },
-            theme: 'light'
+            theme: 'imagery'
         };
 
 

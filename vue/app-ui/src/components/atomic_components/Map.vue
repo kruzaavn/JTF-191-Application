@@ -15,7 +15,7 @@
 
 <script>
     import {mapState, mapGetters} from 'vuex'
-    import Map from '../plugins/map.js'
+    import Map from '../../plugins/map.js'
     export default {
         name: "Map",
         computed: {...mapState(['current']),  ...mapGetters(['active_pilots'])},

@@ -1,24 +1,13 @@
 <template>
-  <v-app>
-    <Banner />
-
-    <v-content>
-    <Map />
-    </v-content>
-  </v-app>
+  <div id="app">
+    <router-view></router-view>
+  </div>
 </template>
 
 <script>
 
-import Banner from './components/Banner';
-import Map from './components/Map'
-
 export default {
   name: 'App',
-  components: {
-    Banner,
-    Map
-  },
   data: () => ({
     //
   }),
