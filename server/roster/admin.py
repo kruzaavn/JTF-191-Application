@@ -16,7 +16,12 @@ class AirFrameAdmin(admin.ModelAdmin):
 
 @admin.register(Squadron)
 class SquadronAdmin(admin.ModelAdmin):
-    list_display = ('name', 'designation', 'hq__name')
+    list_display = ('name', 'designation', 'get_hq')
+
+    def get_hq(self, obj):
+        return obj.hq.name
+    get_hq.short_description = 'HQ'
+
 
 
 @admin.register(Operation)
