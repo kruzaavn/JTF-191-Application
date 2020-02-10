@@ -81,6 +81,7 @@ class Aviator(models.Model):
 
     # constants
     statuses = ['active', 'extended loa', 'reserve']
+    positions = ['co', 'xo', 'opso']
 
     # fields
     first_name = models.CharField(max_length=1024)
@@ -93,6 +94,7 @@ class Aviator(models.Model):
     operations = models.ManyToManyField(Operation, blank=True, null=True)
     rank_code = models.IntegerField(default=1)
     tail_number = models.CharField(max_length=64, blank=True, null=True)
+    position = models.CharField(default='', blank=True, null=True, choices=[[x, x] for x in positions])
 
     @property
     def rank(self):

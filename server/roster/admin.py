@@ -23,7 +23,6 @@ class SquadronAdmin(admin.ModelAdmin):
     get_hq.short_description = 'HQ'
 
 
-
 @admin.register(Operation)
 class HQAdmin(admin.ModelAdmin):
     pass
