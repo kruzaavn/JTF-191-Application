@@ -49,7 +49,7 @@ class Squadron(models.Model):
     hq = models.ForeignKey(HQ, on_delete=models.SET_NULL)
 
 
-class Operation(models):
+class Operation(models.Model):
 
     """
     operation table
