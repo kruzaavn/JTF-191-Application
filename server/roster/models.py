@@ -90,7 +90,7 @@ class Aviator(models.Model):
     pilot = models.BooleanField(default=True)
     date_joined = models.DateField()
     status = models.CharField(choices=[(x, x) for x in statuses], default=statuses[0], max_length=128)
-    operations = models.ManyToManyField(Operation)
+    operations = models.ManyToManyField(Operation, blank=True, null=True)
     rank_code = models.IntegerField(default=1)
 
     @property
