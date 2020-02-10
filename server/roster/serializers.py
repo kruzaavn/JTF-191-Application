@@ -34,7 +34,6 @@ class AviatorSerializer(serializers.ModelSerializer):
 
     rank = serializers.ReadOnlyField()
     squadron = SquadronSerializer()
-    operations = OperationSerializer()
 
     class Meta:
         model = Aviator
