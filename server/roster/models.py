@@ -33,7 +33,7 @@ class AirFrame(models.Model):
     """
 
     # fields
-    name = models.CharField()
+    name = models.CharField(max_length=64)
 
 
 class Squadron(models.Model):
@@ -45,8 +45,8 @@ class Squadron(models.Model):
     # fields
     name = models.CharField(max_length=1024)
     designation = models.CharField(max_length=1024)
-    air_frame = models.ForeignKey(AirFrame, on_delete=models.SET_NULL)
-    hq = models.ForeignKey(HQ, on_delete=models.SET_NULL)
+    air_frame = models.ForeignKey(AirFrame, on_delete=models.SET_NULL, blank=True, null=True)
+    hq = models.ForeignKey(HQ, on_delete=models.SET_NULL, blank=True, null=True)
 
 
 class Operation(models.Model):
@@ -74,8 +74,8 @@ class Aviator(models.Model):
     first_name = models.CharField(max_length=1024)
     last_name = models.CharField(max_length=1024)
     callsign = models.CharField(max_length=1024)
-    squadron = models.ForeignKey(Squadron, on_delete=models.SET_NULL)
-    pilot = models.BooleanField()
+    squadron = models.ForeignKey(Squadron, on_delete=models.SET_NULL, blank=True, null=True)
+    pilot = models.BooleanField(default=True)
     date_joined = models.DateField()
     status = models.CharField(choices=[(x, x) for x in statuses], default=statuses[0], max_length=128)
     operations = models.ManyToManyField(Operation)
