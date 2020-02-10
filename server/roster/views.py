@@ -13,4 +13,5 @@ class AviatorListView(ListCreateAPIView):
 
 class AviatorDetailView(RetrieveUpdateDestroyAPIView):
 
+    queryset = Aviator.objects.all()
     serializer_class = AviatorSerializer
