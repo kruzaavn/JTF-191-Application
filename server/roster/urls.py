@@ -19,5 +19,5 @@ from .views import *
 
 urlpatterns = [
 
-    path('roster/aviators/', AviatorListView.as_view())
+    path('aviators/', AviatorListView.as_view())
 ]
