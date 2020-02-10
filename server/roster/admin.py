@@ -31,4 +31,4 @@ class HQAdmin(admin.ModelAdmin):
 @admin.register(Aviator)
 class AviatorAdmin(admin.ModelAdmin):
 
-    list_display = ('callsign', 'squadron', 'rank', 'date_joined')
+    list_display = ('callsign', 'squadron', 'position', 'rank', 'date_joined')
