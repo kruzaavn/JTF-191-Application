@@ -1,12 +1,14 @@
-from channels.generic.websocket import WebsocketConsumer
+from channels.generic.websocket import AsyncWebsocketConsumer
 
 
-class GCIConsumer(WebsocketConsumer):
+class GCIConsumer(AsyncWebsocketConsumer):
 
-    def connect(self):
-        self.accept()
+    async def connect(self):
+        self.room_name = 'gci'
 
-    def disconnect(self, code):
-        pass
+        await self.channel_layer.group_add()
 
-    def receive(self, text_data=None, bytes_data=None):
+
+    async def receive(self, text_data=None, bytes_data=None):
+        await self.send(text_data=text_data)
+
