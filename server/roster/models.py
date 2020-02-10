@@ -94,7 +94,7 @@ class Aviator(models.Model):
     operations = models.ManyToManyField(Operation, blank=True, null=True)
     rank_code = models.IntegerField(default=1)
     tail_number = models.CharField(max_length=64, blank=True, null=True)
-    position = models.CharField(default='', blank=True, null=True, choices=[[x, x] for x in positions])
+    position = models.CharField(default='', blank=True, null=True, choices=[[x.upper(), x.upper()] for x in positions])
 
     @property
     def rank(self):
