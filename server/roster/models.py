@@ -25,8 +25,8 @@ class HQ(models.Model):
     def service_table(self):
         return self.table[str(self.service)]
 
-    def __repr__(self):
-        return self.name
+    def __str__(self):
+        return f'{self.name}'
 
 
 class AirFrame(models.Model):
@@ -38,8 +38,8 @@ class AirFrame(models.Model):
     # fields
     name = models.CharField(max_length=64)
 
-    def __repr__(self):
-        return self.name
+    def __str__(self):
+        return f'{self.name}'
 
 
 class Squadron(models.Model):
@@ -54,8 +54,8 @@ class Squadron(models.Model):
     air_frame = models.ForeignKey(AirFrame, on_delete=models.SET_NULL, blank=True, null=True)
     hq = models.ForeignKey(HQ, on_delete=models.SET_NULL, blank=True, null=True)
 
-    def __repr__(self):
-        return self.name
+    def __str__(self):
+        return f'{self.name}'
 
 
 class Operation(models.Model):
@@ -69,8 +69,8 @@ class Operation(models.Model):
     start = models.DateField()
     complete = models.DateField()
 
-    def __repr__(self):
-        return self.name
+    def __str__(self):
+        return f'{self.name}'
 
 
 class Aviator(models.Model):
@@ -97,5 +97,5 @@ class Aviator(models.Model):
     def rank(self):
         return self.squadron.hq.service_table[self.rank_code]
 
-    def __repr__(self):
-        return self.callsign
+    def __str__(self):
+        return f'{self.callsign}'
