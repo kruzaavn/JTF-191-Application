@@ -4,3 +4,4 @@ channels
 djangorestframework
 markdown
 django-filter
+channels_redis
