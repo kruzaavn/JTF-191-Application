@@ -17,7 +17,6 @@ class HQ(models.Model):
         'air force': {i+1: x for i, x in enumerate(["2nd Lt", "1st Lt", "Capt", "Maj", "Lt Col", "Col"])},
     }
 
-
     # fields
     name = models.CharField(max_length=1024)
     service = models.CharField(choices=[(x, x) for x in services], default=services[0], max_length=16)
