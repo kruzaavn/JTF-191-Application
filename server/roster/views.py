@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .models import Aviator
 from .serializers import AviatorSerializer
 # Create your views here.
@@ -8,4 +8,9 @@ from .serializers import AviatorSerializer
 class AviatorListView(ListCreateAPIView):
 
     queryset = Aviator.objects.all()
+    serializer_class = AviatorSerializer
+
+
+class AviatorDetailView(RetrieveUpdateDestroyAPIView):
+
     serializer_class = AviatorSerializer
