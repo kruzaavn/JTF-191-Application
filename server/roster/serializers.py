@@ -37,4 +37,4 @@ class AviatorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Aviator
         fields = '__all__'
-        depth = 1
+        depth = 2
