@@ -16,7 +16,7 @@ class AirFrameAdmin(admin.ModelAdmin):
 
 @admin.register(Squadron)
 class SquadronAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('name', 'designation', 'hq_name')
 
 
 @admin.register(Operation)
