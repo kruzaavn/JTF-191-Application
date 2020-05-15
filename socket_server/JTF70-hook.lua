@@ -15,10 +15,12 @@ function LuaObject2Json(object)
 	local message = '{'
 
 	for k,v in pairs(o) do
-
+		local json
+		local previous_loop_message
 		json = JSON:encode(v)
 		json = string.format('"%d": %s,', k, json)
-		message = message .. json
+		previous_loop_message = message
+		message = previous_loop_message .. json
 
 	end
 	message = string.sub(message,1, -2) ..'}'
@@ -79,6 +81,8 @@ function LuaExportStart()
 	-- export_file = io.open("C:/Users/Administrator/Saved Games/DCS.openbeta_server/Logs/Export.log", "w")
 
 -- 2) Socket
+	local host
+	local port
 
 	package.path  = package.path..";"..lfs.currentdir().."/LuaSocket/?.lua" .. ';' ..lfs.currentdir().. '/Scripts/?.lua'
 	package.cpath = package.cpath..";"..lfs.currentdir().."/LuaSocket/?.dll"
