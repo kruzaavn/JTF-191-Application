@@ -1,0 +1,9 @@
+django
+mysqlclient
+channels
+djangorestframework
+markdown
+django-filter
+channels_redis
+redis
+daphne

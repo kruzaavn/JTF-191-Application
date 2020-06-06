@@ -1,1 +1,3 @@
-.idea
+*.ipynb
+*.idea
+pw.txt
