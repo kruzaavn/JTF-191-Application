@@ -8,4 +8,4 @@ COPY src server
 
 WORKDIR /server/
 
-CMD ['python', 'manage.py', 'runserver']
+CMD ["python", "manage.py", "runserver"]
