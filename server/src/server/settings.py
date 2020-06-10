@@ -85,7 +85,7 @@ DATABASES = {
         'NAME': 'jtf70',
         'USER': 'root',
         'PASSWORD': 'my-secret-pw',
-        'HOST': 'localhost',
+        'HOST': 'mysql',
         'PORT': '3306'
     }
 }
