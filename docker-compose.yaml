@@ -22,6 +22,5 @@ services:
        MYSQL_ROOT_PASSWORD: 'my-secret-pw'
     volumes:
       - mysqldata:/var/lib/postgresql/data/
-
 volumes:
   mysqldata:

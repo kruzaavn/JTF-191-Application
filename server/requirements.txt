@@ -1,4 +1,5 @@
 django
+mysql-connector-python
 mysqlclient
 channels
 djangorestframework
