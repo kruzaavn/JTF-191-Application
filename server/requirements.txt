@@ -1,5 +1,5 @@
 django
-mysql-connector-python
+psycopg2
 mysqlclient
 channels
 djangorestframework
@@ -8,3 +8,4 @@ django-filter
 channels_redis
 redis
 daphne
+Pillow
