@@ -4,8 +4,8 @@ services:
   server:
     restart: always
     build: ./server
-    expose:
-      - "8000"
+    ports:
+      - "8000:8000"
     links:
       - db:db
     depends_on:
@@ -23,5 +23,13 @@ services:
        POSTGRES_PASSWORD: 'my-secret-pw'
     volumes:
       - dbdata:/var/lib/postgresql/data/
+
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+    depends_on:
+      - server
+
 volumes:
   dbdata:

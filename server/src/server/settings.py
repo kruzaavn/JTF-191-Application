@@ -26,7 +26,10 @@ SECRET_KEY = '%yg))7dqy#6c=l2cu+#%28tfg4p1n29c7xwc5%%tk8*hbv2o2e'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '*'
+]
 
 ASGI_APPLICATION = 'server.routing.application'
 
