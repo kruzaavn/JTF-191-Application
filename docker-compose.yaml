@@ -10,7 +10,16 @@ services:
       - db:db
     depends_on:
       - db
+      - redis
     command: python manage.py runserver 0.0.0.0:8000
+
+  redis:
+    restart: always
+    image: redis:latest
+    ports:
+    - "6379:6329"
+    volumes:
+    - redisdata:/var/lib/redis/data/
 
   db:
     restart: always
@@ -33,3 +42,4 @@ services:
 
 volumes:
   dbdata:
+  redisdata:

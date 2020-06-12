@@ -31,7 +31,6 @@ ALLOWED_HOSTS = [
     '*'
 ]
 
-ASGI_APPLICATION = 'server.routing.application'
 
 # Application definition
 
@@ -45,7 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'channels',
     'roster',
-    'gci'
+    'chat'
 ]
 
 MIDDLEWARE = [
@@ -131,3 +130,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+ASGI_APPLICATION = 'server.routing.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [('redis', 6379)],
+        },
+    },
+}
