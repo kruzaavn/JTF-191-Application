@@ -13,7 +13,7 @@ class TCPeter(TCPServer):
 
     async def handle_stream(self, stream, address):
 
-        websockets[address[0]] = websocket_connect(f'ws://localhost:8000/ws/chat/{uuid.uuid4()}/')
+        websockets[address[0]] = websocket_connect(f'ws://localhost:8000/ws/chat/BOB/')
 
         while True:
             try:
