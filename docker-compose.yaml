@@ -1,9 +1,9 @@
 version: '3'
 
 services:
-  server:
+  api-server:
     restart: always
-    build: ./server
+    build: ./api-server
     ports:
       - "8000:8000"
     links:
@@ -41,7 +41,7 @@ services:
     environment:
       PORT: 7224
     depends_on:
-      - server
+      - api-server
     command: python -u serve.py
 
   nginx:
@@ -49,7 +49,7 @@ services:
     ports:
       - 80:80
     depends_on:
-      - server
+      - api-server
 
 volumes:
   dbdata:
