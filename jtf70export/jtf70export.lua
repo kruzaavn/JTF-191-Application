@@ -1,3 +1,8 @@
+-- jtf70 export file
+-- Initial config Brony 6/15/2020 aleks.kruza@gmail.com
+
+
+-- Uncomment the line below to log export to file.
 -- local export_file = io.open(lfs.writedir() .. [[Logs\jtf70export.log]], "w")
 local c
 local socket
@@ -9,6 +14,8 @@ package.path  = package.path..";"..lfs.currentdir().."/LuaSocket/?.lua" .. ';' .
 package.cpath = package.cpath..";"..lfs.currentdir().."/LuaSocket/?.dll"
 socket = require("socket")
 JSON = require('JSON')
+
+dofile(lfs.writedir() .. [[Config\serverSettings.lua]])
 
 -- helper functions
 
@@ -80,10 +87,14 @@ end
 -- DCS EXPORT HOOKS
 
 function LuaExportStart()
-    -- connect socket
-    Export2File('Export Started')
+
+	-- connect socket
+
 	connect_socket()
 
+	message = JSON:encode(cfg)
+	Export2File(message)
+	Export2Socket(message)
 end
 
 
