@@ -16,7 +16,10 @@ class TCPeter(TCPServer):
 
     async def handle_stream(self, stream, address):
         log(f'connected to {address[0]}')
-        websocket_url = f'ws://api-server:8000/ws/gci/BOB/'
+
+        connection_config = json.loads(await stream.read_until(b"\n"))
+
+        websocket_url = f"ws://api-server:8000/ws/gci/{connection_config['name'].replace(' ', '_')}/"
         log(f'establishing websocket connection to {websocket_url}')
         websocket = await websocket_connect(websocket_url)
 

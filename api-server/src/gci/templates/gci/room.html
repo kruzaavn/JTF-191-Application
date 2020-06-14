@@ -22,7 +22,7 @@
 
         gciSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-            document.querySelector('#gci-log').value += (data.message + '\n');
+            document.querySelector('#gci-log').value = data.message;
         };
 
         gciSocket.onclose = function(e) {
