@@ -12,15 +12,14 @@ websockets = {}
 
 
 def log(string):
-    return f'{datetime.datetime.now}:{string}'
+    print(f'{datetime.datetime.now()}: {string}')
 
 
 class TCPeter(TCPServer):
 
     async def handle_stream(self, stream, address):
         log(f'connected to {address[0]}')
-        websockets[address[0]] = await websocket_connect(f'ws://172.18.0.1:8000/ws/chat/BOB/')
-        log(f'{websockets[address[0]]}')
+        websockets[address[0]] = await websocket_connect(f'ws://{address[0]}:8000/ws/chat/BOB/')
 
         while True:
             try:
