@@ -8,9 +8,6 @@ from tornado.iostream import StreamClosedError
 from tornado.ioloop import IOLoop
 
 
-websockets = {}
-
-
 def log(string):
     print(f'{datetime.datetime.now()}: {string}')
 
@@ -19,13 +16,15 @@ class TCPeter(TCPServer):
 
     async def handle_stream(self, stream, address):
         log(f'connected to {address[0]}')
-        websockets[address[0]] = await websocket_connect(f'ws://{address[0]}:8000/ws/chat/BOB/')
+        websocket_url = f'ws://api-server:8000/ws/gci/BOB/'
+        log(f'establishing websocket connection to {websocket_url}')
+        websocket = await websocket_connect(websocket_url)
 
         while True:
             try:
                 data = await stream.read_until(b"\n")
                 message = {"message": json.loads(data)}
-                websockets[address[0]].write_message(json.dumps(message))
+                await websocket.write_message(json.dumps(message))
 
             except StreamClosedError:
                 break

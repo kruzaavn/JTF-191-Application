@@ -1,14 +1,11 @@
-
-local lfs = require('lfs')
-
-local export_file = io.open(lfs.writedir() .. [[Logs\jtf70export.log]], "w")
+-- local export_file = io.open(lfs.writedir() .. [[Logs\jtf70export.log]], "w")
 local c
 local socket
 local JSON
 local host = 'localhost'
 local port = 7224
 
-package.path  = package.path..";"..lfs.currentdir().."/LuaSocket/?.lua" .. ';' ..jtf70lfs.currentdir().. '/Scripts/?.lua'
+package.path  = package.path..";"..lfs.currentdir().."/LuaSocket/?.lua" .. ';' ..lfs.currentdir().. '/Scripts/?.lua'
 package.cpath = package.cpath..";"..lfs.currentdir().."/LuaSocket/?.dll"
 socket = require("socket")
 JSON = require('JSON')
@@ -18,7 +15,7 @@ JSON = require('JSON')
 function Export2Socket(message)
 
 	if c then
-		socket.try(c:send(message))
+		socket.try(c:send(message..'\n'))
 	end
 
 end
@@ -41,7 +38,7 @@ function ExportWorldObjects(t)
 
 		json = JSON:encode(v)
 
-		message = string.format('{"%d":{"sim_time": %d, "states": %s}}\n',k, t, json)
+		message = string.format('{"%d":{"sim_time": %d, "states": %s}}',k, t, json)
 
         Export2File(message)
 		Export2Socket(message)
@@ -63,7 +60,7 @@ end
 
 function disconnect_socket()
 
-    if c then
+	if c then
 		c:close()
 		c = nil
 	end
@@ -72,7 +69,7 @@ end
 
 
 function close_export_file()
-    if export_file then
+	if export_file then
 		export_file:close()
 		export_file = nil
 	end
