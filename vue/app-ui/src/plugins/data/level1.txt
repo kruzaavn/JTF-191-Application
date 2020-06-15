@@ -1,8 +1,0 @@
-wsType_Air      = 1
-wsType_Ground   = 2
-wsType_Navy     = 3
-wsType_Weapon   = 4
-wsType_Static   = 5
-wsType_Destroyed  = 6
-wsType_Test1    = 200
-wsType_Point    = 201

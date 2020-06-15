@@ -1,0 +1,8 @@
+a {
+    color: navajowhite;
+    text-decoration-line: none;
+}
+
+a:hover {
+    text-decoration-line: underline;
+}

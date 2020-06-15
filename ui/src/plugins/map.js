@@ -13,8 +13,8 @@ export default class Map {
             },
             tile_options: {
                 attribution: 'Map tiles  <a href="https://leaflet-extras.github.io/leaflet-providers/preview/">attribution</a>',
-	            minZoom: 4,
-	            maxZoom: 18,
+                minZoom: 4,
+                maxZoom: 18,
             },
             theme: 'imagery'
         };
