@@ -48,7 +48,7 @@ function ExportWorldObjects(t)
 
 		json = JSON:encode(v)
 
-		message = string.format('{"%d":{"sim_time": %d, "states": %s}}',k, t, json)
+		message = string.format('{"%d":{"sim_time": %f, "states": %s}}',k, t, json)
 
         Export2File(message)
 		Export2Socket(message)
@@ -109,9 +109,10 @@ function LuaExportActivityNextEvent(t)
 		connect_socket()
 	end
 
+	if t % 1 == 0 then
 	-- export functions
-	ExportWorldObjects(t)
-
+		ExportWorldObjects(t)
+	end
 	return tNext
 end
 
