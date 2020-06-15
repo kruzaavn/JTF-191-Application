@@ -10,8 +10,8 @@
 local c
 local socket
 local JSON
-local host = 'localhost'
-local port = 7224
+local host = 'localhost'  -- change to tcpeter application dns name or ip
+local port = 7224  -- change to tcpeter app port
 
 package.path  = package.path..";"..lfs.currentdir().."/LuaSocket/?.lua" .. ';' ..lfs.currentdir().. '/Scripts/?.lua'
 package.cpath = package.cpath..";"..lfs.currentdir().."/LuaSocket/?.dll"
