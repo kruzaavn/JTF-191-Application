@@ -9,3 +9,4 @@ channels_redis
 redis
 daphne
 Pillow
+djangorestframework_simplejwt

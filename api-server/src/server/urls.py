@@ -18,9 +18,11 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('roster/', include('roster.urls')),
-    path('gci/', include('gci.urls'))
+    path('gci/', include('gci.urls')),
+    path('token_auth/', include('token_auth.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
