@@ -8,7 +8,7 @@
             src="@/assets/logo.svg"
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-          <router-link tag="btn" to="/">
+          <router-link to="/">
             <v-list-item-content>
               <v-toolbar-title>
                 Home
@@ -16,7 +16,7 @@
             </v-list-item-content>
           </router-link>
       <v-spacer></v-spacer>
-      <v-btn class="ma-2" tile outlined color="white">
+      <v-btn class="ma-2" tile outlined color="white" v-on:click="dialog = !dialog">
         <v-icon left>mdi-login</v-icon> login
       </v-btn>
     </v-app-bar>
@@ -25,10 +25,15 @@
             v-model="drawer"
             app
     >
-      <v-list dense>
-        <v-list-item @click.stop="left = !left">
+      <v-list nav dense>
+        <v-list-item>
           <v-list-item-content>
             <router-link tag="ul" to="/about"><v-list-item-title>About Us</v-list-item-title></router-link>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-list-item-content>
+            <router-link tag="ul" to="/gci"><v-list-item-title>Web GCI</v-list-item-title></router-link>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -42,6 +47,7 @@
                 justify="center"
                 align="center"
         >
+          <Login v-if="dialog"></Login>
           <router-view></router-view>
         </v-row>
       </v-container>
@@ -50,14 +56,19 @@
 </template>
 
 <script>
+  import Login from "./components/Login";
   export default {
     name: "Title",
+    components: {Login},
     props: {
       source: String,
     },
     data: () => ({
       drawer: false,
+      dialog: false
     }),
+    methods: {
+    },
     watch: {
       '$route' (to) {
         document.title = to.meta.title || 'JTF-70'

@@ -1,5 +1,5 @@
 import os
-import uuid
+import requests
 import datetime
 import json
 from tornado.tcpserver import TCPServer
@@ -19,18 +19,28 @@ class TCPeter(TCPServer):
 
         connection_config = json.loads(await stream.read_until(b"\n"))
 
-        websocket_url = f"ws://api-server:8000/ws/gci/{connection_config['name'].replace(' ', '_')}/"
-        log(f'establishing websocket connection to {websocket_url}')
-        websocket = await websocket_connect(websocket_url)
+        log(f"registering connection {connection_config['name']} for {address[0]}")
 
-        while True:
-            try:
-                data = await stream.read_until(b"\n")
-                message = {"message": json.loads(data)}
-                await websocket.write_message(json.dumps(message))
+        r = requests.post('http://api-server:8000/gci/server/detail',
+                          data={'name': connection_config['name'].replace(' ', '_'),
+                                'ip': address[0]})
 
-            except StreamClosedError:
-                break
+        if r.status_code == 201:
+
+            websocket_url = f"ws://api-server:8000/ws/gci/{connection_config['name'].replace(' ', '_')}/"
+            log(f'establishing websocket connection to {websocket_url}')
+            websocket = await websocket_connect(websocket_url)
+
+            while True:
+                try:
+                    data = await stream.read_until(b"\n")
+                    message = {"message": json.loads(data)}
+                    await websocket.write_message(json.dumps(message))
+
+                except StreamClosedError:
+                    break
+        else:
+            log(f"unable to register {connection_config['name']} for {address[0]}")
 
 
 if __name__ == '__main__':

@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import About from '@/views/About.vue'
+import About from '../views/About.vue'
+import GCI from '../views/GCI.vue'
+
 
 Vue.use(VueRouter)
 
@@ -27,6 +29,14 @@ Vue.use(VueRouter)
     component: About,
     meta: {
       title: title(title_header, 'About Us')
+    }
+  },
+  {
+    path: '/gci',
+    name: 'GCI',
+    component: GCI,
+    meta: {
+      title: title(title_header, 'GCI')
     }
   }
 ]
