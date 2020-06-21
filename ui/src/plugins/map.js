@@ -3,6 +3,7 @@ import ms from "milsymbol";
 
 
 export default class Map {
+
     constructor(container_id) {
         let defaults = {
             tile_provider: {
@@ -87,7 +88,7 @@ export default class Map {
             this.map.flyToBounds(bounds, {padding: L.point(20,20)});
             this.focused = true
         } catch (e) {
-
+            console.log(e)
         }
     }
 
