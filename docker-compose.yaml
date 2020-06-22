@@ -47,7 +47,9 @@ services:
   ui:
     restart: always
     build: ./ui
-
+    ports:
+      - "8080:8080"
+    command: npm run serve
 
   nginx:
     build: ./nginx
