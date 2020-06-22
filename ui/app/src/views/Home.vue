@@ -1,5 +1,6 @@
 <template>
     <v-container>
+        <h1>Site under construction</h1>
     </v-container>
 </template>
 
