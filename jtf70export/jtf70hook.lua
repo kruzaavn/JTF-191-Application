@@ -13,6 +13,28 @@ local ltn12 = require("ltn12")
 
 local api_server_url = "jtf70.eastus.cloudapp.azure.com"
 
+
+function sendPostRequest(endpoint, payload)
+--  local path = "http://requestb.in/12j0kaq1?param_1=one&param_2=two&param_3=three"
+--  local payload = [[ {"key":"My Key","name":"My Name","description":"The description","state":1} ]]
+local response_body = { }
+
+local res, code, response_headers, status = http.request
+  {
+    url = "http://" .. api_server_url .. endpoint,
+    method = "POST",
+    headers =
+    {
+      ["Content-Type"] = "application/json",
+      ["Content-Length"] = payload:len()
+    },
+    source = ltn12.source.string(payload),
+    sink = ltn12.sink.table(response_body)
+  }
+  luup.task('Response: = ' .. table.concat(response_body) .. ' code = ' .. code .. '   status = ' .. status,1,'Sample POST request with JSON data',-1)
+end
+
+
 local callbacks = {}
 
 function callbacks.onGameEvent(eventName, arg1, arg2, arg3, arg4)
@@ -49,23 +71,3 @@ end
 DCS.setUserCallbacks(callbacks)
 
 
---function sendRequest()
---local path = "http://requestb.in/12j0kaq1?param_1=one&param_2=two&param_3=three"
---  local payload = [[ {"key":"My Key","name":"My Name","description":"The description","state":1} ]]
---  local response_body = { }
---
---  local res, code, response_headers, status = http.request
---  {
---    url = path,
---    method = "POST",
---    headers =
---    {
---      ["Authorization"] = "Maybe you need an Authorization header?",
---      ["Content-Type"] = "application/json",
---      ["Content-Length"] = payload:len()
---    },
---    source = ltn12.source.string(payload),
---    sink = ltn12.sink.table(response_body)
---  }
---  luup.task('Response: = ' .. table.concat(response_body) .. ' code = ' .. code .. '   status = ' .. status,1,'Sample POST request with JSON data',-1)
---end
