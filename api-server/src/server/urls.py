@@ -18,8 +18,8 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-
 urlpatterns = [
+    path('',include('ui.urls')),
     path('admin/', admin.site.urls),
     path('roster/', include('roster.urls')),
     path('gci/', include('gci.urls')),

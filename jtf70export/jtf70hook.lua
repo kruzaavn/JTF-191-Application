@@ -19,7 +19,7 @@ function sendPostRequest(endpoint, payload)
 --  local payload = [[ {"key":"My Key","name":"My Name","description":"The description","state":1} ]]
 local response_body = { }
 
-local res, code, response_headers, status = http.request
+local response, code, response_headers, status = http.request
   {
     url = "http://" .. api_server_url .. endpoint,
     method = "POST",
@@ -31,7 +31,7 @@ local res, code, response_headers, status = http.request
     source = ltn12.source.string(payload),
     sink = ltn12.sink.table(response_body)
   }
-  luup.task('Response: = ' .. table.concat(response_body) .. ' code = ' .. code .. '   status = ' .. status,1,'Sample POST request with JSON data',-1)
+
 end
 
 

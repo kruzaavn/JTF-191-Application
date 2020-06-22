@@ -3,6 +3,7 @@ psycopg2
 mysqlclient
 channels
 djangorestframework
+django-cors-headers
 markdown
 django-filter
 channels_redis
