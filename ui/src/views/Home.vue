@@ -1,8 +1,5 @@
 <template>
     <v-container>
-        <h1>Home Page</h1>
-        <p>{{count}}</p>
-        <v-btn text v-on:click="increment">increment</v-btn>
     </v-container>
 </template>
 

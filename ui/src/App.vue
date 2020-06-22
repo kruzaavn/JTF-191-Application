@@ -16,9 +16,7 @@
             </v-list-item-content>
           </router-link>
       <v-spacer></v-spacer>
-      <v-btn class="ma-2" tile outlined color="white" v-on:click="dialog = !dialog">
-        <v-icon left>mdi-login</v-icon> login
-      </v-btn>
+      <Login />
     </v-app-bar>
 
     <v-navigation-drawer
@@ -47,7 +45,6 @@
                 justify="center"
                 align="center"
         >
-          <Login v-if="dialog"></Login>
           <router-view></router-view>
         </v-row>
       </v-container>
@@ -65,9 +62,11 @@
     },
     data: () => ({
       drawer: false,
-      dialog: false
     }),
     methods: {
+      logstate: function (value) {
+        console.log(value)
+      }
     },
     watch: {
       '$route' (to) {
