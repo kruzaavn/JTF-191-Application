@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-// import {getAPI, postAPI} from "../plugins/api";
+import axios from 'axios'
 
 Vue.use(Vuex)
 
@@ -21,10 +21,8 @@ export default new Vuex.Store({
   },
   actions: {
     async fetchJWT ({ commit }, { username, password }) {
-      // Perform the HTTP request.
-      const res = await fetch(`http://localhost/vuejs-jwt-example/auth?u=${username}&p=${password}`);
-      // Calls the mutation defined to update the state's JWT.
-      commit('setJWT', await res.text());
+      const response = await axios.post(`http://${location.hostname}/api/token_auth/token/`, {username, password})
+      commit('setJWT', response.data)
     }
    },
   modules: {

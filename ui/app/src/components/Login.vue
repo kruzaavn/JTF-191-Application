@@ -23,7 +23,7 @@
           <h2>Login</h2>
         </v-card-title>
         <v-card-text>
-        <v-form>
+        <v-form @submit.prevent="login_submit">
           <v-text-field v-model="username"
                         prepend-icon="mdi-account"
                         label="username"></v-text-field>
@@ -40,7 +40,7 @@
         <v-card-actions>
           <v-btn outlined>Register</v-btn>
           <v-spacer></v-spacer>
-          <v-btn outlined color="info">Login</v-btn>
+          <v-btn outlined color="info" type="submit">Login</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -57,12 +57,16 @@
           return {
             dialog: false,
             show_password: false,
-            username: 'aas',
-            password: 'bba',
+            username: '',
+            password: '',
           }
         },
         method: {
-          ...mapActions(['fetchJWT'])
+          ...mapActions(['fetchJWT']),
+          login_submit: function (e) {
+            this.fetchJWT(this.username, this.password)
+            console.log(e)
+          },
         },
         computed: {
           ...mapGetters(['jwt', 'jwtData', 'jwtSubject', 'jwtIssuer'])
