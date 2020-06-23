@@ -24,12 +24,16 @@
         </v-card-title>
         <v-card-text>
         <v-form>
-          <v-text-field prepend-icon="mdi-account" label="username"></v-text-field>
+          <v-text-field v-model="username"
+                        prepend-icon="mdi-account"
+                        label="username"></v-text-field>
           <v-text-field :prepend-icon="show_password ? 'mdi-eye' : 'mdi-eye-off'"
+                        v-model="password"
                         label="password"
                         :type="show_password ? 'text': 'password'"
                         @click:prepend="show_password = !show_password"
           ></v-text-field>
+          {{jwt}} {{username}} {{password}}
         </v-form>
         </v-card-text>
         <v-divider></v-divider>
@@ -46,13 +50,22 @@
 </template>
 
 <script>
+    import {mapActions, mapGetters} from 'vuex';
     export default {
         name: "Login",
         data() {
           return {
             dialog: false,
-            show_password: false
+            show_password: false,
+            username: 'aas',
+            password: 'bba',
           }
+        },
+        method: {
+          ...mapActions(['fetchJWT'])
+        },
+        computed: {
+          ...mapGetters(['jwt', 'jwtData', 'jwtSubject', 'jwtIssuer'])
         }
     }
 </script>

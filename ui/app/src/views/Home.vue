@@ -1,6 +1,7 @@
 <template>
     <v-container>
         <h1>Site under construction</h1>
+        <h2>{{local}}</h2>
     </v-container>
 </template>
 
@@ -13,11 +14,15 @@ export default {
   name: 'Home',
   components: {
   },
+    data: () => ({
+      local: location.host,
+    }),
   methods: {
-      ...mapActions(['increment'])
+      ...mapActions([]),
+
   },
   computed: {
-      ...mapState(['count']),
+      ...mapState([]),
 
   }
 }
