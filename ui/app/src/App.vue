@@ -8,13 +8,13 @@
             src="@/assets/logo.svg"
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-          <router-link to="/">
-            <v-list-item-content>
-              <v-toolbar-title>
-                Home
-              </v-toolbar-title>
-            </v-list-item-content>
-          </router-link>
+      <router-link to="/">
+        <v-list-item-content>
+          <v-toolbar-title>
+            Home
+          </v-toolbar-title>
+        </v-list-item-content>
+      </router-link>
       <v-spacer></v-spacer>
       <Login />
     </v-app-bar>
@@ -24,16 +24,42 @@
             app
     >
       <v-list nav dense>
-        <v-list-item>
+        <v-list-item
+                to="/about"
+        >
           <v-list-item-content>
-            <router-link tag="ul" to="/about"><v-list-item-title>About Us</v-list-item-title></router-link>
+            <v-list-item-title>About Us</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item>
+        <v-list-item
+                to="/gci"
+        >
           <v-list-item-content>
-            <router-link tag="ul" to="/gci"><v-list-item-title>Web GCI</v-list-item-title></router-link>
+            <v-list-item-title>Web GCI</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-group v-for="hq in hqs" :key="hq.id">
+          <template v-slot:activator>
+
+            <v-list-item-content>
+              <v-list-item-title>{{hq.name}}</v-list-item-title>
+            </v-list-item-content>
+
+          </template>
+
+          <v-list-item
+                  v-for="subSquadron in squadrons.filter(squadron => squadron.hq.id === hq.id) "
+                  :key="subSquadron.id"
+                  :to="/squadron/ + subSquadron.designation"
+          >
+            <v-list-item-content>
+            <v-list-item-title>
+            {{subSquadron.designation}}
+            </v-list-item-title>
+              </v-list-item-content>
+          </v-list-item>
+
+        </v-list-group>
       </v-list>
     </v-navigation-drawer>
     <v-main>
@@ -53,7 +79,7 @@
 </template>
 
 <script>
-  import {mapActions} from 'vuex'
+  import {mapActions, mapGetters} from 'vuex'
   import Login from "./components/Login";
   export default {
     name: "Title",
@@ -64,8 +90,11 @@
     data: () => ({
       drawer: false,
     }),
+    computed: {
+      ...mapGetters(['squadrons','hqs']),
+    },
     methods: {
-      ...mapActions(['getRoster', 'getSquadrons', 'getHQs'])
+      ...mapActions(['getRoster', 'getSquadrons', 'getHQs']),
     },
     watch: {
       '$route' (to) {

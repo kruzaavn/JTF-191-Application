@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid>
+    <v-container >
 
             <v-layout
                     row
@@ -11,16 +11,19 @@
                 >
                     <v-card
                         max-width="450"
+                        class="my-4"
+                        :to="'/squadron/' + squadron.designation"
                     >
                         <v-img
-                                class="align-end"
-                                width="450px"
+                                contain
+                                position="center"
+                                max-height="300px"
                                 :src="squadron.img"
                         >
-                            <v-card-title>
-                                {{squadron.name}}
-                            </v-card-title>
                         </v-img>
+                        <v-card-title>
+                            {{squadron.name}}
+                        </v-card-title>
                         <v-card-subtitle>
                             {{squadron.designation}}
                         </v-card-subtitle>

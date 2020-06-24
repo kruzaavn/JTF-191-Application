@@ -6,7 +6,7 @@ class HQSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = HQ
-        fields = ['name', 'service']
+        fields = '__all__'
 
 
 class AirFrameSerializer(serializers.ModelSerializer):
@@ -21,6 +21,7 @@ class SquadronSerializer(serializers.ModelSerializer):
     class Meta:
         model = Squadron
         fields = '__all__'
+        depth = 1
 
 
 class OperationSerializer(serializers.ModelSerializer):
