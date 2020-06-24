@@ -53,6 +53,7 @@
 </template>
 
 <script>
+  import {mapActions} from 'vuex'
   import Login from "./components/Login";
   export default {
     name: "Title",
@@ -64,15 +65,17 @@
       drawer: false,
     }),
     methods: {
-      logstate: function (value) {
-        console.log(value)
-      }
+      ...mapActions(['getRoster', 'getSquadrons'])
     },
     watch: {
       '$route' (to) {
         document.title = to.meta.title || 'JTF-70'
       }
     },
+    mounted() {
+      this.getRoster()
+      this.getSquadrons()
+    }
   }
 </script>
 

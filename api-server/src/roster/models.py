@@ -1,7 +1,4 @@
 from django.db import models
-import datetime
-
-# Create your models here.
 
 
 class HQ(models.Model):
@@ -20,6 +17,7 @@ class HQ(models.Model):
     # fields
     name = models.CharField(max_length=1024)
     service = models.CharField(choices=[(x, x) for x in services], default=services[0], max_length=16)
+    img = models.ImageField(upload_to='hqs')
 
     @property
     def service_table(self):
@@ -53,9 +51,10 @@ class Squadron(models.Model):
     designation = models.CharField(max_length=1024)
     air_frame = models.ForeignKey(AirFrame, on_delete=models.SET_NULL, blank=True, null=True)
     hq = models.ForeignKey(HQ, on_delete=models.SET_NULL, blank=True, null=True)
+    img = models.ImageField(upload_to='squadrons')
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.name} - {self.designation}'
 
 
 class Operation(models.Model):
@@ -91,7 +90,7 @@ class Aviator(models.Model):
     pilot = models.BooleanField(default=True)
     date_joined = models.DateField()
     status = models.CharField(choices=[(x, x) for x in statuses], default=statuses[0], max_length=128)
-    operations = models.ManyToManyField(Operation, blank=True, null=True)
+    operations = models.ManyToManyField(Operation, blank=True)
     rank_code = models.IntegerField(default=1)
     tail_number = models.CharField(max_length=64, blank=True, null=True)
     position = models.CharField(default='', blank=True, null=True, choices=[[x.upper(), x.upper()] for x in positions], max_length=16)
@@ -102,3 +101,4 @@ class Aviator(models.Model):
 
     def __str__(self):
         return f'{self.callsign}'
+
