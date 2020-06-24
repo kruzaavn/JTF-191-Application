@@ -65,7 +65,7 @@
       drawer: false,
     }),
     methods: {
-      ...mapActions(['getRoster', 'getSquadrons'])
+      ...mapActions(['getRoster', 'getSquadrons', 'getHQs'])
     },
     watch: {
       '$route' (to) {
@@ -75,6 +75,7 @@
     mounted() {
       this.getRoster()
       this.getSquadrons()
+      this.getHQs()
     }
   }
 </script>

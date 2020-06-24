@@ -12,7 +12,9 @@ services:
       - db
       - redis
     volumes:
-      - djangodata:/server
+      - type: bind
+        source: ./api-server/src
+        target: /server
     command: python manage.py runserver 0.0.0.0:8000
 
   redis:

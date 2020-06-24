@@ -1,7 +1,10 @@
 <template>
     <v-container>
         <h1>server list</h1>
-        <v-layout row wrap>
+        <v-layout
+                row
+                wrap
+        >
             <v-flex
                     v-for="server in servers"
                     :key="server.id"
