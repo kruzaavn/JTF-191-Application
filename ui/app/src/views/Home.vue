@@ -1,14 +1,40 @@
 <template>
-    <v-container>
-        <h1>Site under construction</h1>
-        <h2>{{local}}</h2>
+    <v-container fluid>
+
+            <v-layout
+                    row
+                    wrap
+            >
+                <v-flex
+                        v-for="squadron in squadrons"
+                        :key="squadron.id"
+                >
+                    <v-card
+                        max-width="450"
+                    >
+                        <v-img
+                                class="align-end"
+                                width="450px"
+                                :src="squadron.img"
+                        >
+                            <v-card-title>
+                                {{squadron.name}}
+                            </v-card-title>
+                        </v-img>
+                        <v-card-subtitle>
+                            {{squadron.designation}}
+                        </v-card-subtitle>
+                    </v-card>
+                </v-flex>
+            </v-layout>
+
     </v-container>
 </template>
 
 <script>
 // @ is an alias to /src
 
-import { mapState, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'Home',
@@ -22,7 +48,7 @@ export default {
 
   },
   computed: {
-      ...mapState([]),
+      ...mapGetters(['squadrons']),
 
   }
 }
