@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  api-server:
+    restart: always
+    build: ./api-server
+    ports:
+      - "8000:8000"
+    links:
+      - db:db
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - djangodata:/server
+    command: python manage.py runserver 0.0.0.0:8000
+
+  redis:
+    restart: always
+    image: redis:latest
+    ports:
+    - "6379:6329"
+    volumes:
+    - redisdata:/var/lib/redis/data/
+
+  db:
+    restart: always
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+       POSTGRES_DB: 'database'
+       POSTGRES_USER: 'root'
+       POSTGRES_PASSWORD: 'my-secret-pw'
+    volumes:
+      - dbdata:/var/lib/postgresql/data/
+
+  tcpeter:
+    restart: always
+    build: ./tcpeter
+    ports:
+      - 7224:7224
+    environment:
+      PORT: 7224
+    depends_on:
+      - api-server
+    command: python -u serve.py
+
+  ui:
+    restart: always
+    build: ./ui
+    ports:
+      - "8080:8080"
+    command: npm run serve
+
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+    depends_on:
+      - api-server
+      - ui
+
+volumes:
+  dbdata:
+  redisdata:
+  djangodata:
