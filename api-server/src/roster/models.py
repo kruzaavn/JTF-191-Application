@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+import datetime
 
 
 class HQ(models.Model):
@@ -84,12 +85,12 @@ class Aviator(models.Model):
     positions = ['co', 'xo', 'opso']
 
     # fields
-    first_name = models.CharField(max_length=1024)
-    last_name = models.CharField(max_length=1024)
+    first_name = models.CharField(max_length=1024, default='John')
+    last_name = models.CharField(max_length=1024, default='Doe')
     callsign = models.CharField(max_length=1024)
     squadron = models.ForeignKey(Squadron, on_delete=models.SET_NULL, blank=True, null=True)
     pilot = models.BooleanField(default=True)
-    date_joined = models.DateField()
+    date_joined = models.DateField(default=datetime.now)
     status = models.CharField(choices=[(x, x) for x in statuses], default=statuses[0], max_length=128)
     operations = models.ManyToManyField(Operation, blank=True)
     rank_code = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(6)])
