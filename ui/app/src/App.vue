@@ -3,18 +3,19 @@
     <v-app-bar
             app
             clipped-right
-            color="blue-grey"
+            color="#f000000"
             dark
             src="@/assets/logo.svg"
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <router-link to="/">
-        <v-list-item-content>
-          <v-toolbar-title>
+        <v-btn
+                tile
+                depressed
+                color="#f000000"
+                to="/">
+
             Home
-          </v-toolbar-title>
-        </v-list-item-content>
-      </router-link>
+        </v-btn>
       <v-spacer></v-spacer>
       <Login />
     </v-app-bar>

@@ -10,15 +10,19 @@
                 v-show="!userName"
                 color="white"
                 outlined
+                tile
+                depressed
                 v-bind="attrs"
                 v-on="on"
         >
           <v-icon left>mdi-login</v-icon>Login
         </v-btn>
         <v-btn v-show="userName"
-              color="white"
-              outlined
-              @click="logout"
+               color="white"
+               outlined
+               tile
+               depressed
+               @click="logout"
         >
           <v-icon left>mdi-logout</v-icon>{{userName}}
         </v-btn>
