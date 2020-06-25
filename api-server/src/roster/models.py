@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class HQ(models.Model):
@@ -91,7 +92,7 @@ class Aviator(models.Model):
     date_joined = models.DateField()
     status = models.CharField(choices=[(x, x) for x in statuses], default=statuses[0], max_length=128)
     operations = models.ManyToManyField(Operation, blank=True)
-    rank_code = models.IntegerField(default=1)
+    rank_code = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(6)])
     tail_number = models.CharField(max_length=64, blank=True, null=True)
     position = models.CharField(default='', blank=True, null=True, choices=[[x.upper(), x.upper()] for x in positions], max_length=16)
 
