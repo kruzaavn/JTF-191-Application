@@ -14,7 +14,7 @@
                 color="#f000000"
                 to="/">
 
-            Home
+            Joint Task Force Jupiter | JTF-191
         </v-btn>
       <v-spacer></v-spacer>
       <Login />

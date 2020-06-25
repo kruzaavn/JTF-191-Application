@@ -1,19 +1,21 @@
 <template>
-    <v-container>
+    <v-container fluid>
         <v-row align-content="start">
+            <v-col>
             <v-card
+                    class="py-4"
                     tile
             >
                 <v-img
                     :src="squadron.img"
-                    max-height="400"
                     contain
+                    height="500"
                 >
                     <v-card-title>{{squadronDesignation}}</v-card-title>
                 </v-img>
 
             <v-card
-                    class="mx-4 my-5" v-for="member in members"
+                    class="mx-4 my-5 py-2" v-for="member in members"
                     :key="member.id"
                     tile
             >
@@ -33,23 +35,25 @@
                 <v-card-title>
                     {{member.rank}} {{member.callsign}} {{member.position}}
                 </v-card-title>
-                <v-card-subtitle>{{member.date_joined}}</v-card-subtitle>
+                <v-card-subtitle>On board since {{member.date_joined}} <br> Status: {{member.status}} </v-card-subtitle>
                         </v-col>
                 </v-row>
                 <v-card-text>
                     <v-row>
                     <v-col>
-                    {{member.status}}
+                        Air Frame: {{member.squadron.air_frame.name | upper}} - 50 hrs
                     </v-col>
                     <v-col>
-                        {{member.status}}
+                        Kills: Mig-29 - 2
                     </v-col>
                     </v-row>
 
                 </v-card-text>
             </v-card>
             </v-card>
+                        </v-col>
         </v-row>
+
     </v-container>
 </template>
 
@@ -76,6 +80,11 @@
             },
             squadron: function () {
                 return this.squadrons.filter(sqd => sqd.designation === this.squadronDesignation)[0]
+            }
+        },
+        filters: {
+            upper: function(value) {
+                return value.toUpperCase()
             }
         }
 
