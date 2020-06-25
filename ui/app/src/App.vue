@@ -11,7 +11,7 @@
         <v-btn
                 tile
                 depressed
-                color="#f000000"
+                color="#00000000"
                 to="/">
 
             Joint Task Force Jupiter | JTF-191

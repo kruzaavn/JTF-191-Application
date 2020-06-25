@@ -18,6 +18,7 @@
                     class="mx-4 my-5 py-2" v-for="member in members"
                     :key="member.id"
                     tile
+
             >
                 <v-row>
                     <v-col
@@ -38,7 +39,8 @@
                 <v-card-subtitle>On board since {{member.date_joined}} <br> Status: {{member.status}} </v-card-subtitle>
                         </v-col>
                 </v-row>
-                <v-card-text>
+                <v-card-text
+                >
                     <v-row>
                     <v-col>
                         Air Frame: {{member.squadron.air_frame.name | upper}} - 50 hrs

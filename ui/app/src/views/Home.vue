@@ -14,6 +14,9 @@
                         max-width="450"
                         class="my-4 mx-4"
                         :to="'/squadron/' + squadron.designation"
+                        dark
+                        color="#00000077"
+                        tile
                     >
                         <v-img
                                 contain
@@ -24,6 +27,7 @@
                                 :src="squadron.img"
                         >
                         </v-img>
+                        <v-divider></v-divider>
                         <v-card-title>
                             {{squadron.name}}
                         </v-card-title>
