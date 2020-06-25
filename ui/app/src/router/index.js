@@ -8,7 +8,7 @@ import Squadron from "../views/Squadron";
 
 Vue.use(VueRouter)
 
-  const title_header = 'JTF-70'
+  const title_header = 'JTF-191'
 
   function title(header, title) {
 
