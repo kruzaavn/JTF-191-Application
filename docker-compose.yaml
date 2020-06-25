@@ -70,4 +70,4 @@ services:
 volumes:
   dbdata:
   redisdata:
-  djangodata
+  djangodata:
