@@ -66,8 +66,8 @@
         props: ['squadronDesignation'],
         data: () => ({
             ranks: {
-        1:'first_lieutenant',
-        2: 'second_lieutenant',
+        1: 'second_lieutenant',
+        2: 'first_lieutenant',
         3: 'captain',
         4: 'major',
         5: 'lieutenant_colonel',
