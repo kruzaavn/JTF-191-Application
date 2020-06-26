@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-import datetime
+from datetime import datetime
 
 
 class HQ(models.Model):

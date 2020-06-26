@@ -1,11 +1,11 @@
 <template>
     <v-container>
         <h1>server list</h1>
-        <v-layout
+        <v-row
                 row
-                wrap
+
         >
-            <v-flex
+            <v-col
                     v-for="server in servers"
                     :key="server.id"
             >
@@ -19,8 +19,8 @@
                         {{server.connection_time}}
                     </v-card-text>
                 </v-card>
-            </v-flex>
-        </v-layout>
+            </v-col>
+        </v-row>
     </v-container>
 </template>
 

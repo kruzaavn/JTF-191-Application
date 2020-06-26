@@ -37,5 +37,5 @@ class AviatorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Aviator
-        fields = '__all__'
+        exclude = ['first_name', 'last_name']
         depth = 2

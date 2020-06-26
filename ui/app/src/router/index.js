@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import About from '../views/About.vue'
 import GCI from '../views/GCI.vue'
 import Squadron from "../views/Squadron";
+import JoinUs from "../views/JoinUs"
 
 
 Vue.use(VueRouter)
@@ -49,7 +50,16 @@ Vue.use(VueRouter)
       title: title(title_header,'Squadrons')
 
     }
-  }
+  },
+    {
+      path: "/joinus",
+      name: 'JoinUs',
+      component: JoinUs,
+      meta: {
+        title: title(title_header, 'Join Us')
+      }
+
+    }
 ]
 
 const router = new VueRouter({
