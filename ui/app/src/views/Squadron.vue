@@ -79,7 +79,7 @@
             ...mapGetters(['roster', 'squadrons']),
             members:  function (){
                 return this.roster.filter(pilot => pilot.squadron.designation === this.squadronDesignation).sort(
-                    (a,b) => (a.rank_code > b.rank_code) ? 1 : -1
+                    (a,b) => (a.rank_code < b.rank_code) ? 1 : -1
                 )
             },
             squadron: function () {
