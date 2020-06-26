@@ -12,9 +12,7 @@ services:
       - db
       - redis
     volumes:
-      - type: bind
-        source: ./api-server/src
-        target: /server
+      - ./api-server/src:/server
     command: python manage.py runserver 0.0.0.0:8000
 
   redis:
@@ -54,9 +52,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-    - type: bind
-      source: ./ui/app
-      target: /ui
+    - ./ui/app:/ui
     command: npm run serve
 
   nginx:
@@ -70,4 +66,3 @@ services:
 volumes:
   dbdata:
   redisdata:
-  djangodata:
