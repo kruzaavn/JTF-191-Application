@@ -36,7 +36,11 @@
                 <v-card-title>
                     {{member.rank}} {{member.callsign}} {{member.position}}
                 </v-card-title>
-                <v-card-subtitle>On board since {{member.date_joined}} <br> Status: {{member.status}} </v-card-subtitle>
+                <v-card-subtitle>
+                    Aircraft: {{member.tail_number}} <br>
+                    On board since {{member.date_joined}} <br>
+                    Status: {{member.status}}
+                </v-card-subtitle>
                         </v-col>
                 </v-row>
                 <v-card-text
