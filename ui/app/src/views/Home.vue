@@ -12,7 +12,7 @@
                 >
                     <v-card
                         max-width="450"
-                        class="my-4 mx-4"
+                        class="my-4 mx-4 py-2 px-2"
                         :to="'/squadron/' + squadron.designation"
                         dark
                         color="#00000077"
