@@ -7,7 +7,7 @@ from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer
 
 class AviatorListView(ListCreateAPIView):
 
-    queryset = Aviator.objects.all().order_by('-rank_code', '-position_code')
+    queryset = Aviator.objects.all().order_by('-rank_code', 'position_code')
     serializer_class = AviatorSerializer
 
 
