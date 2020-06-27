@@ -20,6 +20,7 @@ class SquadronAdmin(admin.ModelAdmin):
 
     def get_hq(self, obj):
         return obj.hq.name
+
     get_hq.short_description = 'HQ'
 
 
@@ -32,3 +33,7 @@ class HQAdmin(admin.ModelAdmin):
 class AviatorAdmin(admin.ModelAdmin):
 
     list_display = ('callsign', 'squadron', 'position', 'rank', 'date_joined')
+
+    list_filter = ('squadron__designation', 'squadron__hq__name')
+
+    search_fields = ('callsign',)
