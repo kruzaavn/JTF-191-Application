@@ -108,7 +108,7 @@ class Aviator(models.Model):
     operations = models.ManyToManyField(Operation, blank=True)
     rank_code = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(6)])
     tail_number = models.CharField(max_length=64, blank=True, null=True)
-    postion_code = models.IntegerField(default=4, validators=[MinValueValidator(1), MaxValueValidator(4)])
+    position_code = models.IntegerField(default=4, validators=[MinValueValidator(1), MaxValueValidator(4)])
     user = models.ForeignKey(User,blank=True, null=True, on_delete=models.CASCADE)
 
     @property
@@ -117,7 +117,7 @@ class Aviator(models.Model):
 
     @property
     def position(self):
-        return self.squadron.hq.service_position_table[self.postion_code]
+        return self.squadron.hq.service_position_table[self.position_code]
 
     def __str__(self):
         return f'{self.callsign}'
