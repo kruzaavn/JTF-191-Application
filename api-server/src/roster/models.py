@@ -61,9 +61,12 @@ class Squadron(models.Model):
     squadron table
     """
 
+    types = ['operational', 'replacement', 'training']
+
     # fields
     name = models.CharField(max_length=1024)
     designation = models.CharField(max_length=1024)
+    type = models.CharField(max_length=1024, choices=[(x, x) for x in types], default=types[0])
     air_frame = models.ForeignKey(AirFrame, on_delete=models.SET_NULL, blank=True, null=True)
     hq = models.ForeignKey(HQ, on_delete=models.SET_NULL, blank=True, null=True)
     img = models.ImageField(upload_to='squadrons')
