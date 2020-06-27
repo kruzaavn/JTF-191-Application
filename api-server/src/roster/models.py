@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.models import User
 from datetime import datetime
 
 
@@ -10,10 +11,17 @@ class HQ(models.Model):
     """
     # constants
     services = ['navy', 'marine', 'air force']
-    table = {
-        'navy': {i+1: x for i, x in enumerate(["ENS", "LTJG", "LT", "LCDR", "CDR", "CAPT"])},
-        'marine': {i+1: x for i, x in enumerate(["2ndLt", "1stLt", "Capt", "Maj", "LtCol", "Col"])},
-        'air force': {i+1: x for i, x in enumerate(["2nd Lt", "1st Lt", "Capt", "Maj", "Lt Col", "Col"])},
+    rank_table = {
+        services[0]: {i + 1: x for i, x in enumerate(["ENS", "LTJG", "LT", "LCDR", "CDR", "CAPT"])},
+        services[1]: {i + 1: x for i, x in enumerate(["2ndLt", "1stLt", "Capt", "Maj", "LtCol", "Col"])},
+        services[2]: {i + 1: x for i, x in enumerate(["2nd Lt", "1st Lt", "Capt", "Maj", "Lt Col", "Col"])},
+    }
+
+    position_table = {
+        services[0]: {i + 1: x for i, x in enumerate(["CO", "XO", "OPSO", ""])},
+        services[1]: {i + 1: x for i, x in enumerate(["CO", "XO", "OPSO", ""])},
+        services[2]: {i + 1: x for i, x in enumerate(["CO", "XO", "OPSO", ""])},
+
     }
 
     # fields
@@ -22,8 +30,13 @@ class HQ(models.Model):
     img = models.ImageField(upload_to='hqs')
 
     @property
-    def service_table(self):
-        return self.table[str(self.service)]
+    def service_rank_table(self):
+        return self.rank_table[str(self.service)]
+
+
+    @property
+    def service_position_table(self):
+        return self.position_table[str(self.service)]
 
     def __str__(self):
         return f'{self.name}'
@@ -95,11 +108,16 @@ class Aviator(models.Model):
     operations = models.ManyToManyField(Operation, blank=True)
     rank_code = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(6)])
     tail_number = models.CharField(max_length=64, blank=True, null=True)
-    position = models.CharField(default='', blank=True, null=True, choices=[[x.upper(), x.upper()] for x in positions], max_length=16)
+    postion_code = models.IntegerField(default=4, validators=[MinValueValidator(1), MaxValueValidator(4)])
+    user = models.ForeignKey(User,blank=True, null=True, on_delete=models.CASCADE)
 
     @property
     def rank(self):
-        return self.squadron.hq.service_table[self.rank_code]
+        return self.squadron.hq.service_rank_table[self.rank_code]
+
+    @property
+    def position(self):
+        return self.squadron.hq.service_position_table[self.postion_code]
 
     def __str__(self):
         return f'{self.callsign}'
