@@ -34,6 +34,7 @@ class OperationSerializer(serializers.ModelSerializer):
 class AviatorSerializer(serializers.ModelSerializer):
 
     rank = serializers.ReadOnlyField()
+    position = serializers.ReadOnlyField()
 
     class Meta:
         model = Aviator
