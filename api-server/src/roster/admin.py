@@ -37,3 +37,8 @@ class AviatorAdmin(admin.ModelAdmin):
     list_filter = ('squadron__designation', 'squadron__hq__name')
 
     search_fields = ('callsign',)
+
+
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
+    pass

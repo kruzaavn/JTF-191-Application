@@ -90,6 +90,24 @@ class Operation(models.Model):
         return f'{self.name}'
 
 
+class Event(models.Model):
+
+    """
+    event table
+    """
+
+    # constants
+    types = ['loa', 'training', 'operation']
+
+    type = models.CharField(max_length=48, choices=[(x, x) for x in types], default=types[0])
+    start = models.DateField()
+    end = models.DateField(blank=True, null=True)
+    information = models.TextField()
+
+    def __str__(self):
+        return f'{self.start} - {self.type}'
+
+
 class Aviator(models.Model):
 
     """
@@ -112,7 +130,8 @@ class Aviator(models.Model):
     rank_code = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(6)])
     tail_number = models.CharField(max_length=64, blank=True, null=True)
     position_code = models.IntegerField(default=4, validators=[MinValueValidator(1), MaxValueValidator(4)])
-    user = models.ForeignKey(User,blank=True, null=True, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
+    events = models.ManyToManyField(Event, blank=True)
 
     @property
     def rank(self):

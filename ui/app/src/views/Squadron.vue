@@ -11,7 +11,11 @@
                     contain
                     height="500"
                 >
-                    <v-card-title>{{squadronDesignation}}</v-card-title>
+                    <v-card-title>{{squadron.name}}</v-card-title>
+                    <v-card-subtitle>
+                        {{squadron.designation}}<br>
+                        Active Pilots {{members.filter(member => member.status === 'active').length}}
+                    </v-card-subtitle>
                 </v-img>
 
             <v-card
