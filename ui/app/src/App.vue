@@ -5,17 +5,22 @@
             clipped-right
             color="#f000000"
             dark
-            src="@/assets/logo.svg"
+
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-        <v-btn
-                tile
-                depressed
-                color="#00000000"
-                to="/">
+            <router-link to="/"
+            >
 
-            Joint Task Force Jupiter | JTF-191
-        </v-btn>
+            <v-img
+                    contain
+                    max-width="130px"
+                    src="@/assets/logo.png"
+
+                    >
+            </v-img>
+
+              </router-link>
+
       <v-spacer></v-spacer>
       <Login />
     </v-app-bar>
