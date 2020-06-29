@@ -5,7 +5,7 @@ import About from '../views/About.vue'
 import GCI from '../views/GCI.vue'
 import Squadron from "../views/Squadron";
 import JoinUs from "../views/JoinUs"
-
+import MyAviator from "../views/MyAviator"
 
 Vue.use(VueRouter)
 
@@ -58,7 +58,14 @@ Vue.use(VueRouter)
       meta: {
         title: title(title_header, 'Join Us')
       }
-
+    },
+    {
+      path: "/myaviator",
+      name: 'MyAviator',
+      component: MyAviator,
+      meta: {
+        title: title(title_header, 'My Aviator')
+      }
     }
 ]
 

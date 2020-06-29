@@ -1,6 +1,10 @@
 <template>
     <v-container>
-        <h1>server list</h1>
+        <v-row>
+            <v-col>
+                <h1>Server List</h1>
+            </v-col>
+        </v-row>
         <v-row
                 row
 

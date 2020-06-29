@@ -14,18 +14,9 @@ class AviatorListView(ListCreateAPIView):
 
 class AviatorDetailView(RetrieveUpdateDestroyAPIView):
 
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Aviator.objects.all()
     serializer_class = AviatorSerializer
-
-
-class AviatorMyView(RetrieveUpdateDestroyAPIView):
-
-    permission_classes = [permissions.IsAuthenticated]
-    serializer_class = AviatorSerializer
-
-    def get_queryset(self):
-        return Aviator.objects.get(user=self.request.user)
 
 
 class SquadronListView(ListCreateAPIView):

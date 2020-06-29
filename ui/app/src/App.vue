@@ -17,6 +17,13 @@
             Joint Task Force Jupiter | JTF-191
         </v-btn>
       <v-spacer></v-spacer>
+      <v-btn
+              v-if="userName"
+              outlined
+              tile
+              class="mx-1"
+              to="/myaviator"
+      >My Aviator</v-btn>
       <Login />
     </v-app-bar>
 
@@ -92,7 +99,7 @@
       drawer: false,
     }),
     computed: {
-      ...mapGetters(['squadrons','hqs']),
+      ...mapGetters(['squadrons','hqs', 'userName']),
     },
     methods: {
       ...mapActions(['getRoster', 'getSquadrons', 'getHQs']),

@@ -4,7 +4,9 @@ const state = {
 
     rosterList: [],
     squadronList: [],
-    hqs: [1, 2]
+    hqs: [],
+    myAviator: {},
+    
 }
 
 const mutations = {
@@ -17,6 +19,9 @@ const mutations = {
     },
     setHQs(state, HQs) {
         state.hqs = HQs
+    },
+    setMyAviator(state, aviator) {
+        state.myAviator = aviator
     }
 }
 
@@ -25,9 +30,8 @@ const getters = {
     roster: state => state.rosterList,
     squadrons: state => state.squadronList,
     hqs: state => state.hqs,
-    subSquadrons: (state) => (id) => {
-        return state.squadronList.filter(squadron => squadron.hq.id == id)
-    }
+    myAviator: state => state.myAviator
+
 }
 
 const actions = {
@@ -44,6 +48,15 @@ const actions = {
         const response = await axios.get('/api/roster/hqs/list/')
         commit('setHQs', response.data)
     },
+    async getMyAviator({commit, rootGetters}) {
+
+        // dispatch('refreshJWT')
+        
+        const response = await axios.get(
+            `/api/roster/aviators/detail/${rootGetters.jwtData.user_id}/`,
+        )
+        commit('setMyAviator', response.data)
+    }
 }
 
 export default {
