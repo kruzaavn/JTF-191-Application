@@ -6,9 +6,10 @@
                     <h1>{{squadron_type[0].toUpperCase() + squadron_type.slice(1) }} Squadrons</h1>
                         </v-row>
                     <v-row>
-                    <v-col cols="3" v-for="squadron in squadrons.filter(x => x.type === squadron_type)"
-                        :key="squadron.id"
-
+                    <v-col
+                            v-for="squadron in squadrons.filter(x => x.type === squadron_type)"
+                            :key="squadron.id"
+                            cols="3"
                     >
                     <v-card
 
