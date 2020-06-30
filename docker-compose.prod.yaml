@@ -55,7 +55,6 @@ services:
 
   nginx:
     image: linuxserver/letsencrypt
-    container_name: nginx
     ports:
       - 443:443
       - 80:80
