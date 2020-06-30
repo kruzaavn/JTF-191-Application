@@ -63,7 +63,7 @@ services:
       - VALIDATION=http
       - EMAIL=ryan@breaker.rocks
     volumes:
-      - ./nginx/nginx-prod.conf:/config/nginx/site-confs/default
+      - ./nginx/nginx.prod.conf:/config/nginx/site-confs/default
     depends_on:
       - api-server
       - ui
