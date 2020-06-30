@@ -58,7 +58,7 @@ services:
   nginx:
     build: ./nginx
     ports:
-      - 80:80
+      - "80:80"
     depends_on:
       - api-server
       - ui
