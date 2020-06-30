@@ -54,9 +54,17 @@ services:
     command: npm run serve
 
   nginx:
-    build: ./nginx
+    image: linuxserver/letsencrypt
+    container_name: nginx
     ports:
+      - 443:443
       - 80:80
+    environment:
+      - URL=jtf191.com
+      - VALIDATION=http
+      - EMAIL=ryan@breaker.rocks
+    volumes:
+      - ./nginx/nginx-prod.conf:/config/nginx/site-confs/default
     depends_on:
       - api-server
       - ui
