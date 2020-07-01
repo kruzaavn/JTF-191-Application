@@ -10,7 +10,7 @@ services:
       - URL=jtf191.com
       - VALIDATION=http
     volumes:
-      - ./nginx/nginx.prod.conf:/config/nginx/site-confs/default
+      - ./nginx/nginx.prod.conf:/config/nginx/site-confs/default:ro
     depends_on:
       - api-server
       - ui
