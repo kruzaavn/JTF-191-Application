@@ -1,11 +1,11 @@
 version: '3.8'
 
 services:
-  nginx:
+  nginx-prod:
     image: linuxserver/letsencrypt
     ports:
-      - "443:443"
       - "80:80"
+      - "443:443"
     environment:
       - URL=jtf191.com
       - VALIDATION=http
