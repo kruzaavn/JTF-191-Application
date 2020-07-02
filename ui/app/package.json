@@ -19,7 +19,6 @@
     "material-design-icons-iconfont": "^5.0.1",
     "milsymbol": "^2.0.0",
     "vue": "^2.6.11",
-    "vue-native-websocket": "^2.0.14",
     "vue-router": "^3.2.0",
     "vuetify": "^2.3.3",
     "vuex": "^3.5.1"
