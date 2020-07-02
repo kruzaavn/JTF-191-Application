@@ -3,43 +3,41 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import About from '../views/About.vue'
 import GCI from '../views/GCI.vue'
-import Squadron from "../views/Squadron";
-import JoinUs from "../views/JoinUs"
-
+import Squadron from '../views/Squadron'
+import JoinUs from '../views/JoinUs'
 
 Vue.use(VueRouter)
 
-  const title_header = 'JTF-191'
+const title_header = 'JTF-191'
 
-  function title(header, title) {
+function title(header, title) {
+  return `${header} - ${title}`
+}
 
-    return `${header} - ${title}`
-  }
-
-  const routes = [
+const routes = [
   {
     path: '/',
     name: 'Home',
     component: Home,
     meta: {
-      title: title(title_header, 'Home')
-    }
+      title: title(title_header, 'Home'),
+    },
   },
   {
     path: '/about',
     name: 'About',
     component: About,
     meta: {
-      title: title(title_header, 'About Us')
-    }
+      title: title(title_header, 'About Us'),
+    },
   },
   {
     path: '/gci',
     name: 'GCI',
     component: GCI,
     meta: {
-      title: title(title_header, 'GCI')
-    }
+      title: title(title_header, 'GCI'),
+    },
   },
   {
     path: '/squadron/:squadronDesignation',
@@ -47,23 +45,21 @@ Vue.use(VueRouter)
     component: Squadron,
     props: true,
     meta: {
-      title: title(title_header,'Squadrons')
-
-    }
+      title: title(title_header, 'Squadrons'),
+    },
   },
-    {
-      path: "/joinus",
-      name: 'JoinUs',
-      component: JoinUs,
-      meta: {
-        title: title(title_header, 'Join Us')
-      }
-
-    }
+  {
+    path: '/joinus',
+    name: 'JoinUs',
+    component: JoinUs,
+    meta: {
+      title: title(title_header, 'Join Us'),
+    },
+  },
 ]
 
 const router = new VueRouter({
-  routes
+  routes,
 })
 
 export default router

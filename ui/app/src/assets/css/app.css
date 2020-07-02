@@ -1,8 +1,8 @@
 a {
-    color: white;
-    text-decoration-line: none;
+  color: white;
+  text-decoration-line: none;
 }
 
 a:hover {
-    text-decoration-line: underline;
+  text-decoration-line: underline;
 }
