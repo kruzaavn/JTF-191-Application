@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-
   ui:
     command: "true" # Have this service do nothing
     restart: "no"
@@ -12,8 +11,7 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      - URL=home.breaker.rocks
+      - URL=jtf191.com
       - VALIDATION=http
-      - STAGING=true
     depends_on:
       - api-server
