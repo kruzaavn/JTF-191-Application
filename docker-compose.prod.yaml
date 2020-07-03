@@ -1,16 +1,19 @@
 version: '3.8'
 
 services:
-  nginx-prod:
-    image: linuxserver/letsencrypt
+
+  ui:
+    command: "true" # Have this service do nothing
+    restart: "no"
+
+  nginx:
+    build: ./ui
     ports:
       - "80:80"
       - "443:443"
     environment:
-      - URL=jtf191.com
+      - URL=home.breaker.rocks
       - VALIDATION=http
-    volumes:
-      - ./nginx/nginx.prod.conf:/config/nginx/site-confs/default:ro
+      - STAGING=true
     depends_on:
       - api-server
-      - ui
