@@ -77,7 +77,7 @@
         <v-row>
             <v-col>
                 <h1> If JTF-171 interests you please go to our
-                    <router-link to="/joinus">recruitment page</router-link>
+                    <router-link to="/joinus">Recruitment Page</router-link>
                 </h1>
             </v-col>
         </v-row>
@@ -95,7 +95,8 @@
                     >
                         <v-img
                                 contain
-                                :src="image">
+                                :src="image"
+                                :height="250">
                         </v-img>
                     </v-carousel-item>
                 </v-carousel>
