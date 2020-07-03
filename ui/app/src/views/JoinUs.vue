@@ -1,7 +1,7 @@
 <template>
     <v-container>
 
-
+        <h1>Join Us</h1>
     </v-container>
 </template>
 
