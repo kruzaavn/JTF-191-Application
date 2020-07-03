@@ -57,6 +57,7 @@ services:
     command: npm run serve
     environment:
       - CHOKIDAR_USEPOLLING=true
+      - DEV_PROXY=api-server
     stdin_open: true
     tty: true
 
