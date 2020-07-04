@@ -2,3 +2,4 @@
 *.idea
 pw.txt
 **/dist
+**/venv
