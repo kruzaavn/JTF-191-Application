@@ -6,12 +6,16 @@ services:
     restart: "no"
 
   nginx:
-    build: ./ui
+    build:
+      dockerfile: ./nginx/dockerfile
+      context: ./
     ports:
       - "80:80"
       - "443:443"
     environment:
+#       For local testing, replace jtf191.com with a domain that points and is forwarded to your host for local dev
       - URL=jtf191.com
       - VALIDATION=http
+#      - STAGING=true # Uncomment this for local testing to prevent rate-limiting (will issue untrusted cert)
     depends_on:
       - api-server

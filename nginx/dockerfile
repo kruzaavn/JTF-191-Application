@@ -1,12 +1,12 @@
 FROM node as build-stage
 
 WORKDIR /ui
-COPY ./app/package*.json /ui/
+COPY ui/app/package*.json /ui/
 RUN npm install
-COPY ./app /ui
+COPY ui/app /ui
 RUN npm run build
 
 FROM linuxserver/letsencrypt as production-stage
 
-COPY nginx.conf /config/nginx/site-confs/default
+COPY nginx/nginx.conf /config/nginx/site-confs/default
 COPY --from=build-stage /ui/dist /config/www
