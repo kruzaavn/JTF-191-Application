@@ -19,7 +19,6 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('',include('ui.urls')),
     path('admin/', admin.site.urls),
     path('api/roster/', include('roster.urls')),
     path('api/gci/', include('gci.urls')),

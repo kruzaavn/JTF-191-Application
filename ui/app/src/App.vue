@@ -54,7 +54,7 @@
           </template>
 
           <v-list-item
-                  v-for="subSquadron in squadrons.filter(squadron => squadron.hq.id === hq.id) "
+                  v-for="subSquadron in squadrons.filter(squadron => squadron.hq && hq.id && squadron.hq.id === hq.id) "
                   :key="subSquadron.id"
                   :to="/squadron/ + subSquadron.designation"
           >
