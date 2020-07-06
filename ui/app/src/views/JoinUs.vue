@@ -1,8 +1,97 @@
 <template>
-    <v-container>
 
+    <v-container>
         <h1>Join Us</h1>
+        <p>Requirements to join the unit</p>
+        <ul>
+            <li>Have headtracking or VR</li>
+            <li>A Hotas</li>
+            <li>Be able to attend a training and mission night each week or let us know that you can not make it</li>
+            <li>Have a good attitude and a willingness to learn</li>
+            <li>Be 18 years or older</li>
+        </ul>
     </v-container>
+
+
+    <v-form>
+        <v-row>
+            <v-col>
+                <v-text-field
+                        v-model="firstname"
+                        :rules="nameRules"
+                        label="First Name"
+                        required
+                >
+
+                </v-text-field>
+            </v-col>
+            <v-col>
+                <v-text-field
+                        v-model="lastname"
+                        :rules="nameRules"
+                        label="Last Name"
+                        required
+                >
+
+                </v-text-field>
+            </v-col>
+            <v-col>
+                <v-text-field
+                        v-model="email"
+                        :rules="emailRules"
+                        label="E-mail"
+                        required
+                >
+
+                </v-text-field>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-text-field
+                        v-model="callsign"
+                        label="Callsign"
+                        required
+                >
+
+                </v-text-field>
+            </v-col>
+            <v-col>
+                <v-text-field
+                        v-model="timezone"
+                        label="Time Zone"
+                        required
+                >
+
+                </v-text-field>
+            </v-col>
+            <v-col>
+                <v-text-field
+                        v-model="hotas"
+
+                        label="Type of Hotas"
+                        required
+                >
+
+                </v-text-field>
+            </v-col>
+            <v-row>
+                <v-col>
+                    <v-text-field
+                            v-model="headtracking"
+
+                            label="Type of Headtracking or VR"
+                            required
+                    >
+
+                    </v-text-field>
+                </v-col>
+
+            </v-row>
+        </v-row>
+
+    </v-form>
+
 </template>
 
 
