@@ -37,3 +37,8 @@ class AviatorAdmin(admin.ModelAdmin):
     list_filter = ('squadron__designation', 'squadron__hq__name')
 
     search_fields = ('callsign',)
+
+
+@admin.register(DCSModules)
+class DCSModuleAdmin(admin.ModelAdmin):
+    pass

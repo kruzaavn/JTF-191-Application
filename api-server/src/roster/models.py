@@ -125,3 +125,12 @@ class Aviator(models.Model):
     def __str__(self):
         return f'{self.callsign}'
 
+
+class DCSModules(models.Model):
+    module_types = ['aircraft', 'map']
+
+    name = models.CharField(max_length=64)
+    module_type = models.CharField(max_length=64, choices=[(x, x) for x in module_types], default=module_types[0])
+
+    def __str__(self):
+        return self.name

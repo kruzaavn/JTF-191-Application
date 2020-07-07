@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from .models import Aviator, Squadron, HQ
-from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer
+from .models import Aviator, Squadron, HQ, DCSModules
+from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, DCSModuleSerializer
 # Create your views here.
 
 
@@ -25,3 +25,8 @@ class SquadronListView(ListCreateAPIView):
 class HQListView(ListCreateAPIView):
     queryset = HQ.objects.all()
     serializer_class = HQSerializer
+
+
+class DCSModuleListView(ListCreateAPIView):
+    queryset = DCSModules.objects.all()
+    serializer_class = DCSModuleSerializer

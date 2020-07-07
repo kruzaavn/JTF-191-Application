@@ -40,3 +40,11 @@ class AviatorSerializer(serializers.ModelSerializer):
         model = Aviator
         exclude = ['first_name', 'last_name', 'user']
         depth = 2
+
+
+class DCSModuleSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = DCSModules
+        fields = '__all__'
+
