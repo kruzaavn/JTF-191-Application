@@ -17,6 +17,11 @@
             <v-list-item-title>About Us</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item to="/joinus">
+          <v-list-item-content>
+            <v-list-item-title>Join Us</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
 
         <v-list-item to="/gci">
           <v-list-item-content>
@@ -32,11 +37,11 @@
           </template>
 
           <v-list-item
-            v-for="subSquadron in squadrons.filter(
+                  v-for="subSquadron in squadrons.filter(
               (squadron) => squadron.hq && hq.id && squadron.hq.id === hq.id
             )"
-            :key="subSquadron.id"
-            :to="/squadron/ + subSquadron.designation"
+                  :key="subSquadron.id"
+                  :to="/squadron/ + subSquadron.designation"
           >
             <v-list-item-content>
               <v-list-item-title>
@@ -59,37 +64,37 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
-import Login from './components/Login'
+  import { mapActions, mapGetters } from 'vuex'
+  import Login from './components/Login'
 
-export default {
-  name: 'Title',
-  components: { Login },
-  props: {
-    source: String,
-  },
-  data: () => ({
-    drawer: false,
-  }),
-  computed: {
-    ...mapGetters(['squadrons', 'hqs']),
-  },
-  methods: {
-    ...mapActions(['getRoster', 'getSquadrons', 'getHQs']),
-  },
-  watch: {
-    $route(to) {
-      document.title = to.meta.title || 'JTF-70'
+  export default {
+    name: 'Title',
+    components: { Login },
+    props: {
+      source: String,
     },
-  },
-  mounted() {
-    this.getRoster()
-    this.getSquadrons()
-    this.getHQs()
-  },
-}
+    data: () => ({
+      drawer: false,
+    }),
+    computed: {
+      ...mapGetters(['squadrons', 'hqs']),
+    },
+    methods: {
+      ...mapActions(['getRoster', 'getSquadrons', 'getHQs']),
+    },
+    watch: {
+      $route(to) {
+        document.title = to.meta.title || 'JTF-70'
+      },
+    },
+    mounted() {
+      this.getRoster()
+      this.getSquadrons()
+      this.getHQs()
+    },
+  }
 </script>
 
 <style lang="scss">
-@import 'src/assets/css/app.scss';
+  @import 'src/assets/css/app.scss';
 </style>
