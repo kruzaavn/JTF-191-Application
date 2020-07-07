@@ -1,16 +1,21 @@
 version: '3.8'
 
 services:
+  ui:
+    command: "true" # Have this service do nothing
+    restart: "no"
+
   nginx:
-    image: linuxserver/letsencrypt
+    build:
+      dockerfile: ./nginx/dockerfile
+      context: ./
     ports:
-      - "443:443"
       - "80:80"
+      - "443:443"
     environment:
+#       For local testing, replace jtf191.com with a domain that points and is forwarded to your host for local dev
       - URL=jtf191.com
       - VALIDATION=http
-    volumes:
-      - ./nginx/nginx.prod.conf:/config/nginx/site-confs/default:ro
+#      - STAGING=true # Uncomment this for local testing to prevent rate-limiting (will issue untrusted cert)
     depends_on:
       - api-server
-      - ui
