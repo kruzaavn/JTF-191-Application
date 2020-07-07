@@ -29,23 +29,26 @@
         <v-card-title primary-title>
           <h2>Login</h2>
         </v-card-title>
+
         <v-card-text>
           <v-form @submit.prevent="submit">
             <v-text-field
               v-model="username"
               prepend-icon="mdi-account"
               label="username"
-            ></v-text-field>
+            />
             <v-text-field
               :prepend-icon="show_password ? 'mdi-eye' : 'mdi-eye-off'"
               v-model="password"
               label="password"
               :type="show_password ? 'text' : 'password'"
               @click:prepend="show_password = !show_password"
-            ></v-text-field>
+            />
           </v-form>
         </v-card-text>
-        <v-divider></v-divider>
+
+        <v-divider />
+
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
@@ -54,8 +57,9 @@
             type="submit"
             value="submit"
             v-on:click="submit"
-            >Login</v-btn
           >
+            Login
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

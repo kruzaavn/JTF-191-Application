@@ -1,20 +1,13 @@
 <template>
-    <v-container>
-
-        <h1>Join Us</h1>
-    </v-container>
+  <v-container>
+    <h1>Join Us</h1>
+  </v-container>
 </template>
 
-
 <script>
-
-    export default {
-        name: 'JoinUs'
-    }
-
+export default {
+  name: 'JoinUs',
+}
 </script>
 
-<style>
-
-
-</style>
+<style></style>
