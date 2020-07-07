@@ -4,7 +4,8 @@ const state = {
 
     rosterList: [],
     squadronList: [],
-    hqs: [1, 2]
+    hqs: [1, 2],
+    dcsModules: [],
 }
 
 const mutations = {
@@ -17,6 +18,9 @@ const mutations = {
     },
     setHQs(state, HQs) {
         state.hqs = HQs
+    },
+    setDcsModules(state, modules) {
+        state.dcsModules = modules
     }
 }
 
@@ -25,9 +29,7 @@ const getters = {
     roster: state => state.rosterList,
     squadrons: state => state.squadronList,
     hqs: state => state.hqs,
-    subSquadrons: (state) => (id) => {
-        return state.squadronList.filter(squadron => squadron.hq.id == id)
-    }
+    dcsModules: state => state.dcsModules,
 }
 
 const actions = {
@@ -44,6 +46,10 @@ const actions = {
         const response = await axios.get('/api/roster/hqs/list/')
         commit('setHQs', response.data)
     },
+    async getDcsModules ({commit}) {
+        const response = await axios.get('/api/roster/modules/list/')
+        commit('setDcsModules', response.data)
+    }
 }
 
 export default {
