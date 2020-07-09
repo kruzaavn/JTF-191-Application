@@ -42,3 +42,8 @@ class AviatorAdmin(admin.ModelAdmin):
 @admin.register(DCSModules)
 class DCSModuleAdmin(admin.ModelAdmin):
     pass
+
+
+@admin.register(ProspectiveAviator)
+class ProspectiveAviatorAdmin(admin.ModelAdmin):
+    search_fields = ('callsign',)

@@ -42,6 +42,13 @@ class AviatorSerializer(serializers.ModelSerializer):
         depth = 2
 
 
+class ProspectiveAviatorSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProspectiveAviator
+        fields = '__all__'
+
+
 class DCSModuleSerializer(serializers.ModelSerializer):
 
     class Meta:
