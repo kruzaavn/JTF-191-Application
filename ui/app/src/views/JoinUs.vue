@@ -21,6 +21,7 @@
                 v-model="age"
                 :rules="[(v) => !!v || 'You must be over the age of 18!']"
                 label="Are you over 18?"
+                required
               ></v-checkbox>
             </v-row>
             <v-row>
@@ -28,6 +29,7 @@
                 v-model="valueStatement"
                 :rules="[(v) => !!v || 'You must read out statement of values']"
                 label="Have you read our Statement of Values?"
+                required
               ></v-checkbox>
             </v-row>
             <v-row>
@@ -39,6 +41,7 @@
                     !!v || 'You must be able to attend content at 2000 EST!',
                 ]"
                 label="Are you able to attend mission nights at 2000 EST?"
+                required
               ></v-checkbox>
             </v-row>
           </v-col>
@@ -110,11 +113,7 @@
           <v-col cols="12" sm="6">
             <v-select
               v-model="joinUsForm.dcs_modules"
-              :items="
-                dcsModules
-                  .filter((x) => x.module_type === 'aircraft')
-                  .map((x) => x.name)
-              "
+              :items="filterModulesByType('aircraft')"
               :menu-props="{ maxHeight: '400' }"
               label="Airframes"
               multiple
@@ -125,11 +124,7 @@
           <v-col cols="12" sm="6">
             <v-select
               v-model="joinUsForm.dcs_modules"
-              :items="
-                dcsModules
-                  .filter((x) => x.module_type === 'map')
-                  .map((x) => x.name)
-              "
+              :items="filterModulesByType('map')"
               :menu-props="{ maxHeight: '400' }"
               label="Maps"
               multiple
@@ -153,30 +148,53 @@
         </v-row>
         <v-row>
           <v-col align="end">
-            <v-btn outlined tile color="Submit">Submit</v-btn>
+            <v-btn
+                    :disabled="!valid"
+                    outlined
+                    tile
+                    color="Submit"
+                    v-on:click="postApplication">Submit</v-btn>
           </v-col>
         </v-row>
       </v-form>
     </div>
     <div id="" v-else>
-      Now you don't
+      <h1>
+        Thank you {{joinUsForm.callsign}}
+      </h1>
+      <p>
+        Your application has been submitted. Watch your email {{joinUsForm.email}} for confirmation and thank you for your interest.
+      </p>
     </div>
   </v-container>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-// import axios from 'axios'
+import axios from 'axios'
 export default {
   name: 'JoinUs',
   computed: {
     ...mapGetters(['dcsModules']),
+
   },
   methods: {
     ...mapActions(['getDcsModules']),
     postApplication: function () {
-      this.submitted = true
+      axios.post('/api/roster/prospective_aviators/detail/', this.joinUsForm)
+              .then(() => this.submitted = true)
+              .catch(response => console.log(response.data))
     },
+    filterModulesByType: function(type) {
+      let modules = this.dcsModules.filter(x => x.module_type === type)
+      let selectable = []
+
+      for (const module of modules) {
+        selectable.push({text: module.name, value: module.id, disabled: false})
+      }
+
+      return selectable
+    }
   },
   mounted() {
     this.getDcsModules()
