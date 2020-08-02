@@ -1,4 +1,5 @@
 from django.core.mail import send_mail
+from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, \
@@ -48,14 +49,23 @@ class ProspectiveAviatorDetailView(CreateAPIView):
         if serializer.is_valid():
             serializer.save()
 
+            subject = f'{serializer.validated_data.get("callsign")} Thanks for submitting a request to join JTF-191'
+            message = f'{serializer.validated_data.get("first_name")} thanks for your submission a recruiter will be ' \
+                      f'in contact shortly'
+            recipient = serializer.validated_data.get("email")
+
             send_mail(
-                'Thanks for submitting a request to join JTF-191',
-                f'{serializer.validated_data.get("callsign")}, \n'
-                f'\t thanks for your submission a recruiter will be in contact '
-                f'shortly',
+                subject,
+                message,
                 'noreply@jtf191.com',
-                [serializer.validated_data.get("email")]
+                [recipient]
             )
+
+            subject = f'New Application from {serializer.validated_data.get("callsign")}'
+            message = f'{serializer.validated_data}'
+            recruiters = User.objects.filter(groups__name='Recruit')
+
+            send_mail(subject, message, 'noreply@jtf191.com', [x.email for x in recruiters])
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -103,7 +103,7 @@ class DCSModules(models.Model):
 class Pilot(models.Model):
     first_name = models.CharField(max_length=1024, default='John')
     last_name = models.CharField(max_length=1024, default='Doe')
-    dcs_modules = models.ManyToManyField(DCSModules)
+    dcs_modules = models.ManyToManyField(DCSModules, blank=True)
     callsign = models.CharField(max_length=1024)
     email = models.EmailField(max_length=1024, blank=True, null=True)
 
