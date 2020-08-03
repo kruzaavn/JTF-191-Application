@@ -158,3 +158,11 @@ class ProspectiveAviator(Pilot):
     hotas = models.CharField(max_length=1024, default='x52')
     about = models.TextField(blank=True, null=True)
     submitted = models.DateTimeField(auto_now_add=True)
+
+    def recruitment_email(self):
+
+        return f'Recruitment application submitted by {self.callsign} on {self.submitted.strftime("%d/%m/%y")}\n' \
+               f'\tHOTAS: {self.hotas}\n' \
+               f'\tTracking: {self.head_tracking}\n' \
+               f'\tDiscord: {self.discord}\n' \
+               f'\tAbout: {self.about}'

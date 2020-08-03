@@ -47,12 +47,12 @@ class ProspectiveAviatorDetailView(CreateAPIView):
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
-            serializer.save()
+            prospective = serializer.save()
 
-            subject = f'{serializer.validated_data.get("callsign")} Thanks for submitting a request to join JTF-191'
-            message = f'{serializer.validated_data.get("first_name")} thanks for your submission a recruiter will be ' \
+            subject = f'{prospective.callsign} Thanks for submitting a request to join JTF-191'
+            message = f'{prospective.first_name} thanks for your submission a recruiter will be ' \
                       f'in contact shortly'
-            recipient = serializer.validated_data.get("email")
+            recipient = prospective.email
 
             send_mail(
                 subject,
@@ -61,11 +61,15 @@ class ProspectiveAviatorDetailView(CreateAPIView):
                 [recipient]
             )
 
-            subject = f'New Application from {serializer.validated_data.get("callsign")}'
-            message = f'{serializer.validated_data}'
+            subject = f'New Application from {prospective.callsign}'
+            message = f'{prospective.recruitment_email()}'
             recruiters = User.objects.filter(groups__name='Recruit')
 
-            send_mail(subject, message, 'noreply@jtf191.com', [x.email for x in recruiters])
+            send_mail(subject,
+                      message,
+                      'noreply@jtf191.com',
+                      [x.email for x in recruiters]
+                      )
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

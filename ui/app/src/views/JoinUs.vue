@@ -8,12 +8,11 @@
         <li>Cockpit visualization, VR headset or Track IR</li>
         <li>Hands on throttle and stick (HOTAS)</li>
         <li>
-          Be able to attend a training and mission night each week or let us
-          know that you can not make it
+          Be able to attend make reqired time commitments, approximately 2-3 nights a week for 2 hours at 8pm Eastern time including a Mission Night on Saturday.
         </li>
-        <li>Have a good attitude and a willingness to learn</li>
+        <li>Have a good attitude and a willingness to learn. <router-link to="/about">see our core values</router-link> </li>
       </ul>
-      <v-form>
+      <v-form ref="form">
         <v-row>
           <v-col>
             <v-row>
@@ -21,7 +20,6 @@
                 v-model="age"
                 :rules="[(v) => !!v || 'You must be over the age of 18!']"
                 label="Are you over 18?"
-                required
               ></v-checkbox>
             </v-row>
             <v-row>
@@ -29,7 +27,6 @@
                 v-model="valueStatement"
                 :rules="[(v) => !!v || 'You must read out statement of values']"
                 label="Have you read our Statement of Values?"
-                required
               ></v-checkbox>
             </v-row>
             <v-row>
@@ -38,10 +35,9 @@
                 v-model="attendance"
                 :rules="[
                   (v) =>
-                    !!v || 'You must be able to attend content at 2000 EST!',
+                    !!v || 'You must be able to make the time commitment',
                 ]"
-                label="Are you able to attend mission nights at 2000 EST?"
-                required
+                label="Are you able make the required time commitment?"
               ></v-checkbox>
             </v-row>
           </v-col>
@@ -51,7 +47,7 @@
             <v-text-field
               v-model="joinUsForm.first_name"
               label="First Name"
-              required
+              :rules="rules.blank"
             >
             </v-text-field>
           </v-col>
@@ -59,7 +55,7 @@
             <v-text-field
               v-model="joinUsForm.last_name"
               label="Last Name"
-              required
+              :rules="rules.blank"
             >
             </v-text-field>
           </v-col>
@@ -68,7 +64,7 @@
               v-model="joinUsForm.email"
               type="email"
               label="E-mail"
-              required
+              :rules="[(v) => v.includes('@') || 'must be an email']"
             >
             </v-text-field>
           </v-col>
@@ -78,7 +74,7 @@
             <v-text-field
               v-model="joinUsForm.callsign"
               label="Callsign"
-              required
+              :rules="rules.blank"
             >
             </v-text-field>
           </v-col>
@@ -86,7 +82,7 @@
             <v-text-field
               v-model="joinUsForm.hotas"
               label="Type of HOTAS"
-              required
+              :rules="rules.blank"
             >
             </v-text-field>
           </v-col>
@@ -94,7 +90,7 @@
             <v-text-field
               v-model="joinUsForm.head_tracking"
               label="Type of Head tracking or VR"
-              required
+              :rules="rules.blank"
             >
             </v-text-field>
           </v-col>
@@ -104,7 +100,7 @@
             <v-text-field
               v-model="joinUsForm.discord"
               label="Discord Name"
-              required
+              :rules="rules.blank"
             >
             </v-text-field>
           </v-col>
@@ -149,7 +145,6 @@
         <v-row>
           <v-col align="end">
             <v-btn
-                    :disabled="!valid"
                     outlined
                     tile
                     color="Submit"
@@ -163,7 +158,7 @@
         Thank you {{joinUsForm.callsign}}
       </h1>
       <p>
-        Your application has been submitted. Watch your email {{joinUsForm.email}} for confirmation and thank you for your interest.
+        Your application has been submitted. Watch your email at <strong>{{joinUsForm.email}}</strong> for an confirmation and thank you for your interest.
       </p>
     </div>
   </v-container>
@@ -181,9 +176,13 @@ export default {
   methods: {
     ...mapActions(['getDcsModules']),
     postApplication: function () {
-      axios.post('/api/roster/prospective_aviators/detail/', this.joinUsForm)
-              .then(() => this.submitted = true)
-              .catch(response => console.log(response.data))
+
+
+        if (this.$refs.form.validate()) {
+          axios.post('/api/roster/prospective_aviators/detail/', this.joinUsForm)
+                  .then(() => this.submitted = true)
+                  .catch(response => console.log(response.data))
+        }
     },
     filterModulesByType: function(type) {
       let modules = this.dcsModules.filter(x => x.module_type === type)
@@ -217,6 +216,9 @@ export default {
     age: false,
     valueStatement: false,
     submitted: false,
+    rules: {
+      'blank': [(v) => v.length > 0 || 'must not be blank']
+    }
   }),
 }
 </script>
