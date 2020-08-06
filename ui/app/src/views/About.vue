@@ -38,7 +38,6 @@
             time and ask yourself if you are enjoying yourself with us and, if
             not, seek measures to change that.
           </li>
-
           <li>
             Rank has its place but it shouldn’t be confused with leadership. One
             of the interesting things about our organization is that we have a
@@ -58,7 +57,6 @@
             viewpoint but each of us owes it to each other to participate in the
             discussion and accept the outcomes.
           </li>
-
           <li>
             Attention to realism. We want to, as much as practicable, replicate
             real-world military units and their operations. We should be
@@ -69,7 +67,6 @@
             experience, however, the military is a large organization with many
             different parts and very few of us experience it all.
           </li>
-
           <li>
             All members must act with integrity. is unfortunate but the reality
             is that we will not always get our way. It is important though that
@@ -79,7 +76,6 @@
         </ol>
       </v-col>
     </v-row>
-
     <v-row>
       <v-col>
         <h1>
@@ -88,7 +84,6 @@
         </h1>
       </v-col>
     </v-row>
-
     <v-row>
       <v-col>
         <v-carousel cycle>

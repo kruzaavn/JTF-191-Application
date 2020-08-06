@@ -1,8 +1,14 @@
-from django.shortcuts import render
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
-from .models import Aviator, Squadron, HQ
-from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer
-# Create your views here.
+from django.core.mail import send_mail
+from django.contrib.auth.models import User
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.generics import ListCreateAPIView, \
+    RetrieveUpdateDestroyAPIView, CreateAPIView
+
+from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator
+
+from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
+    DCSModuleSerializer, ProspectiveAviatorSerializer
 
 
 class AviatorListView(ListCreateAPIView):
@@ -25,3 +31,45 @@ class SquadronListView(ListCreateAPIView):
 class HQListView(ListCreateAPIView):
     queryset = HQ.objects.all()
     serializer_class = HQSerializer
+
+
+class DCSModuleListView(ListCreateAPIView):
+    queryset = DCSModules.objects.all()
+    serializer_class = DCSModuleSerializer
+
+
+class ProspectiveAviatorDetailView(CreateAPIView):
+    queryset = ProspectiveAviator.objects.all()
+    serializer_class = ProspectiveAviatorSerializer
+
+    def create(self, request, *args, **kwargs):
+
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid():
+            prospective = serializer.save()
+
+            subject = f'{prospective.callsign} Thanks for submitting a request to join JTF-191'
+            message = f'{prospective.first_name} thanks for your submission a recruiter will be ' \
+                      f'in contact shortly'
+            recipient = prospective.email
+
+            send_mail(
+                subject,
+                message,
+                'noreply@jtf191.com',
+                [recipient]
+            )
+
+            subject = f'New Application from {prospective.callsign}'
+            message = f'{prospective.recruitment_email()}'
+            recruiters = User.objects.filter(groups__name='Recruit')
+
+            send_mail(subject,
+                      message,
+                      'noreply@jtf191.com',
+                      [x.email for x in recruiters]
+                      )
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -6,7 +6,6 @@
           <v-img :src="squadron.img" contain height="500">
             <v-card-title>{{ squadronDesignation }}</v-card-title>
           </v-img>
-
           <v-card
             class="mx-4 my-5 py-2"
             v-for="member in members"
@@ -14,10 +13,7 @@
             tile
           >
             <v-row>
-              <v-col
-                cols="2
-"
-              >
+              <v-col cols="2">
                 <v-img
                   max-height="150"
                   contain
@@ -60,7 +56,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
 export default {
   name: 'Squadron',
   props: ['squadronDesignation'],

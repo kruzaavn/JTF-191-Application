@@ -5,11 +5,9 @@
       <router-link to="/">
         <v-img contain max-width="130px" src="@/assets/logo.png"> </v-img>
       </router-link>
-
       <v-spacer></v-spacer>
       <Login />
     </v-app-bar>
-
     <v-navigation-drawer v-model="drawer" app>
       <v-list nav dense>
         <v-list-item to="/about">
@@ -17,20 +15,22 @@
             <v-list-item-title>About Us</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-
+        <v-list-item to="/joinus">
+          <v-list-item-content>
+            <v-list-item-title>Join Us</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-list-item to="/gci">
           <v-list-item-content>
             <v-list-item-title>Web GCI</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-
         <v-list-group v-for="hq in hqs" :key="hq.id">
           <template v-slot:activator>
             <v-list-item-content>
               <v-list-item-title>{{ hq.name }}</v-list-item-title>
             </v-list-item-content>
           </template>
-
           <v-list-item
             v-for="subSquadron in squadrons.filter(
               (squadron) => squadron.hq && hq.id && squadron.hq.id === hq.id
@@ -47,7 +47,6 @@
         </v-list-group>
       </v-list>
     </v-navigation-drawer>
-
     <v-main>
       <v-container class="fill-height" fluid>
         <v-row justify="center" align="center">

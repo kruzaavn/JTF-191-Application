@@ -24,7 +24,6 @@
           <v-icon left>mdi-logout</v-icon>{{ userName }}
         </v-btn>
       </template>
-
       <v-card>
         <v-card-title primary-title>
           <h2>Login</h2>
@@ -46,9 +45,7 @@
             />
           </v-form>
         </v-card-text>
-
         <v-divider />
-
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
@@ -68,7 +65,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-
 export default {
   name: 'Login',
   data() {
