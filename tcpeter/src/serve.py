@@ -9,7 +9,7 @@ from tornado.ioloop import IOLoop
 
 
 def log(string):
-    print(f'{datetime.datetime.now()}: {string}')
+    print(f'{datetime.datetime.now()}: {string}', flush=True)
 
 
 class TCPeter(TCPServer):
