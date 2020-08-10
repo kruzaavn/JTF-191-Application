@@ -39,11 +39,40 @@
             <v-card-text>
               <v-row>
                 <v-col>
-                  Air Frame: {{ member.squadron.air_frame.name | upper }} - 50
-                  hrs
+                  <h4>Flight Hours</h4>
+                  <v-simple-table dense>
+                    <thead>
+                      <th>Airframe</th>
+                      <th>Hours</th>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="(hours, airframe) in member.stats.hours"
+                        :key="airframe"
+                      >
+                        <td>{{ airframe }}</td>
+                        <td>{{ hours.toPrecision(1) }}</td>
+                      </tr>
+                    </tbody>
+                  </v-simple-table>
                 </v-col>
                 <v-col>
-                  Kills: Mig-29 - 2
+                  <h4>Kills</h4>
+                  <v-simple-table dense>
+                    <thead>
+                      <th>Victim</th>
+                      <th>Number</th>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="(kills, victims) in member.stats.kills"
+                        :key="victims"
+                      >
+                        <td>{{ victims }}</td>
+                        <td>{{ kills }}</td>
+                      </tr>
+                    </tbody>
+                  </v-simple-table>
                 </v-col>
               </v-row>
             </v-card-text>

@@ -32,6 +32,17 @@ services:
       - api-server
     command: python -u serve.py
 
+  api-relay:
+    restart: always
+    build: ./api-relay
+    ports:
+      - "7225:7225"
+    environment:
+      PORT: 7225
+    depends_on:
+      - api-server
+    command: python -u serve.py
+
   api-server:
     restart: always
     build: ./api-server

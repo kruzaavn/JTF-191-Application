@@ -1,12 +1,20 @@
--- jtf70 export file
--- Initial config Brony 6/15/2020 aleks.kruza@gmail.com
+--[[
 
--- add the following lines to the head of the export file at ~\saved_games\DCS.openbeta\Scripts
--- local lfs = require('lfs')
--- dofile(lfs.writedir() .. [[Mods\Tech\jtf70export\jtf70export.lua]])
+	GCI export file
 
--- Uncomment the line below to log export to file.
+	maintainer Brony aleks.kruza@gmail.com
+
+	Initial config Brony 6/15/2020
+
+	 add the following lines to the head of the export file at ~\saved_games\DCS.openbeta\Scripts
+	local lfs = require('lfs')
+	dofile(lfs.writedir() .. [[Mods\Tech\jtf70export\jtf70export.lua] ])
+]]
+
+
+-- Uncomment the line below to log export to file. Only recommended for debugging
 -- local export_file = io.open(lfs.writedir() .. [[Logs\jtf70export.log]], "w")
+
 local c
 local socket
 local JSON
