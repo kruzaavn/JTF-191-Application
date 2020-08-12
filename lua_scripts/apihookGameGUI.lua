@@ -51,10 +51,6 @@ function Export2Socket(message)
 
 	if c then
 		socket.try(c:send(json .. '\n'))
-
-	else
-		connect_socket()
-		Export2Socket(message)
 	end
 
 end

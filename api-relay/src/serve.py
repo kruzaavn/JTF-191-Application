@@ -21,8 +21,10 @@ class APIRelay(TCPServer):
             try:
                 data = await stream.read_until(b"\n")
                 data = json.loads(data)
-                log(f'{source} {data}')
-                r = requests.post('http://api-server:8000/api/roster/stats/', data=data)
+
+                if data.event != 'keepalive':
+                    log(f'{source} {data}')
+                    r = requests.post('http://api-server:8000/api/roster/stats/', data=data)
 
             except StreamClosedError:
                 log(f'{source} disconnected')
