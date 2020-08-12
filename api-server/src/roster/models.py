@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.postgres.fields import JSONField
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 from datetime import datetime
@@ -141,7 +140,7 @@ class Aviator(Pilot):
     tail_number = models.CharField(max_length=64, blank=True, null=True)
     position_code = models.IntegerField(default=4, validators=[MinValueValidator(1), MaxValueValidator(4)])
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
-    stats = JSONField(default=stats_default)
+    stats = models.JSONField(default=stats_default)
 
     @property
     def rank(self):
