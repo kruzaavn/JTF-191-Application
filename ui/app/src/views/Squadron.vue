@@ -39,40 +39,28 @@
             <v-card-text>
               <v-row>
                 <v-col>
-                  <h4>Flight Hours</h4>
-                  <v-simple-table dense>
-                    <thead>
-                      <th>Airframe</th>
-                      <th>Hours</th>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="(hours, airframe) in member.stats.hours"
-                        :key="airframe"
-                      >
-                        <td>{{ airframe }}</td>
-                        <td>{{ hours.toPrecision(1) }}</td>
-                      </tr>
-                    </tbody>
-                  </v-simple-table>
+                  <h4>
+                    Total Flight Hours
+                    {{ sumTable(member.stats.hours).toPrecision(2) }}
+                  </h4>
+                  <v-data-table
+                    dense
+                    :headers="hoursHeaders"
+                    :items="toHoursTable(member.stats.hours)"
+                  >
+                  </v-data-table>
                 </v-col>
                 <v-col>
-                  <h4>Kills</h4>
-                  <v-simple-table dense>
-                    <thead>
-                      <th>Victim</th>
-                      <th>Number</th>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="(kills, victims) in member.stats.kills"
-                        :key="victims"
-                      >
-                        <td>{{ victims }}</td>
-                        <td>{{ kills }}</td>
-                      </tr>
-                    </tbody>
-                  </v-simple-table>
+                  <h4>
+                    Total kills
+                    {{ sumTable(member.stats.kills).toPrecision(2) }}
+                  </h4>
+                  <v-data-table
+                    dense
+                    :headers="killsHeaders"
+                    :items="toKillsTable(member.stats.kills)"
+                  >
+                  </v-data-table>
                 </v-col>
               </v-row>
             </v-card-text>
@@ -97,6 +85,24 @@ export default {
       5: 'lieutenant_colonel',
       6: 'colonel',
     },
+    hoursHeaders: [
+      {
+        text: 'Airframe',
+        align: 'start',
+        sortable: true,
+        value: 'airframe',
+      },
+      { text: 'Hours', sortable: true, align: 'start', value: 'hours' },
+    ],
+    killsHeaders: [
+      {
+        text: 'Victim',
+        align: 'start',
+        sortable: true,
+        value: 'victim',
+      },
+      { text: 'Number', sortable: true, align: 'start', value: 'number' },
+    ],
   }),
   computed: {
     ...mapGetters(['roster', 'squadrons']),
@@ -114,6 +120,32 @@ export default {
   filters: {
     upper: function (value) {
       return value.toUpperCase()
+    },
+  },
+  methods: {
+    toHoursTable(hours) {
+      let data = []
+
+      for (const airframe in hours) {
+        data.push({ airframe: airframe, hours: hours[airframe].toPrecision(2) })
+      }
+      return data
+    },
+    toKillsTable(kills) {
+      let data = []
+
+      for (const victim in kills) {
+        data.push({ victim: victim, number: kills[victim] })
+      }
+      return data
+    },
+    sumTable(obj) {
+      let data = []
+
+      for (const key in obj) {
+        data.push(obj[key])
+      }
+      return data.reduce((a, b) => a + b, 0)
     },
   },
 }
