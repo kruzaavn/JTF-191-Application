@@ -92,7 +92,7 @@ export default {
         sortable: true,
         value: 'airframe',
       },
-      { text: 'Hours', value: 'hours' },
+      { text: 'Hours', sortable: true, align: 'start', value: 'hours' },
     ],
     killsHeaders: [
       {
@@ -101,7 +101,7 @@ export default {
         sortable: true,
         value: 'victim',
       },
-      { text: 'Number', sortable: true, value: 'number' },
+      { text: 'Number', sortable: true, align: 'start', value: 'number' },
     ],
   }),
   computed: {
