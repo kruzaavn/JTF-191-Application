@@ -1,7 +1,0 @@
-FROM node
-
-COPY app ui
-
-WORKDIR /ui/
-
-RUN npm install

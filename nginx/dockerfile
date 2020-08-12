@@ -1,4 +1,12 @@
-FROM nginx
+FROM node as build-stage
 
-RUN rm /etc/nginx/conf.d/default.conf
-COPY nginx.conf /etc/nginx/conf.d
+WORKDIR /ui
+COPY ui/app/package*.json /ui/
+RUN npm install
+COPY ui/app /ui
+RUN npm run build
+
+FROM linuxserver/letsencrypt as production-stage
+
+COPY nginx/nginx.conf /config/nginx/site-confs/default
+COPY --from=build-stage /ui/dist /config/www

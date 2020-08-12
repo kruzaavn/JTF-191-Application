@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.fields import JSONField
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 from datetime import datetime
@@ -108,10 +109,40 @@ class Event(models.Model):
         return f'{self.start} - {self.type}'
 
 
-class Aviator(models.Model):
+class DCSModules(models.Model):
+    module_types = ['aircraft', 'map']
+
+    name = models.CharField(max_length=64)
+    module_type = models.CharField(max_length=64, choices=[(x, x) for x in module_types], default=module_types[0])
+
+    def __str__(self):
+        return self.name
+
+
+class Pilot(models.Model):
+    first_name = models.CharField(max_length=1024, default='John')
+    last_name = models.CharField(max_length=1024, default='Doe')
+    dcs_modules = models.ManyToManyField(DCSModules, blank=True)
+    callsign = models.CharField(max_length=1024)
+    email = models.EmailField(max_length=1024, blank=True, null=True)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return f'{self.callsign}'
+
+
+def stats_default():
+    return {"hours": {}, "kills": {}}
+
+
+class Aviator(Pilot):
 
     """
-    aviator table
+    aviator table inherits from abstract pilot table
+
+    this table keep tracks of members who have joined the task force
     """
 
     # constants
@@ -119,9 +150,6 @@ class Aviator(models.Model):
     positions = ['co', 'xo', 'opso']
 
     # fields
-    first_name = models.CharField(max_length=1024, default='John')
-    last_name = models.CharField(max_length=1024, default='Doe')
-    callsign = models.CharField(max_length=1024)
     squadron = models.ForeignKey(Squadron, on_delete=models.SET_NULL, blank=True, null=True)
     pilot = models.BooleanField(default=True)
     date_joined = models.DateField(default=datetime.now)
@@ -132,6 +160,7 @@ class Aviator(models.Model):
     position_code = models.IntegerField(default=4, validators=[MinValueValidator(1), MaxValueValidator(4)])
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     events = models.ManyToManyField(Event, blank=True)
+    stats = JSONField(default=stats_default)
 
     @property
     def rank(self):
@@ -141,6 +170,24 @@ class Aviator(models.Model):
     def position(self):
         return self.squadron.hq.service_position_table[self.position_code]
 
-    def __str__(self):
-        return f'{self.callsign}'
 
+class ProspectiveAviator(Pilot):
+
+    """
+    prospective aviator table inherits from abstract pilot table
+
+    this table keeps track of prospective members to the task force
+    """
+    discord = models.CharField(max_length=1024, blank=True, null=True)
+    head_tracking = models.CharField(max_length=1024, default='Track IR')
+    hotas = models.CharField(max_length=1024, default='x52')
+    about = models.TextField(blank=True, null=True)
+    submitted = models.DateTimeField(auto_now_add=True)
+
+    def recruitment_email(self):
+
+        return f'Recruitment application submitted by {self.callsign} on {self.submitted.strftime("%d/%m/%y")}\n' \
+               f'\tHOTAS: {self.hotas}\n' \
+               f'\tTracking: {self.head_tracking}\n' \
+               f'\tDiscord: {self.discord}\n' \
+               f'\tAbout: {self.about}'

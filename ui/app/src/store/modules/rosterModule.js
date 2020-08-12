@@ -1,12 +1,12 @@
 import axios from 'axios'
 
 const state = {
-
     rosterList: [],
     squadronList: [],
     hqs: [],
+    dcsModules: [],
     myAviator: {},
-    
+
 }
 
 const mutations = {
@@ -22,46 +22,51 @@ const mutations = {
     },
     setMyAviator(state, aviator) {
         state.myAviator = aviator
-    }
+    },
+    setDcsModules(state, modules) {
+        state.dcsModules = modules
+  },
 }
 
 const getters = {
-
-    roster: state => state.rosterList,
-    squadrons: state => state.squadronList,
-    hqs: state => state.hqs,
-    myAviator: state => state.myAviator
-
+  roster: (state) => state.rosterList,
+  squadrons: (state) => state.squadronList,
+  hqs: (state) => state.hqs,
+  dcsModules: (state) => state.dcsModules,
+  myAviator: state => state.myAviator
 }
 
 const actions = {
-
-    async getRoster ({ commit }) {
-        const response = await axios.get('/api/roster/aviators/list')
-        commit('setRoster', response.data)
-    },
-    async getSquadrons ({ commit }) {
-        const response = await axios.get('/api/roster/squadrons/list')
-        commit('setSquadrons', response.data)
-    },
-    async getHQs ({ commit }) {
-        const response = await axios.get('/api/roster/hqs/list/')
-        commit('setHQs', response.data)
-    },
+  async getRoster({ commit }) {
+    const response = await axios.get('/api/roster/aviators/list')
+    commit('setRoster', response.data)
+  },
+  async getSquadrons({ commit }) {
+    const response = await axios.get('/api/roster/squadrons/list')
+    commit('setSquadrons', response.data)
+  },
+  async getHQs({ commit }) {
+    const response = await axios.get('/api/roster/hqs/list/')
+    commit('setHQs', response.data)
+  },
+  async getDcsModules({ commit }) {
+    const response = await axios.get('/api/roster/modules/list/')
+    commit('setDcsModules', response.data)
+  },
     async getMyAviator({commit, rootGetters}) {
 
-        // dispatch('refreshJWT')
-        
-        const response = await axios.get(
-            `/api/roster/aviators/detail/${rootGetters.jwtData.user_id}/`,
+    // dispatch('refreshJWT')
+
+    const response = await axios.get(
+        `/api/roster/aviators/detail/${rootGetters.jwtData.user_id}/`,
         )
-        commit('setMyAviator', response.data)
+    commit('setMyAviator', response.data)
     }
 }
 
 export default {
-    state,
-    mutations,
-    getters,
-    actions
+  state,
+  mutations,
+  getters,
+  actions,
 }
