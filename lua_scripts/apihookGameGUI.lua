@@ -23,7 +23,7 @@ package.cpath = package.cpath..";"..lfs.currentdir().."LuaSocket\\?.dll"
 local c = nil
 local socket = require('socket')
 JSON = require('JSON')
-local host = 'localhost'  -- change to tcpeter application dns name or ip
+local host = 'www.jtf191.com'  -- change to tcpeter application dns name or ip
 local port = 7225  -- change to tcpeter app port
 
 function connect_socket()
@@ -31,7 +31,8 @@ function connect_socket()
 	if not c then
 		dcs_log('connecting to ' .. host .. ' ' .. port)
 		c = socket.try(socket.connect(host, port)) -- connect to the listener socket
-		c:setoption("tcp-nodelay",true) -- set immediate transmission mode
+		c:setoption("tcp-nodelay", true) -- set immediate transmission mode
+		c:setoption("keepalive", true) -- set immediate transmission mode
 	end
 end
 
@@ -50,6 +51,10 @@ function Export2Socket(message)
 
 	if c then
 		socket.try(c:send(json .. '\n'))
+
+	else
+		connect_socket()
+		Export2Socket(message)
 	end
 
 end
@@ -136,6 +141,12 @@ function callbacks.onPlayerStop(id)
 
 end
 
+function callbacks.onSimulationFrame()
+
+	--Export2Socket()
+
+
+end
 -- register callbacks to the DCS environment
 DCS.setUserCallbacks(callbacks)
 
