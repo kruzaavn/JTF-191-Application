@@ -14,17 +14,18 @@ def log(string):
 class APIRelay(TCPServer):
 
     async def handle_stream(self, stream, address):
-        log(f'connected to {address[0]}')
+        source = f'{address[0]}:{address[1]}'
+        log(f'connected to {source}')
 
         while True:
             try:
                 data = await stream.read_until(b"\n")
                 data = json.loads(data)
-                log(data)
+                log(f'{source} {data}')
                 r = requests.post('http://api-server:8000/api/roster/stats/', data=data)
 
             except StreamClosedError:
-                log(f'{address[0]} disconnected')
+                log(f'{source} disconnected')
                 break
 
 
