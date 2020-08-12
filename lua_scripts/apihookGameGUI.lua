@@ -70,6 +70,8 @@ end
 
 
 local callbacks = {}
+callbacks.keepalive_interval = 5
+callbacks.keepalive_sent = false
 
 function callbacks.onSimulationStart()
 
@@ -143,8 +145,21 @@ end
 
 function callbacks.onSimulationFrame()
 
-	--Export2Socket()
+	local check_time = math.floor(DCS.getRealTime()) % callbacks.keepalive_interval
 
+	if (check_time == 0 and not callbacks.keepalive_sent) then
+
+		local event = {}
+		event.event = 'keepalive'
+		event.time = DCS.getRealTime()
+		Export2Socket(event)
+		callbacks.keepalive_sent = true
+
+	elseif (check_time ~= 0 and callbacks.keepalive_sent ) then
+
+		callbacks.keepalive_sent = false
+
+	end
 
 end
 -- register callbacks to the DCS environment
