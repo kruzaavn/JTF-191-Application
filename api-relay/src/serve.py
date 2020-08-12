@@ -22,7 +22,9 @@ class APIRelay(TCPServer):
                 data = await stream.read_until(b"\n")
                 data = json.loads(data)
 
-                if data.event != 'keepalive':
+                event = data.get('event')
+
+                if not event or event != 'keepalive':
                     log(f'{source} {data}')
                     r = requests.post('http://api-server:8000/api/roster/stats/', data=data)
 
