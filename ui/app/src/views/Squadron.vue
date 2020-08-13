@@ -4,7 +4,13 @@
       <v-col>
         <v-card class="py-4" tile>
           <v-img :src="squadron.img" contain height="500">
-            <v-card-title>{{ squadronDesignation }}</v-card-title>
+            <v-card-title>
+              Name: {{ squadron.name }} <br />
+              Designation: {{ squadron.designation }} <br />
+              Aircraft: {{ squadron.air_frame.name }} <br />
+              Callsign: {{ squadron.callsign.toUpperCase() }} <br />
+              Aviators: {{ members.length }}
+            </v-card-title>
           </v-img>
           <v-card
             class="mx-4 my-5 py-2"
@@ -30,6 +36,9 @@
                   {{ member.rank }} {{ member.callsign }} {{ member.position }}
                 </v-card-title>
                 <v-card-subtitle>
+                  {{ member.squadron.tri_code }}{{ member.division }}-{{
+                    member.division_position
+                  }}|{{ member.callsign }}|{{ member.tail_number }} <br />
                   Aircraft: {{ member.tail_number }} <br />
                   On board since {{ member.date_joined }} <br />
                   Status: {{ member.status }}

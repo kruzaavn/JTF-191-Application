@@ -9,13 +9,6 @@ class HQSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class AirFrameSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = AirFrame
-        fields = '__all__'
-
-
 class SquadronSerializer(serializers.ModelSerializer):
 
     class Meta:
