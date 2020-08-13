@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   name: 'Squadron',
   props: ['squadronDesignation'],
@@ -123,7 +123,6 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['getRoster']),
     toHoursTable(hours) {
       let data = []
 
@@ -148,10 +147,7 @@ export default {
       }
       return data.reduce((a, b) => a + b, 0)
     },
-  },
-  mounted() {
-    this.getRoster()
-  },
+  }
 }
 </script>
 
