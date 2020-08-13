@@ -145,11 +145,18 @@ class Aviator(Pilot):
 
     @property
     def rank(self):
-        return self.squadron.hq.service_rank_table[self.rank_code]
+        if self.squadron:
+            return self.squadron.hq.service_rank_table[self.rank_code]
+        else:
+            return
 
     @property
     def position(self):
-        return self.squadron.hq.service_position_table[self.position_code]
+
+        if self.squadron:
+            return self.squadron.hq.service_position_table[self.position_code]
+        else:
+            return
 
 
 class ProspectiveAviator(Pilot):
