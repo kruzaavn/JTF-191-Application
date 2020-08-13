@@ -9,11 +9,6 @@ class HQAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(AirFrame)
-class AirFrameAdmin(admin.ModelAdmin):
-    pass
-
-
 @admin.register(Squadron)
 class SquadronAdmin(admin.ModelAdmin):
     list_display = ('name', 'designation', 'get_hq')

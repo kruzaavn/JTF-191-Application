@@ -43,17 +43,14 @@ class HQ(models.Model):
         return f'{self.name}'
 
 
-class AirFrame(models.Model):
+class DCSModules(models.Model):
+    module_types = ['aircraft', 'map']
 
-    """
-    airframe table
-    """
-
-    # fields
     name = models.CharField(max_length=64)
+    module_type = models.CharField(max_length=64, choices=[(x, x) for x in module_types], default=module_types[0])
 
     def __str__(self):
-        return f'{self.name}'
+        return self.name
 
 
 class Squadron(models.Model):
@@ -68,9 +65,11 @@ class Squadron(models.Model):
     name = models.CharField(max_length=1024)
     designation = models.CharField(max_length=1024)
     type = models.CharField(max_length=1024, choices=[(x, x) for x in types], default=types[0])
-    air_frame = models.ForeignKey(AirFrame, on_delete=models.SET_NULL, blank=True, null=True)
+    air_frame = models.ForeignKey(DCSModules, on_delete=models.SET_NULL, blank=True, null=True)
     hq = models.ForeignKey(HQ, on_delete=models.SET_NULL, blank=True, null=True)
     img = models.ImageField(upload_to='squadrons')
+    callsign = models.CharField(max_length=1024, default='None')
+    tri_code = models.CharField(max_length=3, default='NCS')
 
     def __str__(self):
         return f'{self.name} - {self.designation}'
@@ -89,16 +88,6 @@ class Operation(models.Model):
 
     def __str__(self):
         return f'{self.name}'
-
-
-class DCSModules(models.Model):
-    module_types = ['aircraft', 'map']
-
-    name = models.CharField(max_length=64)
-    module_type = models.CharField(max_length=64, choices=[(x, x) for x in module_types], default=module_types[0])
-
-    def __str__(self):
-        return self.name
 
 
 class Pilot(models.Model):
@@ -129,7 +118,9 @@ class Aviator(Pilot):
 
     # constants
     statuses = ['active', 'extended loa', 'reserve']
-    positions = ['co', 'xo', 'opso']
+    positions = ['co', 'xo', 'opso', '']
+    rank_helper = {i + 1: f'O-{i+1}' for i, x in enumerate(range(6))}
+    position_helper = {i + 1: x for i, x in enumerate(positions)}
 
     # fields
     squadron = models.ForeignKey(Squadron, on_delete=models.SET_NULL, blank=True, null=True)
@@ -137,11 +128,17 @@ class Aviator(Pilot):
     date_joined = models.DateField(default=datetime.now)
     status = models.CharField(choices=[(x, x) for x in statuses], default=statuses[0], max_length=128)
     operations = models.ManyToManyField(Operation, blank=True)
-    rank_code = models.IntegerField(default=1, validators=[MinValueValidator(1), MaxValueValidator(6)])
+    rank_code = models.IntegerField(default=1,
+                                    validators=[MinValueValidator(1), MaxValueValidator(6)],
+                                    help_text=f'{rank_helper}')
     tail_number = models.CharField(max_length=64, blank=True, null=True)
-    position_code = models.IntegerField(default=4, validators=[MinValueValidator(1), MaxValueValidator(4)])
+    position_code = models.IntegerField(default=4,
+                                        validators=[MinValueValidator(1), MaxValueValidator(4)],
+                                        help_text=f'{position_helper}')
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     stats = JSONField(default=stats_default)
+    division = models.IntegerField(default=4, validators=[MinValueValidator(1), MaxValueValidator(4)])
+    division_position = models.IntegerField(default=4, validators=[MinValueValidator(1), MaxValueValidator(4)])
 
     @property
     def rank(self):
