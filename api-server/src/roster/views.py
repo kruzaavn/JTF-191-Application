@@ -97,8 +97,15 @@ class StatsView(APIView):
             aviator = aviators[0]
 
             if event_name == 'takeoff':
+
                 aviator.stats['departure'] = {'airframe': request.data.get('airframe'),
                                               'time': time}
+
+            elif event_name == 'connect':
+
+                if aviator.stats['departure']:
+
+                    aviator.stats.pop('departure')
 
             elif event_name in ['landing', 'pilot_death', 'eject', 'change_slot'] and aviator.stats.get('departure'):
 
