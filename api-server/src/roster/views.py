@@ -83,7 +83,6 @@ class StatsView(APIView):
         airframe and simtime in second from start
     """
 
-
     def post(self, request, format=None):
         event_name = request.data.get('event')
         callsign = request.data.get('callsign')
@@ -98,7 +97,6 @@ class StatsView(APIView):
             aviator = aviators[0]
 
             if event_name == 'takeoff':
-
                 aviator.stats['departure'] = {'airframe': request.data.get('airframe'),
                                               'time': time}
 
@@ -108,10 +106,10 @@ class StatsView(APIView):
 
                 flight_time = (time - departure['time']) / 3600
 
-                if departure['airframe'] in aviator.stats['hours'].keys():
+                if departure['airframe'] in aviator.stats['hours'].keys() and flight_time > 0:
                     aviator.stats['hours'][departure['airframe']] = aviator.stats['hours'][departure['airframe']] + \
                                                                     flight_time
-                else:
+                elif flight_time > 0:
                     aviator.stats['hours'][departure['airframe']] = flight_time
 
             elif event_name in ['kill']:
@@ -120,10 +118,10 @@ class StatsView(APIView):
 
                 previous_kills = aviator.stats['kills'].get(victim, 0)
 
-                if previous_kills:
+                if previous_kills and victim:
                     aviator.stats['kills'][victim] += 1
 
-                else:
+                elif victim:
                     aviator.stats['kills'][victim] = 1
 
             aviator.save()
