@@ -156,7 +156,7 @@ export default {
       }
       return data.reduce((a, b) => a + b, 0)
     },
-  }
+  },
 }
 </script>
 
