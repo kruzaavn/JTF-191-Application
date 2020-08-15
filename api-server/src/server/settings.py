@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import pathlib
+import json
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -160,11 +162,14 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+EMAIL_SECRET = json.loads(
+    pathlib.Path(BASE_DIR).joinpath('cred.json').read_text()
+)
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = SERVER_EMAIL = '191noreply@gmail.com'
-EMAIL_HOST_PASSWORD = 'Admin4root'
+EMAIL_HOST_USER = SERVER_EMAIL = EMAIL_SECRET.get('host', 'test@test.com')
+EMAIL_HOST_PASSWORD = EMAIL_SECRET.get('password')
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
