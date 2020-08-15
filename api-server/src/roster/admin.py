@@ -42,3 +42,10 @@ class DCSModuleAdmin(admin.ModelAdmin):
 @admin.register(ProspectiveAviator)
 class ProspectiveAviatorAdmin(admin.ModelAdmin):
     search_fields = ('callsign',)
+
+
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
+    list_display = ('name', 'start', 'end')
+
+    search_fields = ('start',)

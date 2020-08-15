@@ -6,10 +6,10 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView, \
     RetrieveUpdateDestroyAPIView, CreateAPIView
 
-from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator
+from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator, Event
 
 from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
-    DCSModuleSerializer, ProspectiveAviatorSerializer
+    DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer
 
 
 class AviatorListView(ListCreateAPIView):
@@ -137,3 +137,9 @@ class StatsView(APIView):
 
         else:
             return Response( status=status.HTTP_400_BAD_REQUEST)
+
+
+class EventListView(ListCreateAPIView):
+
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
