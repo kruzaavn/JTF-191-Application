@@ -8,7 +8,8 @@
 
 	add the following lines to the head of the export file at ~\saved_games\DCS.openbeta\Scripts
 	local lfs = require('lfs')
-	dofile(lfs.writedir() .. [[Mods\Tech\cgiexport\gciexport.lua] ])
+	dofile(lfs.writedir() .. \[\[Mods\Tech\gciexport\gciexport.lua\]\])
+
 ]]
 
 
