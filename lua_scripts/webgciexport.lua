@@ -6,19 +6,17 @@
 
 	Initial config Brony 6/15/2020
 
-	 add the following lines to the head of the export file at ~\saved_games\DCS.openbeta\Scripts
+	add the following lines to the head of the export file at ~\saved_games\DCS.openbeta\Scripts
 	local lfs = require('lfs')
-	dofile(lfs.writedir() .. [[Mods\Tech\jtf70export\jtf70export.lua] ])
+	dofile(lfs.writedir() .. \[\[Mods\Tech\gciexport\gciexport.lua\]\])
+
 ]]
 
-
--- Uncomment the line below to log export to file. Only recommended for debugging
--- local export_file = io.open(lfs.writedir() .. [[Logs\jtf70export.log]], "w")
 
 local c
 local socket
 local JSON
-local host = 'localhost'  -- change to tcpeter application dns name or ip
+local host = 'www.jtf191.com'  -- change to tcpeter application dns name or ip
 local port = 7224  -- change to tcpeter app port
 
 package.path  = package.path..";"..lfs.currentdir().."/LuaSocket/?.lua" .. ';' ..lfs.currentdir().. '/Scripts/?.lua'
@@ -38,16 +36,8 @@ function Export2Socket(message)
 
 end
 
-function Export2File(message)
-
-	if export_file then
-		export_file:write(message .. '\n')
-	end
-
-end
-
-
 function ExportWorldObjects(t)
+
 	local o = LoGetWorldObjects()
 	local message
 	local json
@@ -58,11 +48,9 @@ function ExportWorldObjects(t)
 
 		message = string.format('{"%d":{"sim_time": %f, "states": %s}}',k, t, json)
 
-        Export2File(message)
 		Export2Socket(message)
 
 	end
-
 
 end
 
@@ -73,6 +61,7 @@ function connect_socket()
 		c = socket.try(socket.connect(host, port)) -- connect to the listener socket
 		c:setoption("tcp-nodelay",true) -- set immediate transmission mode
 	end
+
 end
 
 
@@ -81,15 +70,6 @@ function disconnect_socket()
 	if c then
 		c:close()
 		c = nil
-	end
-
-end
-
-
-function close_export_file()
-	if export_file then
-		export_file:close()
-		export_file = nil
 	end
 
 end
@@ -104,8 +84,8 @@ function LuaExportStart()
 	connect_socket()
 
 	message = JSON:encode(cfg)
-	Export2File(message)
 	Export2Socket(message)
+
 end
 
 
@@ -121,12 +101,15 @@ function LuaExportActivityNextEvent(t)
 	-- export functions
 		ExportWorldObjects(t)
 	end
+
 	return tNext
+
 end
 
 
 function LuaExportStop()
+
 -- disconnect socket
-    close_export_file()
     disconnect_socket()
+
 end

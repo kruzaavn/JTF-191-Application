@@ -15,13 +15,14 @@ def log(string):
 class TCPeter(TCPServer):
 
     async def handle_stream(self, stream, address):
-        log(f'connected to {address[0]}')
+        source = f'{address[0]}:{address[1]}'
+        log(f'connected to {source}')
 
         connection_config = json.loads(await stream.read_until(b"\n"))
 
-        log(f"registering connection {connection_config['name']} for {address[0]}")
+        log(f"registering connection {connection_config['name']} for {source}")
 
-        r = requests.post('http://api-server:8000/api/gci/server/detail',
+        r = requests.post('http://api-server:8000/api/gci/server/detail/',
                           data={'name': connection_config['name'].replace(' ', '_'),
                                 'ip': address[0]})
 
@@ -40,7 +41,7 @@ class TCPeter(TCPServer):
                 except StreamClosedError:
                     break
         else:
-            log(f"unable to register {connection_config['name']} for {address[0]}")
+            log(f"unable to register {connection_config['name']} for {source}")
 
 
 if __name__ == '__main__':
