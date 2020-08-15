@@ -25,6 +25,11 @@
             <v-list-item-title>Web GCI</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item to="/schedule">
+          <v-list-item-content>
+            <v-list-item-title>Flight Schedule</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-list-group v-for="hq in hqs" :key="hq.id">
           <template v-slot:activator>
             <v-list-item-content>

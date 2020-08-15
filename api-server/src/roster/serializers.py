@@ -48,3 +48,15 @@ class DCSModuleSerializer(serializers.ModelSerializer):
         model = DCSModules
         fields = '__all__'
 
+
+class EventSerializer(serializers.ModelSerializer):
+
+    time_format = "%Y-%m-%d %H:%M"
+
+    start = serializers.DateTimeField(format=time_format)
+    end = serializers.DateTimeField(format=time_format)
+
+    class Meta:
+        model = Event
+        fields = '__all__'
+        depth = 1

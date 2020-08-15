@@ -25,6 +25,7 @@ urlpatterns = [
     path('stats/', StatsView.as_view()),
     path('squadrons/list/', SquadronListView.as_view()),
     path('hqs/list/', HQListView.as_view()),
-    path('modules/list/', DCSModuleListView.as_view())
+    path('modules/list/', DCSModuleListView.as_view()),
+    path('event/list/', EventListView.as_view())
 
 ]

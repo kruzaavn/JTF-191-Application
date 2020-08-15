@@ -176,3 +176,24 @@ class ProspectiveAviator(Pilot):
                f'\tTracking: {self.head_tracking}\n' \
                f'\tDiscord: {self.discord}\n' \
                f'\tAbout: {self.about}'
+
+
+class Event(models.Model):
+
+    """
+    event table
+
+    this table tracks scheduled events
+    """
+
+    types = ['operation', 'training', 'admin']
+
+    start = models.DateTimeField()
+    end = models.DateTimeField()
+    name = models.CharField(max_length=1024)
+    description = models.TextField(blank=True, null=True)
+    required_squadrons = models.ManyToManyField(Squadron, blank=True)
+    type = models.CharField(default=types[0], max_length=1024, choices=[(x, x) for x in types])
+
+    def __str___(self):
+        return f'{self.name}'

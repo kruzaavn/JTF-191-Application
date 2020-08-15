@@ -5,6 +5,7 @@ const state = {
   squadronList: [],
   hqs: [],
   dcsModules: [],
+  schedule: [],
 }
 
 const mutations = {
@@ -20,6 +21,9 @@ const mutations = {
   setDcsModules(state, modules) {
     state.dcsModules = modules
   },
+  setSchedule(state, schedule) {
+    state.schedule = schedule
+  },
 }
 
 const getters = {
@@ -27,6 +31,7 @@ const getters = {
   squadrons: (state) => state.squadronList,
   hqs: (state) => state.hqs,
   dcsModules: (state) => state.dcsModules,
+  schedule: (state) => state.schedule,
 }
 
 const actions = {
@@ -45,6 +50,10 @@ const actions = {
   async getDcsModules({ commit }) {
     const response = await axios.get('/api/roster/modules/list/')
     commit('setDcsModules', response.data)
+  },
+  async getSchedule({ commit }) {
+    const response = await axios.get('api/roster/event/list/')
+    commit('setSchedule', response.data)
   },
 }
 

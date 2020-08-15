@@ -5,6 +5,7 @@ import About from '../views/About.vue'
 import GCI from '../views/GCI.vue'
 import Squadron from '../views/Squadron'
 import JoinUs from '../views/JoinUs'
+import Schedule from '@/views/Schedule'
 
 Vue.use(VueRouter)
 
@@ -54,6 +55,14 @@ const routes = [
     component: JoinUs,
     meta: {
       title: title(title_header, 'Join Us'),
+    },
+  },
+  {
+    path: '/schedule',
+    name: 'Schedule',
+    component: Schedule,
+    meta: {
+      title: title(title_header, 'Schedule'),
     },
   },
 ]
