@@ -47,6 +47,8 @@ class TCPeter(TCPServer):
                         log(f'unregistered {connection_config["name"]} for {source}')
                     else:
                         log(f'error unregistering {connection_config["name"]} for {source}')
+
+                    break
         else:
             log(f"unable to register {connection_config['name']} for {source}")
 
