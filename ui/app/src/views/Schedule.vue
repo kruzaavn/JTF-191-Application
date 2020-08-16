@@ -24,8 +24,47 @@
             color="primary"
             event-more
             :event-color="eventColor"
+            @click:event="showEvent"
             v-model="value"
           ></v-calendar>
+          <v-menu
+            v-model="selectedOpen"
+            :close-on-content-click="false"
+            :activator="selectedElement"
+            min-width="400px"
+            offset-x
+            tile
+          >
+            <v-card color="grey lighten-4" min-width="400px" tile>
+              <v-toolbar :color="eventColor(selectedEvent)" dark>
+                <v-toolbar-title
+                  >{{ selectedEvent.type }}:
+                  {{ selectedEvent.name }}</v-toolbar-title
+                >
+                <v-spacer></v-spacer>
+              </v-toolbar>
+              <v-card-text>
+                <p>{{ selectedEvent.description }}</p>
+              </v-card-text>
+              <v-list color="grey lighten-4" dense>
+                <v-subheader>Required Squadrons</v-subheader>
+                <v-list-item
+                  v-for="squadron in selectedEvent.required_squadrons"
+                  :key="squadron.id"
+                  ><v-list-item-subtitle
+                    v-text="squadron.designation"
+                    class="text-caption my-1"
+                  >
+                  </v-list-item-subtitle>
+                </v-list-item>
+              </v-list>
+              <v-card-actions>
+                <v-btn text color="secondary" @click="selectedOpen = false">
+                  Close
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-menu>
         </v-sheet>
       </v-col>
     </v-row>
@@ -40,6 +79,9 @@ export default {
   name: 'Schedule',
   data: () => ({
     value: '',
+    selectedEvent: {},
+    selectedElement: null,
+    selectedOpen: false,
   }),
 
   computed: {
@@ -62,10 +104,21 @@ export default {
     next() {
       this.$refs.calendar.next()
     },
-    today() {
-      const date = new Date()
+    showEvent({ nativeEvent, event }) {
+      const open = () => {
+        this.selectedEvent = event
+        this.selectedElement = nativeEvent.target
+        setTimeout(() => (this.selectedOpen = true), 10)
+      }
 
-      return `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`
+      if (this.selectedOpen) {
+        this.selectedOpen = false
+        setTimeout(open, 10)
+      } else {
+        open()
+      }
+
+      nativeEvent.stopPropagation()
     },
   },
   mounted() {
