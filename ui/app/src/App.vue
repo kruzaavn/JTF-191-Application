@@ -73,7 +73,7 @@ export default {
     source: String,
   },
   data: () => ({
-    drawer: false,
+    drawer: true,
   }),
   computed: {
     ...mapGetters(['squadrons', 'hqs']),
