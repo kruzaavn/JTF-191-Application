@@ -39,7 +39,7 @@
               <v-toolbar :color="eventColor(selectedEvent)" dark>
                 <v-toolbar-title
                   >{{ selectedEvent.type | capitalize }}:
-                  {{ selectedEvent.name }}</v-toolbar-title
+                  {{ selectedEvent.name | capitalize }}</v-toolbar-title
                 >
                 <v-spacer></v-spacer>
               </v-toolbar>
