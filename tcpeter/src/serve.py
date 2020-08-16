@@ -41,7 +41,7 @@ class TCPeter(TCPServer):
 
                 except StreamClosedError:
 
-                    r = requests.delete(f'http://api-server:8000/api/gci/server/detail/{registered_server["id"]}/')
+                    r = await self.deregister(registered_server['id'])
 
                     if r.status_code == 204:
                         log(f'unregistered {connection_config["name"]} for {source}')
@@ -49,6 +49,10 @@ class TCPeter(TCPServer):
                         log(f'error unregistering {connection_config["name"]} for {source}')
         else:
             log(f"unable to register {connection_config['name']} for {source}")
+
+    async def deregister(self, id):
+
+        return requests.delete(f'http://api-server:8000/api/gci/server/detail/{id}/')
 
 
 if __name__ == '__main__':
