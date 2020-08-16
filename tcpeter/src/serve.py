@@ -39,7 +39,7 @@ class TCPeter(TCPServer):
                     await websocket.write_message(json.dumps(message))
 
                 except StreamClosedError:
-                    break
+                    requests.delete('http://api-server:8000/api/gci/server/detail/', data=r.json())
         else:
             log(f"unable to register {connection_config['name']} for {source}")
 

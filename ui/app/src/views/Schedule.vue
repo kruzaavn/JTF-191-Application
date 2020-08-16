@@ -38,7 +38,7 @@
             <v-card color="grey lighten-4" min-width="400px" tile>
               <v-toolbar :color="eventColor(selectedEvent)" dark>
                 <v-toolbar-title
-                  >{{ selectedEvent.type }}:
+                  >{{ selectedEvent.type.toUpperCase() }}:
                   {{ selectedEvent.name }}</v-toolbar-title
                 >
                 <v-spacer></v-spacer>
