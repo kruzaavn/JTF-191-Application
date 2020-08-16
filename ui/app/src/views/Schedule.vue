@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-row>
+    <v-row v-if="schedule">
       <v-col>
         <h1>JTF Schedule</h1>
         <v-sheet tile height="64">
@@ -38,7 +38,7 @@
             <v-card color="grey lighten-4" min-width="400px" tile>
               <v-toolbar :color="eventColor(selectedEvent)" dark>
                 <v-toolbar-title
-                  >{{ selectedEvent.type.toUpperCase() }}:
+                  >{{ selectedEvent.type | capitalize }}:
                   {{ selectedEvent.name }}</v-toolbar-title
                 >
                 <v-spacer></v-spacer>
@@ -68,7 +68,6 @@
         </v-sheet>
       </v-col>
     </v-row>
-    <v-row> </v-row>
   </v-container>
 </template>
 
@@ -86,6 +85,13 @@ export default {
 
   computed: {
     ...mapGetters(['schedule']),
+  },
+  filters: {
+    capitalize: function (value) {
+      if (!value) return ''
+      value = value.toString()
+      return value.charAt(0).toUpperCase() + value.slice(1)
+    },
   },
   methods: {
     ...mapActions(['getSchedule']),
