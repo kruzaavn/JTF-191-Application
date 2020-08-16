@@ -40,7 +40,13 @@ class TCPeter(TCPServer):
                     await websocket.write_message(json.dumps(message))
 
                 except StreamClosedError:
-                    requests.delete(f'http://api-server:8000/api/gci/server/detail/{registered_server["id"]}/')
+
+                    r = requests.delete(f'http://api-server:8000/api/gci/server/detail/{registered_server["id"]}/')
+
+                    if r.status_code == 204:
+                        log(f'unregistered {connection_config["name"]} for {source}')
+                    else:
+                        log(f'error unregistering {connection_config["name"]} for {source}')
         else:
             log(f"unable to register {connection_config['name']} for {source}")
 
