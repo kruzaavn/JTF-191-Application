@@ -43,21 +43,20 @@
                 >
                 <v-spacer></v-spacer>
               </v-toolbar>
+
+              <v-card-subtitle>Event Description</v-card-subtitle>
               <v-card-text>
-                <p>{{ selectedEvent.description }}</p>
+                {{ selectedEvent.description }}
               </v-card-text>
-              <v-list color="grey lighten-4" dense>
-                <v-subheader>Required Squadrons</v-subheader>
-                <v-list-item
-                  v-for="squadron in selectedEvent.required_squadrons"
-                  :key="squadron.id"
-                  ><v-list-item-subtitle
-                    v-text="squadron.designation"
-                    class="text-caption my-1"
-                  >
-                  </v-list-item-subtitle>
-                </v-list-item>
-              </v-list>
+              <v-card-subtitle>Required Squadrons</v-card-subtitle>
+              <v-chip
+                v-for="squadron in selectedEvent.required_squadrons"
+                :key="squadron.id"
+                class="mx-1"
+                outlined
+                >{{ squadron.designation }}</v-chip
+              >
+
               <v-card-actions>
                 <v-btn text color="secondary" @click="selectedOpen = false">
                   Close
