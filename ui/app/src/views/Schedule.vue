@@ -32,10 +32,11 @@
             :close-on-content-click="false"
             :activator="selectedElement"
             min-width="400px"
+            max-width="500px"
             offset-x
             tile
           >
-            <v-card color="grey lighten-4" min-width="400px" tile>
+            <v-card color="grey lighten-4" min-width="400px" max-width="500px" tile>
               <v-toolbar :color="eventColor(selectedEvent)" dark>
                 <v-toolbar-title
                   >{{ selectedEvent.type | capitalize }}:
