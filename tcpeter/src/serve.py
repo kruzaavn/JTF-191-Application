@@ -26,6 +26,7 @@ class TCPeter(TCPServer):
                           data={'name': connection_config['name'].replace(' ', '_'),
                                 'ip': address[0]})
 
+        registered_server = r.json()
         if r.status_code == 201:
 
             websocket_url = f"ws://api-server:8000/ws/gci/{connection_config['name'].replace(' ', '_')}/"
@@ -39,7 +40,7 @@ class TCPeter(TCPServer):
                     await websocket.write_message(json.dumps(message))
 
                 except StreamClosedError:
-                    requests.delete('http://api-server:8000/api/gci/server/detail/', data=r.json())
+                    requests.delete(f'http://api-server:8000/api/gci/server/detail/{registered_server["id"]}/')
         else:
             log(f"unable to register {connection_config['name']} for {source}")
 

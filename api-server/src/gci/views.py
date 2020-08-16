@@ -15,12 +15,12 @@ def room(request, room_name):
     })
 
 
-class ServerDetailView(generics.CreateAPIView):
+class ServerDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     queryset = DCSServer.objects.all()
     serializer_class = DCSServerSerializer
 
 
-class ServerListView(generics.ListAPIView):
+class ServerListView(generics.ListCreateAPIView):
     queryset = DCSServer.objects.all()
-    serializer_class = DCSListServerSerializer
+    serializer_class = DCSServerSerializer
