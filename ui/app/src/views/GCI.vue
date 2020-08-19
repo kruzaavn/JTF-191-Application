@@ -12,7 +12,7 @@
             >
               <v-card-title>{{ server.name }}</v-card-title>
               <v-card-text>
-                {{ server.connection_time }}
+                {{ server.connection_time | dateFormat }}
               </v-card-text>
             </v-card>
           </v-col>
@@ -76,7 +76,6 @@ export default {
         this.units.buffer.push(state)
       }
     },
-
     disconnectSocket: function () {
       this.units = {
         time: null,
@@ -105,6 +104,12 @@ export default {
   },
   computed: {
     ...mapGetters(['servers']),
+  },
+  filters: {
+    dateFormat: function (value) {
+      let date = new Date(value)
+      return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
+    },
   },
   mounted() {
     this.getServers()
