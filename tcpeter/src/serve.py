@@ -36,11 +36,18 @@ class TCPeter(TCPServer):
             while True:
                 try:
                     data = await stream.read_until(b"\n")
-                    message = {"message": json.loads(data)}
-                    await websocket.write_message(json.dumps(message))
+                    await websocket.write_message(data)
 
                 except StreamClosedError:
-                    requests.delete(f'http://api-server:8000/api/gci/server/detail/{registered_server["id"]}/')
+                    r = requests.delete(f'http://api-server:8000/api/gci/server/detail/{registered_server["id"]}/')
+
+                    if r.status_code == 204:
+                        log(f'de-registered {registered_server["name"]}')
+                    else:
+                        log(f'error de-registering {registered_server["name"]}')
+
+                    break
+
         else:
             log(f"unable to register {connection_config['name']} for {source}")
 

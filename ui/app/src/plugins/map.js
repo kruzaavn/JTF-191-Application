@@ -1,24 +1,21 @@
 import L from 'leaflet'
 import ms from 'milsymbol'
+import 'leaflet/dist/leaflet.css'
 
 export default class Map {
   constructor(container_id) {
     let defaults = {
       tile_provider: {
-        light:
-          'https://maps.heigit.org/openmapsurfer/tiles/roads/webmercator/{z}/{x}/{y}.png',
-        dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-        topographic: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
-        imagery:
-          'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        default:
+          'https://tile.jawg.io/ca78d3b5-f055-4b15-a618-0d8df2bcb947/{z}/{x}/{y}.png?access-token=uAlt2i4a7SyNzAzOthIeEwFZiz4wBCzNipoARw3ENWHNzssJ12SQeABzhgrvTPml',
       },
       tile_options: {
         attribution:
-          'Map tiles  <a href="https://leaflet-extras.github.io/leaflet-providers/preview/">attribution</a>',
+          '<a href=\\"https://www.jawg.io\\" target=\\"_blank\\">&copy; Jawg</a> - <a href=\\"https://www.openstreetmap.org\\" target=\\"_blank\\">&copy; OpenStreetMap</a>&nbsp;contributors',
         minZoom: 4,
         maxZoom: 18,
       },
-      theme: 'imagery',
+      theme: 'default',
     }
 
     this.container_id = container_id
@@ -29,7 +26,10 @@ export default class Map {
     ).addTo(this.map)
     this.focused = false
     this.marker_layer = L.featureGroup().addTo(this.map)
-    this.map.on('click', this.onClick)
+  }
+
+  remove() {
+    this.map.remove()
   }
 
   update_icons(objects) {
@@ -56,18 +56,14 @@ export default class Map {
   plot_icons(object) {
     let options = {
       size: 20,
-      altitudeDepth:
-        Math.round((object.states.LatLongAlt.Alt * 3.28084) / 10) * 10,
-      additionalInformation: object.states.Name,
-    }
-
-    if (object.states.Velocity > 0) {
-      options.direction = object.states.Heading * (180 / Math.PI)
-      options.speed = object.states.Velocity
+      altitudeDepth: Math.round((object.LatLongAlt.Alt * 3.28084) / 10) * 10,
+      additionalInformation: object.Name,
+      infoBackground: 'white',
+      direction: object.Heading * (180 / Math.PI),
     }
 
     let symbol = new ms.Symbol(
-      icon_dict[object.states.Type['level1']][object.states.CoalitionID],
+      icon_dict[object.Type['level1']][object.CoalitionID],
       options
     )
 
@@ -77,7 +73,7 @@ export default class Map {
       iconAnchor: new L.Point(symbol.getAnchor().x, symbol.getAnchor().y),
     })
 
-    L.marker([object.states.LatLongAlt.Lat, object.states.LatLongAlt.Long], {
+    L.marker([object.LatLongAlt.Lat, object.LatLongAlt.Long], {
       icon: icon,
     }).addTo(this.marker_layer)
   }
