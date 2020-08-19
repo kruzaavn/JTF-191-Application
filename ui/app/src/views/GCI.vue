@@ -53,7 +53,7 @@ export default {
   methods: {
     ...mapActions(['getServers']),
     configureSocketConnection: function (server) {
-      if (window.location.hostname) {
+      if (window.location.hostname === 'localhost') {
         return `ws://${window.location.hostname}:8000/ws/gci/${server.name}/`
       } else {
         return `wss://${window.location.hostname}/ws/gci/${server.name}/`
