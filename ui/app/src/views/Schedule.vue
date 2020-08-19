@@ -20,7 +20,7 @@
         <v-sheet height="1000">
           <v-calendar
             ref="calendar"
-            :events="schedule"
+            :events="formattedSchedule"
             color="primary"
             event-more
             :event-color="eventColor"
@@ -36,7 +36,12 @@
             offset-x
             tile
           >
-            <v-card color="grey lighten-4" min-width="400px" max-width="500px" tile>
+            <v-card
+              color="grey lighten-4"
+              min-width="400px"
+              max-width="500px"
+              tile
+            >
               <v-toolbar :color="eventColor(selectedEvent)" dark>
                 <v-toolbar-title
                   >{{ selectedEvent.type | capitalize }}:
@@ -85,6 +90,20 @@ export default {
 
   computed: {
     ...mapGetters(['schedule']),
+    formattedSchedule: function () {
+      let events = []
+
+      for (const event of this.schedule) {
+        let new_event = { ...event }
+
+        new_event.start = this.formatDate(event.start)
+        new_event.end = this.formatDate(event.end)
+
+        events.push(new_event)
+      }
+
+      return events
+    },
   },
   filters: {
     capitalize: function (value) {
@@ -109,6 +128,28 @@ export default {
     },
     next() {
       this.$refs.calendar.next()
+    },
+    formatDate: function (dateString) {
+      let date = new Date(dateString)
+
+      let elements = [
+        date.getFullYear(),
+        date.getMonth() + 1,
+        date.getDate(),
+        date.getHours(),
+        date.getMinutes(),
+      ]
+      let strings = []
+
+      for (const element of elements) {
+        if (element < 10) {
+          strings.push(`0${element}`)
+        } else {
+          strings.push(`${element}`)
+        }
+      }
+
+      return `${strings[0]}-${strings[1]}-${strings[2]} ${strings[3]}:${strings[4]}`
     },
     showEvent({ nativeEvent, event }) {
       const open = () => {

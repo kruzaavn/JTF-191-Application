@@ -46,7 +46,7 @@ function ExportWorldObjects(t)
 
 		json = JSON:encode(v)
 
-		message = string.format('{"%d":{"sim_time": %f, "states": %s}}',k, t, json)
+		message = string.format('{"time": %f, "state": %s}', t, json)
 
 		Export2Socket(message)
 
