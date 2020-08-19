@@ -40,6 +40,8 @@ class TCPeter(TCPServer):
 
                 except StreamClosedError:
                     r = requests.delete(f'http://api-server:8000/api/gci/server/detail/{registered_server["id"]}/')
+                    websocket.close()
+                    log(f'disconnecting websocket connection to {websocket_url}')
 
                     if r.status_code == 204:
                         log(f'de-registered {registered_server["name"]}')
