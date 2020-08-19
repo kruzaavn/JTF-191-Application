@@ -13,7 +13,7 @@
         const roomName = JSON.parse(document.getElementById('room-name').textContent);
 
         const gciSocket = new WebSocket(
-            'ws://'
+            'wss://'
             + window.location.host
             + '/ws/gci/'
             + roomName
