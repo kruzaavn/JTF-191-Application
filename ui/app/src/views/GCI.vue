@@ -108,7 +108,7 @@ export default {
   filters: {
     dateFormat: function (value) {
       let date = new Date(value)
-      return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
+      return `${date.toLocaleString()}`
     },
   },
   mounted() {
