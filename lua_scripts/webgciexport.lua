@@ -50,7 +50,7 @@ function ExportWorldObjects(t)
 
 	end
 
-	Export2Socket(string.sub(1, -2) .. ']')
+	Export2Socket(string.sub(message, 1, -2) .. ']')
 
 end
 
