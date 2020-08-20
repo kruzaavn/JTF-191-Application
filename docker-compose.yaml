@@ -4,16 +4,16 @@ services:
   redis:
     restart: always
     image: redis:latest
-    ports:
-      - "6379:6329"
+    expose:
+      - "6329"
     volumes:
       - redisdata:/var/lib/redis/data/
 
   db:
     restart: always
     image: postgres:latest
-    ports:
-      - "5432:5432"
+    expose:
+      - "5432"
     environment:
       POSTGRES_DB: 'database'
       POSTGRES_USER: 'root'
