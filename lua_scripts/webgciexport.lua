@@ -39,18 +39,18 @@ end
 function ExportWorldObjects(t)
 
 	local o = LoGetWorldObjects()
-	local message
+	local message = '['
 	local json
 
 	for k,v in pairs(o) do
 
 		json = JSON:encode(v)
 
-		message = string.format('{"time": %f, "state": %s}', t, json)
-
-		Export2Socket(message)
+		message = message .. string.format('{"id": %f, "state": %s},', k, json)
 
 	end
+
+	Export2Socket(string.sub(message, 1, -2) .. ']')
 
 end
 
