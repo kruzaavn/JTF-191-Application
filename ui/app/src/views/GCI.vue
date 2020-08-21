@@ -43,11 +43,6 @@ export default {
   data: () => ({
     selectedServer: null,
     map: null,
-    units: {
-      time: null,
-      buffer: [],
-      show: [],
-    },
     socket: null,
   }),
   methods: {
@@ -64,11 +59,6 @@ export default {
       this.map.update_icons(data)
     },
     disconnectSocket: function () {
-      this.units = {
-        time: null,
-        buffer: [],
-        show: [],
-      }
 
       if (this.socket) {
         this.socket.close()
