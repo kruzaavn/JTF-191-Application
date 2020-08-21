@@ -61,20 +61,7 @@ export default {
     },
     onSocketMessage: function (event) {
       let data = JSON.parse(event.data).message
-      let time = data.time
-      let state = data.state
-
-      this.units.buffer.push(state)
-
-      if (this.units.time !== time) {
-        this.units.time = time
-        this.units.show = this.units.buffer
-        this.units.buffer = []
-        this.units.buffer.push(state)
-        this.map.update_icons(this.units.show)
-      } else {
-        this.units.buffer.push(state)
-      }
+      this.map.update_icons(data)
     },
     disconnectSocket: function () {
       this.units = {

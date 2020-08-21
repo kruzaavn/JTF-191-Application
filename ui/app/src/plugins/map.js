@@ -56,14 +56,15 @@ export default class Map {
   plot_icons(object) {
     let options = {
       size: 20,
-      altitudeDepth: Math.round((object.LatLongAlt.Alt * 3.28084) / 10) * 10,
-      additionalInformation: object.Name,
+      altitudeDepth:
+        Math.round((object.state.LatLongAlt.Alt * 3.28084) / 10) * 10,
+      additionalInformation: object.state.Name,
       infoBackground: 'white',
-      direction: object.Heading * (180 / Math.PI),
+      direction: object.state.Heading * (180 / Math.PI),
     }
 
     let symbol = new ms.Symbol(
-      icon_dict[object.Type['level1']][object.CoalitionID],
+      icon_dict[object.state.Type['level1']][object.state.CoalitionID],
       options
     )
 
@@ -73,7 +74,7 @@ export default class Map {
       iconAnchor: new L.Point(symbol.getAnchor().x, symbol.getAnchor().y),
     })
 
-    L.marker([object.LatLongAlt.Lat, object.LatLongAlt.Long], {
+    L.marker([object.state.LatLongAlt.Lat, object.state.LatLongAlt.Long], {
       icon: icon,
     }).addTo(this.marker_layer)
   }
