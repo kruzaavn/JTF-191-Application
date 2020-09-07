@@ -70,7 +70,7 @@ class ProspectiveAviatorDetailView(CreateAPIView):
             send_mail(subject,
                       message,
                       settings.EMAIL_HOST_USER,
-                      [x.email for x in recruiters]
+                      [x.email for x in recruiters if x.email]
                       )
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
