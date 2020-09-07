@@ -1,4 +1,5 @@
 from django.core.mail import send_mail
+from django.conf import settings
 from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework import status
@@ -58,7 +59,7 @@ class ProspectiveAviatorDetailView(CreateAPIView):
             send_mail(
                 subject,
                 message,
-                'noreply@jtf191.com',
+                settings.EMAIL_HOST_USER,
                 [recipient]
             )
 
@@ -68,7 +69,7 @@ class ProspectiveAviatorDetailView(CreateAPIView):
 
             send_mail(subject,
                       message,
-                      'noreply@jtf191.com',
+                      settings.EMAIL_HOST_USER,
                       [x.email for x in recruiters]
                       )
 
