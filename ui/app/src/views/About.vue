@@ -79,7 +79,7 @@
     <v-row>
       <v-col>
         <h1>
-          If JTF-171 interests you please go to our
+          If JTF-191 interests you please go to our
           <router-link to="/joinus">Recruitment Page</router-link>
         </h1>
       </v-col>

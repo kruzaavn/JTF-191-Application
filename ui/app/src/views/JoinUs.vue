@@ -113,7 +113,17 @@
               :menu-props="{ maxHeight: '400' }"
               label="Airframes"
               multiple
-              hint="Pick your owned modules"
+              hint="Pick your owned airframes"
+              persistent-hint
+            ></v-select>
+          </v-col>
+          <v-col cols="12" sm="6">
+            <v-select
+              v-model="joinUsForm.prefered_airfame"
+              :items="filterModulesByType('aircraft')"
+              :menu-props="{ maxHeight: '400' }"
+              label="Preferred Airframe"
+              hint="Select the airframe you intend to fly with"
               persistent-hint
             ></v-select>
           </v-col>
@@ -124,7 +134,7 @@
               :menu-props="{ maxHeight: '400' }"
               label="Maps"
               multiple
-              hint="Pick your owned modules"
+              hint="Pick your owned maps"
               persistent-hint
             ></v-select>
           </v-col>
@@ -211,6 +221,7 @@ export default {
       dcs_modules: [],
       about: '',
       discord: '',
+      prefered_airfame: ''
     },
     attendance: false,
     age: false,
