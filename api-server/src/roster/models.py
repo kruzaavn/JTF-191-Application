@@ -189,7 +189,7 @@ class ProspectiveAviator(Pilot):
                                            related_name='preferred_airframe')
 
     def recruitment_email(self):
-        return f"""Recruitment application submitted by {self.callsign} on {self.submitted.strftime("%d/%m/%y")}
+        return f"""Recruitment application submitted by {self.callsign} on {self.submitted.strftime("%m/%d/%y")}
                         Email: {self.email}
                         Airframe: {self.preferred_airframe.name}
                         HOTAS: {self.hotas}
