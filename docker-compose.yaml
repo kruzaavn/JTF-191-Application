@@ -11,7 +11,7 @@ services:
 
   db:
     restart: always
-    image: postgres:latest
+    image: postgres:12.4
     expose:
       - "5432"
     environment:
@@ -21,16 +21,17 @@ services:
     volumes:
       - dbdata:/var/lib/postgresql/data/
 
-  tcpeter:
-    restart: always
-    build: ./tcpeter
-    ports:
-      - "7224:7224"
-    environment:
-      PORT: 7224
-    depends_on:
-      - api-server
-    command: python -u serve.py
+#  11/1/2020 remove webgci
+#  tcpeter:
+#    restart: always
+#    build: ./tcpeter
+#    ports:
+#      - "7224:7224"
+#    environment:
+#      PORT: 7224
+#    depends_on:
+#      - api-server
+#    command: python -u serve.py
 
   api-relay:
     restart: always

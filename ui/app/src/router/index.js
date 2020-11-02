@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import About from '../views/About.vue'
-import GCI from '../views/GCI.vue'
+// import GCI from '../views/GCI.vue'
 import Squadron from '../views/Squadron'
 import JoinUs from '../views/JoinUs'
 import Schedule from '@/views/Schedule'
@@ -32,14 +32,15 @@ const routes = [
       title: title(title_header, 'About Us'),
     },
   },
-  {
-    path: '/gci',
-    name: 'GCI',
-    component: GCI,
-    meta: {
-      title: title(title_header, 'GCI'),
-    },
-  },
+  // 11/1/2020 removing WEB GCI
+  // {
+  //   path: '/gci',
+  //   name: 'GCI',
+  //   component: GCI,
+  //   meta: {
+  //     title: title(title_header, 'GCI'),
+  //   },
+  // },
   {
     path: '/squadron/:squadronDesignation',
     name: 'Squadron',
