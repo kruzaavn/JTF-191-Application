@@ -1,9 +1,6 @@
 version: '3.8'
 
 services:
-  ui:
-    command: "true" # Have this service do nothing
-    restart: "no"
 
   nginx:
     build:
@@ -16,6 +13,11 @@ services:
 #       For local testing, replace jtf191.com with a domain that points and is forwarded to your host for local dev
       - URL=jtf191.com
       - VALIDATION=http
-#      - STAGING=true # Uncomment this for local testing to prevent rate-limiting (will issue untrusted cert)
+#     - STAGING=true # Uncomment this for local testing to prevent rate-limiting (will issue untrusted cert)
     depends_on:
       - api-server
+    volumes:
+      - letsencrypt:/etc/letsencrypt
+
+volumes:
+  letsencrypt:

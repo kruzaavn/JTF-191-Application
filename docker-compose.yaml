@@ -58,21 +58,6 @@ services:
       - ./api-server/src:/server
     command: python manage.py runserver 0.0.0.0:8000
 
-  ui:
-    restart: always
-    image: node
-    ports:
-      - "8080:8080"
-    working_dir: /ui
-    volumes:
-      - ./ui/app:/ui
-    command: npm run serve
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-      - DEV_PROXY=api-server
-    stdin_open: true
-    tty: true
-
 volumes:
   dbdata:
   redisdata:
