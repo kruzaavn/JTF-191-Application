@@ -46,8 +46,6 @@ class ProspectiveAviatorDetailView(CreateAPIView):
 
     def create(self, request, *args, **kwargs):
 
-        print(request.data, flush=True)
-
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
