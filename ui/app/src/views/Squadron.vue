@@ -50,7 +50,7 @@
                 <v-col>
                   <h4>
                     Total Flight Hours
-                    {{ sumTable(member.stats.hours).toPrecision(2) }}
+                    {{ sumTable(member.stats.hours).toFixed(2) }}
                   </h4>
                   <v-data-table
                     dense
@@ -62,7 +62,7 @@
                 <v-col>
                   <h4>
                     Total kills
-                    {{ sumTable(member.stats.kills).toPrecision(2) }}
+                    {{ sumTable(member.stats.kills).toFixed(0) }}
                   </h4>
                   <v-data-table
                     dense
@@ -136,7 +136,7 @@ export default {
       let data = []
 
       for (const airframe in hours) {
-        data.push({ airframe: airframe, hours: hours[airframe].toPrecision(2) })
+        data.push({ airframe: airframe, hours: hours[airframe].toFixed(2) })
       }
       return data
     },

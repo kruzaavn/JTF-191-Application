@@ -8,9 +8,14 @@
         <li>Cockpit visualization, VR headset or Track IR</li>
         <li>Hands on throttle and stick (HOTAS)</li>
         <li>
-          Be able to attend make reqired time commitments, approximately 2-3 nights a week for 2 hours at 8pm Eastern time including a Mission Night on Saturday.
+          Be able to attend make required time commitments, approximately 2-3
+          nights a week for 2 hours at 8pm Eastern time including a Mission
+          Night on Saturday.
         </li>
-        <li>Have a good attitude and a willingness to learn. <router-link to="/about">see our core values</router-link> </li>
+        <li>
+          Have a good attitude and a willingness to learn.
+          <router-link to="/about">see our core values</router-link>
+        </li>
       </ul>
       <v-form ref="form">
         <v-row>
@@ -34,8 +39,7 @@
               <v-checkbox
                 v-model="attendance"
                 :rules="[
-                  (v) =>
-                    !!v || 'You must be able to make the time commitment',
+                  (v) => !!v || 'You must be able to make the time commitment',
                 ]"
                 label="Are you able make the required time commitment?"
               ></v-checkbox>
@@ -113,7 +117,17 @@
               :menu-props="{ maxHeight: '400' }"
               label="Airframes"
               multiple
-              hint="Pick your owned modules"
+              hint="Pick your owned airframes"
+              persistent-hint
+            ></v-select>
+          </v-col>
+          <v-col cols="12" sm="6">
+            <v-select
+              v-model="joinUsForm.preferred_airframe"
+              :items="filterModulesByType('aircraft')"
+              :menu-props="{ maxHeight: '400' }"
+              label="Preferred Airframe"
+              hint="Select the airframe you intend to start training with"
               persistent-hint
             ></v-select>
           </v-col>
@@ -124,7 +138,7 @@
               :menu-props="{ maxHeight: '400' }"
               label="Maps"
               multiple
-              hint="Pick your owned modules"
+              hint="Pick your owned maps"
               persistent-hint
             ></v-select>
           </v-col>
@@ -144,21 +158,19 @@
         </v-row>
         <v-row>
           <v-col align="end">
-            <v-btn
-                    outlined
-                    tile
-                    color="Submit"
-                    v-on:click="postApplication">Submit</v-btn>
+            <v-btn outlined tile color="Submit" v-on:click="postApplication"
+              >Submit</v-btn
+            >
           </v-col>
         </v-row>
       </v-form>
     </div>
     <div id="" v-else>
-      <h1>
-        Thank you {{joinUsForm.callsign}}
-      </h1>
+      <h1>Thank you {{ joinUsForm.callsign }}</h1>
       <p>
-        Your application has been submitted. Watch your email at <strong>{{joinUsForm.email}}</strong> for an confirmation and thank you for your interest.
+        Your application has been submitted. Watch your email at
+        <strong>{{ joinUsForm.email }}</strong> for an confirmation and thank
+        you for your interest.
       </p>
     </div>
   </v-container>
@@ -171,29 +183,31 @@ export default {
   name: 'JoinUs',
   computed: {
     ...mapGetters(['dcsModules']),
-
   },
   methods: {
     ...mapActions(['getDcsModules']),
     postApplication: function () {
-
-
-        if (this.$refs.form.validate()) {
-          axios.post('/api/roster/prospective_aviators/detail/', this.joinUsForm)
-                  .then(() => this.submitted = true)
-                  .catch(response => console.log(response.data))
-        }
+      if (this.$refs.form.validate()) {
+        axios
+          .post('/api/roster/prospective_aviators/detail/', this.joinUsForm)
+          .then(() => (this.submitted = true))
+          .catch((response) => console.log(response.data))
+      }
     },
-    filterModulesByType: function(type) {
-      let modules = this.dcsModules.filter(x => x.module_type === type)
+    filterModulesByType: function (type) {
+      let modules = this.dcsModules.filter((x) => x.module_type === type)
       let selectable = []
 
       for (const module of modules) {
-        selectable.push({text: module.name, value: module.id, disabled: false})
+        selectable.push({
+          text: module.name,
+          value: module.id,
+          disabled: false,
+        })
       }
 
       return selectable
-    }
+    },
   },
   mounted() {
     this.getDcsModules()
@@ -211,14 +225,15 @@ export default {
       dcs_modules: [],
       about: '',
       discord: '',
+      preferred_airframe: '',
     },
     attendance: false,
     age: false,
     valueStatement: false,
     submitted: false,
     rules: {
-      'blank': [(v) => v.length > 0 || 'must not be blank']
-    }
+      blank: [(v) => v.length > 0 || 'must not be blank'],
+    },
   }),
 }
 </script>

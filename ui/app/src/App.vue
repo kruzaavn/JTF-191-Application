@@ -20,11 +20,12 @@
             <v-list-item-title>Join Us</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item to="/gci">
-          <v-list-item-content>
-            <v-list-item-title>Web GCI</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <!--        11/1/2020 Removing webgci -->
+        <!--        <v-list-item to="/gci">-->
+        <!--          <v-list-item-content>-->
+        <!--            <v-list-item-title>Web GCI</v-list-item-title>-->
+        <!--          </v-list-item-content>-->
+        <!--        </v-list-item>-->
         <v-list-item to="/schedule">
           <v-list-item-content>
             <v-list-item-title>JTF Schedule</v-list-item-title>
