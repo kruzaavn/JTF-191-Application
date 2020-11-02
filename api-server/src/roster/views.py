@@ -65,13 +65,13 @@ class ProspectiveAviatorDetailView(CreateAPIView):
 
             subject = f'New Application from {prospective.callsign}'
             message = f'{prospective.recruitment_email()}'
-            leaders = Aviator.objects.filter(position_code__lt=4, user__isnull=False)
+            leaders = Aviator.objects.filter(position_code__lt=4)
             admins = User.objects.filter(is_superuser=True)
 
             send_mail(subject,
                       message,
                       settings.EMAIL_HOST_USER,
-                      [x.email for x in leaders if x.user.email] + [x.email for x in admins if x.email]
+                      [x.email for x in leaders if x.email] + [x.email for x in admins if x.email]
                       )
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
