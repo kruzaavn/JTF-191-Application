@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
-from datetime import datetime
+from datetime import datetime, date
 
 
 class HQ(models.Model):
@@ -116,6 +116,37 @@ def stats_default():
     return {"hours": {}, "kills": {}}
 
 
+class QualificationModule(models.Model):
+    """
+    qualification modules table
+
+
+    this table tracks qualification modules tracking module documentation and checkoff periodicity
+    """
+
+    name = models.CharField(max_length=1024)
+    documentation = models.URLField(max_length=2048)
+    recertification_time = models.DurationField(blank=True, null=True, help_text='DD HH:MM:SS')
+
+    def __str__(self):
+        return self.name
+
+
+class Qualification(models.Model):
+    """
+    qualifications table
+
+    This table tracks all modules that make up any particular qualification.
+    """
+
+    name = models.CharField(max_length=1024)
+    modules = models.ManyToManyField(QualificationModule, blank=True)
+    description = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+
 class Aviator(Pilot):
     """
     aviator table inherits from abstract pilot table
@@ -148,13 +179,15 @@ class Aviator(Pilot):
                                         help_text=f'{position_helper}')
     user = models.ForeignKey(User, blank=True, null=True,
                              on_delete=models.CASCADE)
-    stats = JSONField(default=stats_default)
+    stats = models.JSONField(default=stats_default)
     division = models.IntegerField(default=4, validators=[MinValueValidator(1),
                                                           MaxValueValidator(
                                                               4)])
     division_position = models.IntegerField(default=4,
                                             validators=[MinValueValidator(1),
                                                         MaxValueValidator(4)])
+
+    qualifications = models.ManyToManyField(Qualification, blank=True)
 
     @property
     def rank(self):
@@ -170,6 +203,27 @@ class Aviator(Pilot):
             return self.squadron.hq.service_position_table[self.position_code]
         else:
             return
+
+
+class QualificationCheckoff(models.Model):
+    """
+
+    qualification checkoff table
+
+
+    this table tracks the status of individual checkoffs
+    """
+    module = models.ForeignKey(QualificationModule, on_delete=models.CASCADE)
+    aviator = models.ForeignKey(Aviator, on_delete=models.CASCADE)
+    sign_off = models.ForeignKey(Aviator, on_delete=models.SET_NULL, blank=True, null=True, related_name='sign_off')
+    date = models.DateField(auto_now_add=True)
+
+    @property
+    def current(self):
+        if self.module.self.module.recertification_time:
+            return date.today() <= self.date + self.module.recertification_time
+        else:
+            return True
 
 
 class ProspectiveAviator(Pilot):

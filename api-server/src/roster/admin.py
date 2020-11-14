@@ -49,3 +49,29 @@ class EventAdmin(admin.ModelAdmin):
     list_display = ('name', 'start', 'end')
 
     search_fields = ('start',)
+
+
+@admin.register(Qualification)
+class QualificationAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(QualificationModule)
+class QualificationModuleAdmin(admin.ModelAdmin):
+    list_display = ('name', 'get_requal_days')
+
+    def get_requal_days(self, obj):
+        if obj.recertification_time:
+            return obj.recertification_time.days
+        else:
+            return None
+
+    get_requal_days.short_description = 'Re-qualification Time'
+
+
+@admin.register(QualificationCheckoff)
+class QualificationCheckoffAdmin(admin.ModelAdmin):
+
+    list_display = ('module', 'aviator', 'date', 'current')
+
+    list_filter = ('module__name', 'aviator__callsign')
