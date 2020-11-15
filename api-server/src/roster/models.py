@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.postgres.fields import JSONField
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 from datetime import datetime, date
@@ -124,8 +123,14 @@ class QualificationModule(models.Model):
     this table tracks qualification modules tracking module documentation and checkoff periodicity
     """
 
+    documentation_types = ['document', 'slides', 'spreadsheet', 'video']
+
     name = models.CharField(max_length=1024)
     documentation = models.URLField(max_length=2048)
+    documentation_type = models.CharField(choices=[(x, x) for x in documentation_types],
+                                          default=documentation_types[0],
+                                          max_length=1024
+                                          )
     recertification_time = models.DurationField(blank=True, null=True, help_text='DD HH:MM:SS')
 
     def __str__(self):
