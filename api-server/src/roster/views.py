@@ -154,13 +154,31 @@ class QualificationListView(ListCreateAPIView):
     serializer_class = QualificationSerializer
 
 
+class QualificationDetailView(RetrieveUpdateDestroyAPIView):
+
+    queryset = Qualification.objects.all()
+    serializer_class = QualificationSerializer
+
+
 class QualificationModuleListView(ListCreateAPIView):
 
     queryset = QualificationModule.objects.all()
     serializer_class = QualificationModuleSerializer
 
 
+class QualificationModuleDetailView(RetrieveUpdateDestroyAPIView):
+
+    queryset = QualificationModule.objects.all()
+    serializer_class = QualificationModuleSerializer
+
+
 class QualificationCheckoffListView(ListCreateAPIView):
+
+    queryset = QualificationCheckoff.objects.all()
+    serializer_class = QualificationCheckoffSerializer
+
+
+class QualificationCheckoffDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = QualificationCheckoff.objects.all()
     serializer_class = QualificationCheckoffSerializer

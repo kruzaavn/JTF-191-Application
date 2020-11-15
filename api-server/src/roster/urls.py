@@ -28,6 +28,10 @@ urlpatterns = [
     path('modules/list/', DCSModuleListView.as_view()),
     path('event/list/', EventListView.as_view()),
     path('qualifications/list/', QualificationListView.as_view()),
+    path('qualifications/detail/<int:pk>', QualificationDetailView.as_view()),
     path('qualifications/modules/list/', QualificationModuleListView.as_view()),
-    path('qualifications/checkoffs/list/', QualificationCheckoffListView.as_view())
+    path('qualifications/modules/detail/<int:pk>', QualificationModuleDetailView.as_view()),
+    path('qualifications/checkoffs/list/', QualificationCheckoffListView.as_view()),
+    path('qualifications/checkoffs/detail/<int:pk>', QualificationCheckoffDetailView.as_view()),
+
 ]
