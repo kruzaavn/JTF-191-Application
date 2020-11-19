@@ -126,7 +126,7 @@ class QualificationModule(models.Model):
     documentation_types = ['document', 'slides', 'spreadsheet', 'video']
 
     name = models.CharField(max_length=1024)
-    documentation = models.URLField(max_length=2048)
+    link = models.URLField(max_length=2048)
     documentation_type = models.CharField(choices=[(x, x) for x in documentation_types],
                                           default=documentation_types[0],
                                           max_length=1024
