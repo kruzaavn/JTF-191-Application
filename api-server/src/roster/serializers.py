@@ -55,3 +55,26 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = '__all__'
         depth = 1
+
+
+class QualificationSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Qualification
+        fields = '__all__'
+
+
+class QualificationModuleSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = QualificationModule
+        fields = '__all__'
+
+
+class QualificationCheckoffSerializer(serializers.ModelSerializer):
+
+    current = serializers.ReadOnlyField()
+
+    class Meta:
+        model = QualificationCheckoff
+        fields = '__all__'

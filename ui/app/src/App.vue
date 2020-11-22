@@ -20,6 +20,11 @@
             <v-list-item-title>Join Us</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item to="/qualification/list">
+          <v-list-item-content>
+            <v-list-item-title>Training Qualifications</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <!--        11/1/2020 Removing webgci -->
         <!--        <v-list-item to="/gci">-->
         <!--          <v-list-item-content>-->
@@ -84,7 +89,7 @@ export default {
   },
   watch: {
     $route(to) {
-      document.title = to.meta.title || 'JTF-70'
+      document.title = to.meta.title || 'JTF-191'
     },
   },
   mounted() {

@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import About from '../views/About.vue'
 // import GCI from '../views/GCI.vue'
+import Qualification from "@/views/Qualification";
 import Squadron from '../views/Squadron'
 import JoinUs from '../views/JoinUs'
 import Schedule from '@/views/Schedule'
@@ -66,6 +67,15 @@ const routes = [
       title: title(title_header, 'Schedule'),
     },
   },
+  {
+    path: '/qualification/:qualificationModule',
+    name: 'Qualification',
+    props: true,
+    component: Qualification,
+      meta: {
+      title: title(title_header, 'Qualifications'),
+    },
+  }
 ]
 
 const router = new VueRouter({

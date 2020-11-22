@@ -162,9 +162,16 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-EMAIL_SECRET = json.loads(
-    pathlib.Path(BASE_DIR).joinpath('cred.json').read_text()
-)
+EMAIL_SECRET_PATH = pathlib.Path(BASE_DIR).joinpath('../cred.json')
+
+if EMAIL_SECRET_PATH.is_file():
+
+    EMAIL_SECRET = json.loads(EMAIL_SECRET_PATH.read_text())
+
+else:
+
+    EMAIL_SECRET = {}
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True

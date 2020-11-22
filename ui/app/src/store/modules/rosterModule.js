@@ -6,6 +6,8 @@ const state = {
   hqs: [],
   dcsModules: [],
   schedule: [],
+  qualificationList: [],
+  qualificationModuleList: []
 }
 
 const mutations = {
@@ -24,6 +26,12 @@ const mutations = {
   setSchedule(state, schedule) {
     state.schedule = schedule
   },
+  setQualifications(state, qualifications) {
+    state.qualificationList = qualifications
+  },
+  setQualificationModules(state, modules) {
+    state.qualificationModuleList = modules
+  }
 }
 
 const getters = {
@@ -32,6 +40,8 @@ const getters = {
   hqs: (state) => state.hqs,
   dcsModules: (state) => state.dcsModules,
   schedule: (state) => state.schedule,
+  qualifications: (state) => state.qualificationList,
+  qualificationModules: (state) => state.qualificationModuleList
 }
 
 const actions = {
@@ -55,6 +65,13 @@ const actions = {
     const response = await axios.get('api/roster/event/list/')
     commit('setSchedule', response.data)
   },
+  async getQualifications({ commit }) {
+    let response = await axios.get('api/roster/qualifications/list/')
+    commit('setQualifications', response.data)
+    response = await axios.get('api/roster/qualifications/modules/list/')
+    commit('setQualificationModules', response.data)
+  },
+
 }
 
 export default {

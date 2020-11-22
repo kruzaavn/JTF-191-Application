@@ -7,10 +7,12 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView, \
     RetrieveUpdateDestroyAPIView, CreateAPIView
 
-from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator, Event
+from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator, Event, Qualification, \
+    QualificationModule, QualificationCheckoff
 
 from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
-    DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer
+    DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, QualificationSerializer, \
+    QualificationModuleSerializer, QualificationCheckoffSerializer
 
 
 class AviatorListView(ListCreateAPIView):
@@ -20,7 +22,6 @@ class AviatorListView(ListCreateAPIView):
 
 
 class AviatorDetailView(RetrieveUpdateDestroyAPIView):
-
     queryset = Aviator.objects.all()
     serializer_class = AviatorSerializer
 
@@ -145,3 +146,39 @@ class EventListView(ListCreateAPIView):
 
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+
+
+class QualificationListView(ListCreateAPIView):
+
+    queryset = Qualification.objects.all()
+    serializer_class = QualificationSerializer
+
+
+class QualificationDetailView(RetrieveUpdateDestroyAPIView):
+
+    queryset = Qualification.objects.all()
+    serializer_class = QualificationSerializer
+
+
+class QualificationModuleListView(ListCreateAPIView):
+
+    queryset = QualificationModule.objects.all()
+    serializer_class = QualificationModuleSerializer
+
+
+class QualificationModuleDetailView(RetrieveUpdateDestroyAPIView):
+
+    queryset = QualificationModule.objects.all()
+    serializer_class = QualificationModuleSerializer
+
+
+class QualificationCheckoffListView(ListCreateAPIView):
+
+    queryset = QualificationCheckoff.objects.all()
+    serializer_class = QualificationCheckoffSerializer
+
+
+class QualificationCheckoffDetailView(RetrieveUpdateDestroyAPIView):
+
+    queryset = QualificationCheckoff.objects.all()
+    serializer_class = QualificationCheckoffSerializer
