@@ -70,6 +70,7 @@ const routes = [
   {
     path: '/qualification/:qualificationModule',
     name: 'Qualification',
+    props: true,
     component: Qualification,
       meta: {
       title: title(title_header, 'Qualifications'),
