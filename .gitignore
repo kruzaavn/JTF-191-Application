@@ -3,3 +3,4 @@
 pw.txt
 **/dist
 **/venv
+__pycache__
