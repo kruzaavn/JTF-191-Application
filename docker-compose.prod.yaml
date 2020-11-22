@@ -16,8 +16,8 @@ services:
 #     - STAGING=true # Uncomment this for local testing to prevent rate-limiting (will issue untrusted cert)
     depends_on:
       - api-server
-    volumes:
-      - letsencrypt:/etc/letsencrypt
+#    volumes:
+#      - letsencrypt:/etc/letsencrypt
 
 volumes:
   letsencrypt:

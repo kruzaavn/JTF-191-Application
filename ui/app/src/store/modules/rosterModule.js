@@ -71,6 +71,14 @@ const actions = {
     response = await axios.get('api/roster/qualifications/modules/list/')
     commit('setQualificationModules', response.data)
   },
+  async getRosterData({commit}){
+    let response = await axios.get('/api/roster/aviators/list')
+    commit('setRoster', response.data)
+    response = await axios.get('/api/roster/squadrons/list')
+    commit('setSquadrons', response.data)
+    response = await axios.get('/api/roster/hqs/list/')
+    commit('setHQs', response.data)
+  }
 
 }
 
