@@ -39,7 +39,7 @@ else:
     SECRET_FILE.write_text(SECRET_KEY)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = PRODUCTION is not None
+DEBUG = PRODUCTION is None
 
 ALLOWED_HOSTS = [
     'localhost',
