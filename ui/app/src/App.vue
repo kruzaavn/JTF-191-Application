@@ -98,7 +98,7 @@ export default {
     }, 0)
     setTimeout(() => {
       this.getSquadrons()
-    }, 500)
+      }, 500)
     setTimeout(() => {
       this.getHQs()
     }, 1000)
