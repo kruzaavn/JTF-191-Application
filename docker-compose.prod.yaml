@@ -27,5 +27,4 @@ services:
     depends_on:
       - api-server
     volumes:
-      - ./nginx/letsencrypt:/etc/letsencrypt
       - ./api-server/src/static:/www/static
