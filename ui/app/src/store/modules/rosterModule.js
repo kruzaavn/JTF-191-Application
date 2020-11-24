@@ -7,7 +7,7 @@ const state = {
   dcsModules: [],
   schedule: [],
   qualificationList: [],
-  qualificationModuleList: []
+  qualificationModuleList: [],
 }
 
 const mutations = {
@@ -31,7 +31,7 @@ const mutations = {
   },
   setQualificationModules(state, modules) {
     state.qualificationModuleList = modules
-  }
+  },
 }
 
 const getters = {
@@ -41,16 +41,16 @@ const getters = {
   dcsModules: (state) => state.dcsModules,
   schedule: (state) => state.schedule,
   qualifications: (state) => state.qualificationList,
-  qualificationModules: (state) => state.qualificationModuleList
+  qualificationModules: (state) => state.qualificationModuleList,
 }
 
 const actions = {
   async getRoster({ commit }) {
-    const response = await axios.get('/api/roster/aviators/list')
+    const response = await axios.get('/api/roster/aviators/list/')
     commit('setRoster', response.data)
   },
   async getSquadrons({ commit }) {
-    const response = await axios.get('/api/roster/squadrons/list')
+    const response = await axios.get('/api/roster/squadrons/list/')
     commit('setSquadrons', response.data)
   },
   async getHQs({ commit }) {
@@ -62,21 +62,17 @@ const actions = {
     commit('setDcsModules', response.data)
   },
   async getSchedule({ commit }) {
-    const response = await axios.get('api/roster/event/list/')
+    const response = await axios.get('/api/roster/event/list/')
     commit('setSchedule', response.data)
   },
   async getQualifications({ commit }) {
-    let response = await axios.get('api/roster/qualifications/list/')
+    const response = await axios.get('/api/roster/qualifications/list/')
     commit('setQualifications', response.data)
-    response = await axios.get('api/roster/qualifications/modules/list/')
+  },
+  async getQualificationModules({ commit }) {
+    const response = await axios.get('/api/roster/qualifications/modules/list/')
     commit('setQualificationModules', response.data)
   },
-  async getRosterData({commit}){
-    axios.get('/api/roster/aviators/list').then(response => commit('setRoster', response.data))
-    axios.get('/api/roster/squadrons/list').then(response => commit('setSquadrons', response.data))
-    axios.get('/api/roster/hqs/list/').then(response =>  commit('setHQs', response.data) )
-  }
-
 }
 
 export default {

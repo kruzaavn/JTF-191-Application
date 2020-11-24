@@ -24,7 +24,6 @@
         </p>
       </v-col>
     </v-row>
-
     <v-row>
       <v-col>
         <h1>TF-191 Guiding Values</h1>
@@ -68,10 +67,10 @@
             different parts and very few of us experience it all.
           </li>
           <li>
-            All members must act with integrity. is unfortunate but the reality
-            is that we will not always get our way. It is important though that
-            while recognizing this fact, we always treat each other fairly and
-            above reproach.
+            All members must act with integrity. It is unfortunate but the
+            reality is that we will not always get our way. It is important
+            though that while recognizing this fact, we always treat each other
+            fairly and above reproach.
           </li>
         </ol>
       </v-col>

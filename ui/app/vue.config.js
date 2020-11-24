@@ -4,10 +4,11 @@ module.exports = {
     // disableHostCheck: true,
     // host: '0.0.0.0',
     proxy: {
-      '/api': {
-        target: "http://127.0.0.1:8000",
-        secure: false
-      }
-    }
+      '^/api': {
+        target: `http://${process.env.DEV_PROXY ?? 'localhost'}:8000`,
+        secure: false,
+        logLevel: 'debug',
+      },
+    },
   },
 }

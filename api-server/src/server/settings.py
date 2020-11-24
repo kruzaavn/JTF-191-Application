@@ -30,7 +30,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
-    '*'
+    '.jtf191.com'
 ]
 
 

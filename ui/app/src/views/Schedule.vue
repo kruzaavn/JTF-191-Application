@@ -169,7 +169,9 @@ export default {
     },
   },
   mounted() {
-    this.getSchedule()
+    setTimeout(() => {
+      this.getSchedule()
+    }, 250)
   },
 }
 </script>

@@ -85,7 +85,7 @@ export default {
     ...mapGetters(['squadrons', 'hqs']),
   },
   methods: {
-    ...mapActions(['getRosterData']),
+    ...mapActions(['getRoster', 'getHQs', 'getSquadrons']),
   },
   watch: {
     $route(to) {
@@ -93,7 +93,15 @@ export default {
     },
   },
   mounted() {
-    this.getRosterData()
+    setTimeout(() => {
+      this.getRoster()
+    }, 0)
+    setTimeout(() => {
+      this.getSquadrons()
+    }, 500)
+    setTimeout(() => {
+      this.getHQs()
+    }, 1000)
   },
 }
 </script>

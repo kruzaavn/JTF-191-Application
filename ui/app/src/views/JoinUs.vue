@@ -210,7 +210,9 @@ export default {
     },
   },
   mounted() {
-    this.getDcsModules()
+    setTimeout(() => {
+      this.getDcsModules()
+    }, 250)
   },
   data: () => ({
     joinUsForm: {
