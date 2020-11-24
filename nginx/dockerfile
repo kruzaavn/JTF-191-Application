@@ -7,7 +7,7 @@ RUN npm audit fix
 COPY ui/app /ui
 RUN npm run build
 
-FROM linuxserver/letsencrypt as production-stage
+FROM linuxserver/swag as production-stage
 
 COPY nginx/nginx.conf /config/nginx/site-confs/default
 COPY --from=build-stage /ui/dist /config/www
