@@ -54,9 +54,6 @@ services:
     depends_on:
       - db
       - redis
-    environment:
-      DJANGO_LOG_LEVEL: 'debug'
-      BALLS: 'more'
     volumes:
       - ./api-server/src:/server
     command: python manage.py runserver 0.0.0.0:8000
