@@ -1,3 +1,6 @@
 migrations
-media
+media/*
 cred.json
+__pycache__
+secrets.txt
+static/*
