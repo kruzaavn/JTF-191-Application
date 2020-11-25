@@ -23,8 +23,12 @@ services:
 #       For local testing, replace jtf191.com with a domain that points and is forwarded to your host for local dev
       - URL=jtf191.com
       - VALIDATION=http
+      - EMAIL=aleks.kruza@gmail.com
+      - PUID=1000
+      - PGID=1000
 #     - STAGING=true # Uncomment this for local testing to prevent rate-limiting (will issue untrusted cert)
     depends_on:
       - api-server
     volumes:
       - ./api-server/src/static:/www/static
+      - ./api-server/src/media:/www/media
