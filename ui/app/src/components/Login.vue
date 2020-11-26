@@ -3,7 +3,7 @@
     <v-dialog v-model="dialog" width="500">
       <template v-slot:activator="{ on, attrs }">
         <v-btn
-          v-show="!userName"
+          v-if="!user"
           color="white"
           outlined
           tile
@@ -14,14 +14,14 @@
           <v-icon left>mdi-login</v-icon>Login
         </v-btn>
         <v-btn
-          v-show="userName"
+          v-if="user"
           color="white"
           outlined
           tile
           depressed
           @click="logout"
         >
-          <v-icon left>mdi-logout</v-icon>{{ userName }}
+          <v-icon left>mdi-logout</v-icon>{{ user.username }}
         </v-btn>
       </template>
       <v-card>
@@ -76,14 +76,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['fetchJWT', 'logout']),
+    ...mapActions(['login', 'logout']),
     submit() {
-      this.fetchJWT({ username: this.username, password: this.password })
+      this.login({ username: this.username, password: this.password })
       this.dialog = false
     },
   },
   computed: {
-    ...mapGetters(['userName']),
+    ...mapGetters(['user']),
   },
 }
 </script>

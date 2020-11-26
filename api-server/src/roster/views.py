@@ -12,7 +12,7 @@ from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator, Event
 
 from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
     DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, QualificationSerializer, \
-    QualificationModuleSerializer, QualificationCheckoffSerializer
+    QualificationModuleSerializer, QualificationCheckoffSerializer, UserSerializer
 
 
 class AviatorListView(ListCreateAPIView):
@@ -24,6 +24,11 @@ class AviatorListView(ListCreateAPIView):
 class AviatorDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Aviator.objects.all()
     serializer_class = AviatorSerializer
+
+
+class UserDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
 class SquadronListView(ListCreateAPIView):
