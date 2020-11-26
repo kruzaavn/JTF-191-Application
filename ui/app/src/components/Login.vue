@@ -1,27 +1,30 @@
 <template>
   <div class="text-center">
-    <v-dialog v-model="dialog" width="500">
+    <v-dialog v-model="dialog" width="75vw">
       <template v-slot:activator="{ on, attrs }">
         <v-btn
-          v-if="!user"
-          color="white"
-          outlined
-          tile
-          depressed
-          v-bind="attrs"
-          v-on="on"
-        >
-          <v-icon left>mdi-login</v-icon>Login
-        </v-btn>
+              v-if="$route.name === 'Register'"
+          ></v-btn>
         <v-btn
-          v-if="user"
-          color="white"
-          outlined
-          tile
-          depressed
-          @click="logout"
+            v-else-if="isLoggedIn"
+            color="white"
+            outlined
+            tile
+            depressed
+            @click="logout"
         >
           <v-icon left>mdi-logout</v-icon>{{ user.username }}
+        </v-btn>
+        <v-btn
+            v-else
+            color="white"
+            outlined
+            tile
+            depressed
+            v-bind="attrs"
+            v-on="on"
+        >
+          <v-icon left>mdi-login</v-icon>Login
         </v-btn>
       </template>
       <v-card>
@@ -32,28 +35,31 @@
         <v-card-text>
           <v-form @submit.prevent="submit">
             <v-text-field
-              v-model="username"
-              prepend-icon="mdi-account"
-              label="username"
+                v-model="credentials.username"
+                prepend-icon="mdi-account"
+                label="username"
             />
             <v-text-field
-              :prepend-icon="show_password ? 'mdi-eye' : 'mdi-eye-off'"
-              v-model="password"
-              label="password"
-              :type="show_password ? 'text' : 'password'"
-              @click:prepend="show_password = !show_password"
+                :prepend-icon="show_password ? 'mdi-eye' : 'mdi-eye-off'"
+                v-model="credentials.password"
+                label="password"
+                :type="show_password ? 'text' : 'password'"
+                @click:prepend="show_password = !show_password"
             />
           </v-form>
         </v-card-text>
         <v-divider />
         <v-card-actions>
+          <!--          <router-link to="/register" style="margin-left: 2em">-->
+          <!--            don't have a login? sign up here-->
+          <!--          </router-link>-->
           <v-spacer></v-spacer>
           <v-btn
-            outlined
-            color="info"
-            type="submit"
-            value="submit"
-            v-on:click="submit"
+              outlined
+              color="info"
+              type="submit"
+              value="submit"
+              v-on:click="submit"
           >
             Login
           </v-btn>
@@ -71,19 +77,21 @@ export default {
     return {
       dialog: false,
       show_password: false,
-      username: '',
-      password: '',
+      credentials: {
+        username: '',
+        password: ''
+      }
     }
   },
   methods: {
     ...mapActions(['login', 'logout']),
     submit() {
-      this.login({ username: this.username, password: this.password })
+      this.login(this.credentials)
       this.dialog = false
     },
   },
   computed: {
-    ...mapGetters(['user']),
+    ...mapGetters(['user', 'isLoggedIn']),
   },
 }
 </script>

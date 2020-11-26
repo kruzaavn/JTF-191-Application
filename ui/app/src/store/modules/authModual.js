@@ -1,5 +1,5 @@
 import axios from 'axios'
-import jwtDecode from "jwt-decode";
+import jwtDecode from "jwt-decode"
 
 // namespaced: true,
 const state = {
@@ -24,18 +24,30 @@ const mutations = {
 }
 
 const getters = {
-  userID: (state) => jwtDecode(state.token).user_id,
-  user: (state) => state.user
+  userID: (state) => {
+    try {
+      return jwtDecode(state.token.access).user_id
+    } catch(error) {
+      return null
+    }
+  },
+  user: (state) => state.user,
+  isLoggedIn: (state) => !!state.user,
+
 }
 
+
 const actions = {
-  async getUser({commit}) {
+  async getUser({commit, getters}) {
     const response = await axios.get(`/api/roster/users/detail/${getters.userID}/`)
     commit('setUser', response.data)
+
   },
-  async login({commit}, credentials) {
+  async login({commit, getters}, credentials) {
     const response = await axios.post('/api/token_auth/token/', credentials)
     commit('setToken', response.data)
+    const userResponse = await axios.get(`/api/roster/users/detail/${getters.userID}/`)
+    commit('setUser', userResponse.data)
   },
   logout({commit}) {
     commit('removeToken')

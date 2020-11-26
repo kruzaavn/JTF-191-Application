@@ -20,7 +20,7 @@ from .views import *
 urlpatterns = [
 
     path('aviators/list/', AviatorListView.as_view()),
-    path('user/detail/<int:pk>/', UserDetailView.as_view()),
+    path('users/detail/<int:pk>/', UserDetailView.as_view()),
     path('aviators/detail/<int:pk>/', AviatorDetailView.as_view()),
     path('prospective_aviators/detail/', ProspectiveAviatorDetailView.as_view()),
     path('stats/', StatsView.as_view()),

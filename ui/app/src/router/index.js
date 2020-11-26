@@ -7,6 +7,7 @@ import Qualification from "@/views/Qualification";
 import Squadron from '../views/Squadron'
 import JoinUs from '../views/JoinUs'
 import Schedule from '@/views/Schedule'
+import Register from "@/views/Register";
 
 Vue.use(VueRouter)
 
@@ -75,7 +76,15 @@ const routes = [
       meta: {
       title: title(title_header, 'Qualifications'),
     },
-  }
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register,
+      meta: {
+      title: title(title_header, 'Register'),
+    },
+  },
 ]
 
 const router = new VueRouter({
