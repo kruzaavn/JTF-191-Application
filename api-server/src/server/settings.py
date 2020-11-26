@@ -43,7 +43,8 @@ DEBUG = PRODUCTION is None
 
 ALLOWED_HOSTS = [
     'localhost',
-    '.jtf191.com'
+    '.jtf191.com',
+    'api-server'
 ]
 
 
