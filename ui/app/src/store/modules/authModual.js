@@ -17,6 +17,7 @@ const mutations = {
     state.token = null
     state.user = null
     localStorage.removeItem('token')
+    delete axios.defaults.headers.common['Authorization']
   },
   setUser(state, user) {
     state.user = user
