@@ -33,6 +33,13 @@ const getters = {
   },
   user: (state) => state.user,
   isLoggedIn: (state) => !!state.user,
+  tokenExpiration: (state) => {
+    try {
+      return (jwtDecode(state.token.access).exp * 1000 ) -  Date.now() <= 0
+    } catch (error) {
+      return null
+    }
+  }
 
 }
 

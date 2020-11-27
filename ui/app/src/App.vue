@@ -20,6 +20,7 @@
             <v-list-item-title>Join Us</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <div v-if="isLoggedIn">
         <v-list-item to="/qualification/list">
           <v-list-item-content>
             <v-list-item-title>Training Qualifications</v-list-item-title>
@@ -36,6 +37,7 @@
             <v-list-item-title>JTF Schedule</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+          </div>
         <v-list-group v-for="hq in hqs" :key="hq.id">
           <template v-slot:activator>
             <v-list-item-content>
@@ -82,7 +84,7 @@ export default {
     drawer: true,
   }),
   computed: {
-    ...mapGetters(['squadrons', 'hqs']),
+    ...mapGetters(['squadrons', 'hqs', 'isLoggedIn', 'tokenExpiration']),
   },
   methods: {
     ...mapActions(['getRoster', 'getHQs', 'getSquadrons']),
