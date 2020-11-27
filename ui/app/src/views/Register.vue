@@ -1,6 +1,7 @@
 <template>
   <v-container>
     <div id="registrationform" v-if="!submitted">
+      <h1>User Registration</h1>
       <v-form ref="form">
         <v-row>
           <v-col>
