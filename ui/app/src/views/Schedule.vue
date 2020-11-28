@@ -1,6 +1,6 @@
 <template>
-  <v-container>
-    <v-row v-if="schedule">
+  <v-container height="100%">
+    <v-row>
       <v-col>
         <h1>JTF Schedule</h1>
         <v-sheet tile height="64">
@@ -12,12 +12,13 @@
               {{ $refs.calendar.title }}
             </v-toolbar-title>
             <v-spacer></v-spacer>
+            <Event />
             <v-btn icon class="ma-2" @click="next()">
               <v-icon>mdi-chevron-right</v-icon>
             </v-btn>
           </v-toolbar>
         </v-sheet>
-        <v-sheet height="1000">
+        <v-sheet height="90vh">
           <v-calendar
             ref="calendar"
             :events="formattedSchedule"
@@ -78,9 +79,12 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import Event from "@/components/Event";
+
 
 export default {
   name: 'Schedule',
+  components: { Event },
   data: () => ({
     value: '',
     selectedEvent: {},

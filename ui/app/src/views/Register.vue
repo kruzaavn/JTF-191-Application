@@ -41,12 +41,8 @@
       </v-form>
     </div>
     <div id="" v-else>
-      <h1>Thank you {{ joinUsForm.callsign }}</h1>
-      <p>
-        Your application has been submitted. Watch your email at
-        <strong>{{ joinUsForm.email }}</strong> for an confirmation and thank
-        you for your interest.
-      </p>
+      <h1>You have been successfully registered!</h1>
+      <p>Returning to the homepage, if you aren't redirected click <router-link to="/">here</router-link></p>
     </div>
   </v-container>
 </template>

@@ -20,6 +20,7 @@
     "leaflet": "^1.6.0",
     "material-design-icons-iconfont": "^5.0.1",
     "milsymbol": "^2.0.0",
+    "vee-validate": "^2.2.15",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vuetify": "^2.3.3",

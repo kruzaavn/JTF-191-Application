@@ -56,7 +56,7 @@
               v-if="errors"
               dense
               outlined
-              type="error"
+              type="warning"
           >
             {{errors.detail}}
           </v-alert>
@@ -66,7 +66,7 @@
               color="info"
               type="submit"
               value="submit"
-              v-on:click="submit"
+              @click="submit"
           >
             Login
           </v-btn>
@@ -103,7 +103,6 @@ export default {
           this.getUser()
           this.dialog = false
         }).catch(error => {
-          console.log(error.response)
           this.errors = error.response.data
         })
       }
