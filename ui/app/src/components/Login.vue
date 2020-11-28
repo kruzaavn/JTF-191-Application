@@ -3,8 +3,8 @@
     <v-dialog v-model="dialog" width="75vw">
       <template v-slot:activator="{ on, attrs }">
         <v-btn
-              v-if="$route.name === 'Register'"
-          ></v-btn>
+            v-if="$route.name === 'Register'"
+        ></v-btn>
         <v-btn
             v-else-if="isLoggedIn"
             color="white"
@@ -33,16 +33,18 @@
         </v-card-title>
 
         <v-card-text>
-          <v-form @submit.prevent="submit">
+          <v-form @submit.prevent="submit" ref="form">
             <v-text-field
                 v-model="credentials.username"
                 prepend-icon="mdi-account"
                 label="username"
+                :rules="[rules.blank]"
             />
             <v-text-field
                 :prepend-icon="show_password ? 'mdi-eye' : 'mdi-eye-off'"
                 v-model="credentials.password"
                 label="password"
+                :rules="[rules.blank]"
                 :type="show_password ? 'text' : 'password'"
                 @click:prepend="show_password = !show_password"
             />
@@ -50,9 +52,14 @@
         </v-card-text>
         <v-divider />
         <v-card-actions>
-          <!--          <router-link to="/register" style="margin-left: 2em">-->
-          <!--            don't have a login? sign up here-->
-          <!--          </router-link>-->
+          <v-alert
+              v-if="errors"
+              dense
+              outlined
+              type="error"
+          >
+            {{errors.detail}}
+          </v-alert>
           <v-spacer></v-spacer>
           <v-btn
               outlined
@@ -80,14 +87,26 @@ export default {
       credentials: {
         username: '',
         password: ''
+      },
+      errors: null,
+      rules: {
+        blank: v => v.length > 0 || 'must not be blank'
       }
+
     }
   },
   methods: {
-    ...mapActions(['login', 'logout']),
+    ...mapActions(['login', 'logout', 'getUser']),
     submit() {
-      this.login(this.credentials)
-      this.dialog = false
+      if (this.$refs.form.validate()) {
+        this.login(this.credentials).then(() => {
+          this.getUser()
+          this.dialog = false
+        }).catch(error => {
+          console.log(error.response)
+          this.errors = error.response.data
+        })
+      }
     },
   },
   computed: {

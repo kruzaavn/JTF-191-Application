@@ -8,7 +8,7 @@
             <v-text-field
               v-model="registerForm.username"
               label="Username"
-              :rules="rules.blank"
+              :rules="[rules.blank]"
             >
             </v-text-field>
           </v-col>
@@ -17,7 +17,7 @@
               v-model="registerForm.password"
               type="password"
               label="Password"
-              :rules="rules.blank"
+              :rules="[rules.blank, rules.minimumLength]"
             >
             </v-text-field>
           </v-col>
@@ -26,7 +26,7 @@
               v-model="validatePassword"
               type="password"
               label="Retype Password"
-              :rules="rules.matches"
+              :rules="[passwordMatchesRule, rules.blank]"
             >
             </v-text-field>
           </v-col>
@@ -59,13 +59,16 @@ export default {
   name: 'Register',
   computed: {
     ...mapGetters(['dcsModules']),
+    passwordMatchesRule() {
+      return () => (this.registerForm.password === this.validatePassword) || 'Password must match'
+    }
   },
   methods: {
     ...mapActions(['getDcsModules']),
     postApplication: function () {
       if (this.$refs.form.validate()) {
         axios
-          .post('/api/roster/prospective_aviators/detail/', this.joinUsForm)
+          .post('/api/roster/users/create/', this.registerForm)
           .then(() => (this.submitted = true))
           .catch((response) => console.log(response.data))
       }
@@ -82,8 +85,8 @@ export default {
     errors: [],
     submitted: false,
     rules: {
-      blank: [(v) => v.length > 0 || 'must not be blank'],
-      matches: [(v) => (v === this.registerForm.password) || "passwords do not match"]
+      blank: function (v) { return v.length > 0 || 'must not be blank' },
+      minimumLength: function (v) { return  v.length >= 8 || 'password must be at least 8 characters long'}
     },
   }),
 }

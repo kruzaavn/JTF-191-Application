@@ -51,11 +51,9 @@ const actions = {
     commit('setUser', response.data)
 
   },
-  async login({commit, getters}, credentials) {
-    const response = await axios.post('/api/token_auth/token/', credentials)
-    commit('setToken', response.data)
-    const userResponse = await axios.get(`/api/roster/users/detail/${getters.userID}/`)
-    commit('setUser', userResponse.data)
+  async login({commit}, credentials) {
+      const response = await axios.post('/api/token_auth/token/', credentials)
+      commit('setToken', response.data)
   },
   logout({commit}) {
     commit('removeToken')
