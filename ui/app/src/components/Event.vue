@@ -79,7 +79,6 @@
                     v-model="newEvent.description"
                     label="Event Description"
                 ></v-textarea>
-
                 {{formatEvent()}}
               </v-col>
             </v-row>

@@ -69,7 +69,7 @@ const actions = {
     commit('setSchedule', response.data)
   },
   async addToSchedule({commit}, event) {
-    const response = await axios.post('/api/roster/event/create/', event)
+    const response = await axios.post('/api/roster/event/list/', event)
     commit('addEvent', response.data)
   },
   async getQualifications({ commit }) {

@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView, \
-    RetrieveUpdateDestroyAPIView, CreateAPIView, ListAPIView
+    RetrieveUpdateDestroyAPIView, CreateAPIView
 from rest_framework import permissions
 
 
@@ -162,11 +162,20 @@ class EventListView(ListCreateAPIView):
     serializer_class = EventSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def create(self, request, *args, **kwargs):
+        serializer = EventCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            model = serializer.create(serializer.validated_data)
+            output_serializer = EventSerializer(model)
+            return Response(output_serializer.data, status=status.HTTP_201_CREATED)
 
-class EventCreateView(CreateAPIView):
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class EventDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = Event.objects.all()
-    serializer_class = EventCreateSerializer
+    serializer_class = EventSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
