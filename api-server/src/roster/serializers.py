@@ -56,6 +56,11 @@ class EventSerializer(serializers.ModelSerializer):
         fields = '__all__'
         depth = 1
 
+class EventCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Event
+        fields = '__all__'
 
 class QualificationSerializer(serializers.ModelSerializer):
 

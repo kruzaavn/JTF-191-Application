@@ -35,23 +35,15 @@
                     <v-text-field name="startTime"
                                   label="Start Time"
                                   v-model="newEvent.start"
-                                  hint="12hr"
-                                  :rules="[rules.blank, rules.format12hrTime]"
+                                  hint="24hr Format"
+                                  :rules="[rules.blank, rules.format24hrTime]"
                     ></v-text-field>
-                  </v-col>
-                  <v-col>
-                    <v-select
-                        label="AM/PM"
-                        v-model="newEvent.AMPM"
-                        :items="selectAMPM"
-                    >
-                    </v-select>
                   </v-col>
                   <v-col>
                     <v-text-field
                         label="Duration"
                         v-model="newEvent.duration"
-                        hint="HH:MM"
+                        hint="(H)H:MM"
                         :rules="[rules.blank, rules.formatTime]"
                     ></v-text-field>
                   </v-col>
@@ -68,10 +60,11 @@
                 </v-row>
               </v-col>
               <v-col cols="7">
-                <v-textarea
-                    v-model="newEvent.description"
-                    label="Event Description"
-                ></v-textarea>
+                <v-text-field
+                    v-model="newEvent.name"
+                    label="Event Name"
+                    :rules="[rules.blank]"
+                ></v-text-field>
                 <v-select
                     label="Required squadrons"
                     v-model="newEvent.squadrons"
@@ -82,7 +75,12 @@
                     deletable-chips
                     multiple
                 ></v-select>
-                {{newEvent}}
+                <v-textarea
+                    v-model="newEvent.description"
+                    label="Event Description"
+                ></v-textarea>
+
+                {{formatEvent()}}
               </v-col>
             </v-row>
           </v-container>
@@ -116,18 +114,18 @@
 import {mapGetters, mapActions} from "vuex";
 
 function DefaultNewEvent() {
-  this.date = null
-  this.start = null
-  this.AMPM = 'PM'
-  this.duration = null
+  this.date = new Date().toLocaleDateString('en-CA')
+  this.start = '12:00'
+  this.duration = '0:30'
   this.squadrons =  []
   this.eventType = 'admin'
+  this.name = ''
 }
 
 export default {
   name: "Event",
   computed: {
-    ...mapGetters(['squadrons'])
+    ...mapGetters(['squadrons']),
   },
   methods: {
     ...mapActions(['addToSchedule']),
@@ -135,20 +133,43 @@ export default {
       this.newEvent = new DefaultNewEvent()
     },
     submitNewEvent: function () {
-      this.clearNewEvent()
-      this.dialog = false
-    }
+      if (this.$refs.newEventForm.validate()) {
+        this.addToSchedule(this.formatEvent()).then(() => {
+          this.clearNewEvent()
+          this.dialog = false
+        })
+      }
+    },
+    formatEvent: function () {
+
+      let yymmdd = this.newEvent.date.split('-').map(x => parseInt(x))
+      yymmdd[1] --
+      let hhmm = this.newEvent.start.split(':').map(x => parseInt(x))
+
+      let start = new Date(...yymmdd, ...hhmm)
+      let ohhmm = this.newEvent.duration.split(':').map(x => parseInt(x) * 1000)
+      let offset = ohhmm[0] * 3600 + ohhmm[1] * 60
+      let end = new Date(start.getTime() + offset)
+
+      return {
+        'start': start.toJSON(),
+        'end': end.toJSON(),
+        'description': this.newEvent.description,
+        'required_squadrons': this.newEvent.squadrons,
+        'type': this.newEvent.eventType,
+        'name': this.newEvent.name
+      }
+    },
   },
   data() {
     return {
       dialog: false,
       newEvent: new DefaultNewEvent(),
-      selectAMPM: ['AM', 'PM'],
       eventTypes: ['admin', 'training', 'operation'],
       rules: {
         blank: function (v) { return v.length > 0 || 'Must not be blank'},
-        format12hrTime: function (v) {return /^(0?[1-9]|1[0-2]):[0-5][0-9]$/.test(v) || 'Must be in 12hr time'},
-        formatTime: function (v) {return /\d+:[0-5][0-9]/.test(v) || 'Must be in (H):MM' }
+        format24hrTime: function (v) { return /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(v)  || 'Must be in 24hr time'},
+        formatTime: function (v) { return /\d+:[0-5][0-9]/.test(v)  || 'Must be in (H)H:MM' }
       }
     }
   }

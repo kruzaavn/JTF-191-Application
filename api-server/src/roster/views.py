@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView, \
-    RetrieveUpdateDestroyAPIView, CreateAPIView
+    RetrieveUpdateDestroyAPIView, CreateAPIView, ListAPIView
 from rest_framework import permissions
 
 
@@ -14,7 +14,8 @@ from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator, Event
 
 from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
     DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, QualificationSerializer, \
-    QualificationModuleSerializer, QualificationCheckoffSerializer, UserSerializer, UserRegisterSerializer
+    QualificationModuleSerializer, QualificationCheckoffSerializer, UserSerializer, UserRegisterSerializer, \
+    EventCreateSerializer
 
 
 class AviatorListView(ListCreateAPIView):
@@ -159,6 +160,13 @@ class EventListView(ListCreateAPIView):
 
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class EventCreateView(CreateAPIView):
+
+    queryset = Event.objects.all()
+    serializer_class = EventCreateSerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
