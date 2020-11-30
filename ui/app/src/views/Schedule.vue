@@ -66,7 +66,7 @@
 
               <v-card-actions>
                 <v-btn text color="secondary" @click="selectedOpen = false">
-                  Close
+                  Manage
                 </v-btn>
               </v-card-actions>
             </v-card>

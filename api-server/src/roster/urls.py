@@ -29,7 +29,7 @@ urlpatterns = [
     path('hqs/list/', HQListView.as_view()),
     path('modules/list/', DCSModuleListView.as_view()),
     path('event/list/', EventListView.as_view()),
-    path('event/detail/<int:pk>/', EventDetilView.as_view()),
+    path('event/detail/<int:pk>/', EventDetailView.as_view()),
     path('qualifications/list/', QualificationListView.as_view()),
     path('qualifications/detail/<int:pk>', QualificationDetailView.as_view()),
     path('qualifications/modules/list/', QualificationModuleListView.as_view()),

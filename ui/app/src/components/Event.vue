@@ -123,13 +123,14 @@ function DefaultNewEvent() {
 
 export default {
   name: "Event",
+  props: ['managedEvent'],
   computed: {
     ...mapGetters(['squadrons']),
   },
   methods: {
     ...mapActions(['addToSchedule']),
     clearNewEvent: function () {
-      this.newEvent = new DefaultNewEvent()
+      this.newEvent =  new DefaultNewEvent()
     },
     submitNewEvent: function () {
       if (this.$refs.newEventForm.validate()) {
@@ -139,6 +140,8 @@ export default {
         })
       }
     },
+    deleteEvent: function () {},
+    updateEvent: function () {},
     formatEvent: function () {
 
       let yymmdd = this.newEvent.date.split('-').map(x => parseInt(x))

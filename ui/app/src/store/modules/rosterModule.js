@@ -29,6 +29,14 @@ const mutations = {
   addEvent(state, event) {
     state.schedule.push(event)
   },
+  removeEvent(state, event) {
+    const index = state.schedule.findIndex(element => element.id === event.id)
+    state.schedule.splice(index, 1)
+  },
+  updateEvent(state, event) {
+    const index = state.schedule.findIndex(element => element.id === event.id)
+    state.schedule.splice(index, 1, event)
+  },
   setQualifications(state, qualifications) {
     state.qualificationList = qualifications
   },
@@ -71,6 +79,10 @@ const actions = {
   async addToSchedule({commit}, event) {
     const response = await axios.post('/api/roster/event/list/', event)
     commit('addEvent', response.data)
+  },
+  async updateSchedule({commit}, event) {
+    const response = await axios.put(`/api/roster/event/detail/${event.id}`, event)
+    commit('', response.data)
   },
   async getQualifications({ commit }) {
     const response = await axios.get('/api/roster/qualifications/list/')
