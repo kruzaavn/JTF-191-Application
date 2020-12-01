@@ -20,6 +20,8 @@ from .views import *
 urlpatterns = [
 
     path('aviators/list/', AviatorListView.as_view()),
+    path('users/create/<int:aviator_id>/', UserCreateView.as_view()),
+    path('users/detail/<int:pk>/', UserDetailView.as_view()),
     path('aviators/detail/<int:pk>/', AviatorDetailView.as_view()),
     path('prospective_aviators/detail/', ProspectiveAviatorDetailView.as_view()),
     path('stats/', StatsView.as_view()),
@@ -27,6 +29,7 @@ urlpatterns = [
     path('hqs/list/', HQListView.as_view()),
     path('modules/list/', DCSModuleListView.as_view()),
     path('event/list/', EventListView.as_view()),
+    path('event/detail/<int:pk>/', EventDetailView.as_view()),
     path('qualifications/list/', QualificationListView.as_view()),
     path('qualifications/detail/<int:pk>', QualificationDetailView.as_view()),
     path('qualifications/modules/list/', QualificationModuleListView.as_view()),

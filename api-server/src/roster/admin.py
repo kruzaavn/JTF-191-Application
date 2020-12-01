@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.conf import settings
+from django.core.mail import send_mail
 from .models import *
 
 # Register your models here.
@@ -24,6 +26,28 @@ class HQAdmin(admin.ModelAdmin):
     pass
 
 
+def email_registration(modeladmin, request, queryset):
+
+    for aviator in queryset:
+
+        if aviator.user is not None and aviator.email:
+
+            subject = f'{aviator.callsign} please register at JTF-191'
+            message = f"""{aviator.callsign}, please register your login at the following link https://jtf191.com/#/register/{aviator.id}.
+    If you have any issues contact Brony on discord."""
+            recipient = [aviator.email]
+
+            send_mail(
+                subject,
+                message,
+                settings.EMAIL_HOST_USER,
+                recipient
+            )
+
+
+email_registration.short_description = "Send Registration Email"
+
+
 @admin.register(Aviator)
 class AviatorAdmin(admin.ModelAdmin):
 
@@ -32,6 +56,8 @@ class AviatorAdmin(admin.ModelAdmin):
     list_filter = ('squadron__designation', 'squadron__hq__name')
 
     search_fields = ('callsign',)
+
+    actions = [email_registration]
 
 
 @admin.register(DCSModules)

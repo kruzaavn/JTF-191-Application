@@ -1,49 +1,66 @@
 import axios from 'axios'
+import jwtDecode from "jwt-decode"
 
 // namespaced: true,
 const state = {
-  currentJWT: localStorage.getItem('token'),
-  username: localStorage.getItem('username'),
+  token: null,
+  user: null
 }
 
 const mutations = {
-  setJWT(state, jwt) {
-    state.currentJWT = jwt
-    localStorage.setItem('token', jwt)
+  setToken(state, token) {
+    state.token = token
+    localStorage.setItem('token', JSON.stringify(token))
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token.access}`
   },
-  setUsername(state, username) {
-    state.username = username
-    localStorage.setItem('username', username)
+  removeToken(state) {
+    state.token = null
+    state.user = null
+    localStorage.removeItem('token')
+    delete axios.defaults.headers.common['Authorization']
   },
-  clearJWT(state) {
-    state.currentJWT = null
-    state.username = null
-    localStorage.clear()
-  },
-}
-const actions = {
-  async fetchJWT({ commit }, { username, password }) {
-    const response = await axios.post('/api/token_auth/token/', {
-      username: username,
-      password: password,
-    })
-    commit('setJWT', JSON.stringify(response.data))
-    commit('setUsername', username)
-  },
-  logout({ commit }) {
-    commit('clearJWT')
-  },
+  setUser(state, user) {
+    state.user = user
+  }
 }
 
 const getters = {
-  jwt: (state) => state.currentJWT,
-  jwtData: (state, getters) =>
-    state.currentJWT ? JSON.parse(atob(getters.jwt.split('.')[1])) : null,
-  jwtSubject: (state, getters) =>
-    getters.jwtData ? getters.jwtData.sub : null,
-  jwtIssuer: (state, getters) => (getters.jwtData ? getters.jwtData.iss : null),
-  userName: (state) => state.username,
+  userID: (state) => {
+    try {
+      return jwtDecode(state.token.access).user_id
+    } catch(error) {
+      return null
+    }
+  },
+  user: (state) => state.user,
+  isLoggedIn: (state) => !!state.user,
+  tokenExpiration: (state) => {
+    try {
+      return (jwtDecode(state.token.access).exp * 1000 ) -  Date.now() <= 0
+    } catch (error) {
+      return null
+    }
+  }
+
 }
+
+
+const actions = {
+  async getUser({commit, getters}) {
+    const response = await axios.get(`/api/roster/users/detail/${getters.userID}/`)
+    commit('setUser', response.data)
+
+  },
+  async login({commit}, credentials) {
+      const response = await axios.post('/api/token_auth/token/', credentials)
+      commit('setToken', response.data)
+  },
+  logout({commit}) {
+    commit('removeToken')
+  }
+}
+
+
 
 export default {
   state,

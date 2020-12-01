@@ -26,6 +26,17 @@ const mutations = {
   setSchedule(state, schedule) {
     state.schedule = schedule
   },
+  addEvent(state, event) {
+    state.schedule.push(event)
+  },
+  removeEvent(state, event) {
+    const index = state.schedule.findIndex(element => element.id === event.id)
+    state.schedule.splice(index, 1)
+  },
+  updateEvent(state, event) {
+    const index = state.schedule.findIndex(element => element.id === event.id)
+    state.schedule.splice(index, 1, event)
+  },
   setQualifications(state, qualifications) {
     state.qualificationList = qualifications
   },
@@ -65,9 +76,21 @@ const actions = {
     const response = await axios.get('/api/roster/event/list/')
     commit('setSchedule', response.data)
   },
+  async addToSchedule({commit}, event) {
+    const response = await axios.post('/api/roster/event/list/', event)
+    commit('addEvent', response.data)
+  },
+  async updateSchedule({commit}, event) {
+    const response = await axios.put(`/api/roster/event/detail/${event.id}/`, event)
+    commit('updateEvent', response.data)
+  },
+  async removeFromSchedule({commit}, event) {
+    await axios.delete(`/api/roster/event/detail/${event.id}/`)
+    commit('removeEvent', event)
+  },
   async getQualifications({ commit }) {
     const response = await axios.get('/api/roster/qualifications/list/')
-    commit('setQualifications', response.data)
+    commit('setQualifications', response.date)
   },
   async getQualificationModules({ commit }) {
     const response = await axios.get('/api/roster/qualifications/modules/list/')

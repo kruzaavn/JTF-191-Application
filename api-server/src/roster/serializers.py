@@ -56,6 +56,12 @@ class EventSerializer(serializers.ModelSerializer):
         fields = '__all__'
         depth = 1
 
+class EventCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Event
+        fields = '__all__'
+
 
 class QualificationSerializer(serializers.ModelSerializer):
 
@@ -78,3 +84,17 @@ class QualificationCheckoffSerializer(serializers.ModelSerializer):
     class Meta:
         model = QualificationCheckoff
         fields = '__all__'
+
+
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        exclude = ['password', 'user_permissions', 'first_name', 'last_name', 'email']
+
+
+class UserRegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'password']
+

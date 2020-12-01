@@ -6,13 +6,16 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView, \
     RetrieveUpdateDestroyAPIView, CreateAPIView
+from rest_framework import permissions
+
 
 from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator, Event, Qualification, \
     QualificationModule, QualificationCheckoff
 
 from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
     DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, QualificationSerializer, \
-    QualificationModuleSerializer, QualificationCheckoffSerializer
+    QualificationModuleSerializer, QualificationCheckoffSerializer, UserSerializer, UserRegisterSerializer, \
+    EventCreateSerializer
 
 
 class AviatorListView(ListCreateAPIView):
@@ -24,6 +27,32 @@ class AviatorListView(ListCreateAPIView):
 class AviatorDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Aviator.objects.all()
     serializer_class = AviatorSerializer
+
+
+class UserCreateView(CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserRegisterSerializer
+
+    def create(self, request, *args, **kwargs):
+        aviator = Aviator.objects.get(pk=kwargs['aviator_id'])
+        if aviator.user:
+            return Response({'detail': ['Aviator has already been registered']},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        model = serializer.create(serializer.validated_data)
+        headers = self.get_success_headers(serializer.data)
+        aviator.user = model
+        aviator.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+
+class UserDetailView(RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class SquadronListView(ListCreateAPIView):
@@ -139,46 +168,77 @@ class StatsView(APIView):
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
         else:
-            return Response( status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class EventListView(ListCreateAPIView):
 
     queryset = Event.objects.all()
     serializer_class = EventSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        serializer = EventCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            model = serializer.create(serializer.validated_data)
+            output_serializer = EventSerializer(model)
+            return Response(output_serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class EventDetailView(RetrieveUpdateDestroyAPIView):
+
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        serializer = EventCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            model = serializer.update(self.get_object(), serializer.validated_data)
+            output_serializer = EventSerializer(model)
+            return Response(output_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class QualificationListView(ListCreateAPIView):
 
     queryset = Qualification.objects.all()
     serializer_class = QualificationSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class QualificationDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = Qualification.objects.all()
     serializer_class = QualificationSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class QualificationModuleListView(ListCreateAPIView):
 
     queryset = QualificationModule.objects.all()
     serializer_class = QualificationModuleSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class QualificationModuleDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = QualificationModule.objects.all()
     serializer_class = QualificationModuleSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class QualificationCheckoffListView(ListCreateAPIView):
 
     queryset = QualificationCheckoff.objects.all()
     serializer_class = QualificationCheckoffSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
 class QualificationCheckoffDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = QualificationCheckoff.objects.all()
     serializer_class = QualificationCheckoffSerializer
+    permission_classes = [permissions.IsAuthenticated]
