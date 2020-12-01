@@ -30,7 +30,7 @@ def email_registration(modeladmin, request, queryset):
 
     for aviator in queryset:
 
-        if aviator.user is not None and aviator.email:
+        if aviator.user is None and aviator.email:
 
             subject = f'{aviator.callsign} please register at JTF-191'
             message = f"""{aviator.callsign}, please register your login at the following link https://jtf191.com/#/register/{aviator.id}.
