@@ -34,11 +34,15 @@ class UserCreateView(CreateAPIView):
     serializer_class = UserRegisterSerializer
 
     def create(self, request, *args, **kwargs):
+        aviator = Aviator.objects.get(pk=kwargs['aviator_id'])
+        if aviator.user:
+            return Response({'detail': ['Aviator has already been registered']},
+                            status=status.HTTP_400_BAD_REQUEST)
+
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         model = serializer.create(serializer.validated_data)
         headers = self.get_success_headers(serializer.data)
-        aviator = Aviator.objects.get(pk=kwargs['aviator_id'])
         aviator.user = model
         aviator.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

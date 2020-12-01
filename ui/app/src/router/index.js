@@ -78,8 +78,9 @@ const routes = [
     },
   },
   {
-    path: '/register',
+    path: '/register/:id',
     name: 'Register',
+    props: true,
     component: Register,
       meta: {
       title: title(title_header, 'Register'),

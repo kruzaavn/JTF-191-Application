@@ -1,40 +1,57 @@
 <template>
   <v-container>
     <div id="registrationform" v-if="!submitted">
-      <h1>User Registration</h1>
+      <h1>User Registration for {{roster.find(x => x.id === parseInt(id)).callsign}}</h1>
       <v-form ref="form">
         <v-row>
           <v-col>
             <v-text-field
-              v-model="registerForm.username"
-              label="Username"
-              :rules="[rules.blank]"
+                v-model="registerForm.username"
+                label="Username"
+                :rules="[rules.blank]"
             >
             </v-text-field>
           </v-col>
           <v-col>
             <v-text-field
-              v-model="registerForm.password"
-              type="password"
-              label="Password"
-              :rules="[rules.blank, rules.minimumLength]"
+                v-model="registerForm.password"
+                type="password"
+                label="Password"
+                :rules="[
+                    rules.blank,
+                    rules.minimumLength,
+                    ]"
             >
             </v-text-field>
           </v-col>
           <v-col>
             <v-text-field
-              v-model="validatePassword"
-              type="password"
-              label="Retype Password"
-              :rules="[passwordMatchesRule, rules.blank]"
+                v-model="validatePassword"
+                type="password"
+                label="Retype Password"
+                :rules="[
+                    passwordMatchesRule,
+                    rules.blank
+                    ]"
             >
             </v-text-field>
           </v-col>
         </v-row>
         <v-row>
+          <v-col>
+            <v-alert
+                v-for="(error, propertyName) in errors"
+                :key="propertyName"
+                dense
+                outlined
+                type="warning"
+            >
+              {{error[0]}}
+            </v-alert>
+          </v-col>
           <v-col align="end">
             <v-btn outlined tile color="Submit" v-on:click="postApplication"
-              >Submit</v-btn
+            >Submit</v-btn
             >
           </v-col>
         </v-row>
@@ -50,11 +67,13 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import axios from 'axios'
+import router from "@/router";
 
 export default {
   name: 'Register',
+  props: ['id'],
   computed: {
-    ...mapGetters(['dcsModules']),
+    ...mapGetters(['roster']),
     passwordMatchesRule() {
       return () => (this.registerForm.password === this.validatePassword) || 'Password must match'
     }
@@ -64,9 +83,16 @@ export default {
     postApplication: function () {
       if (this.$refs.form.validate()) {
         axios
-          .post('/api/roster/users/create/', this.registerForm)
-          .then(() => (this.submitted = true))
-          .catch((response) => console.log(response.data))
+            .post(`/api/roster/users/create/${this.id}/`, this.registerForm)
+            .then(() => {
+              this.submitted = true
+              setTimeout(() => {
+                router.push('/')
+              }, 5000)
+            })
+            .catch(error => {
+              this.errors = error.response.data
+            })
       }
     },
   },
@@ -78,11 +104,11 @@ export default {
       password: '',
     },
     validatePassword: '',
-    errors: [],
+    errors: null,
     submitted: false,
     rules: {
       blank: function (v) { return v.length > 0 || 'must not be blank' },
-      minimumLength: function (v) { return  v.length >= 8 || 'password must be at least 8 characters long'}
+      minimumLength: function (v) { return  v.length >= 8 || 'password must be at least 8 characters long'},
     },
   }),
 }
