@@ -31,7 +31,3 @@ services:
     volumes:
       - ./api-server/src/static:/www/static
       - ./api-server/src/media:/www/media
-      - nginx:/config
-
-volumes:
-  nginx:
