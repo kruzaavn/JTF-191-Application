@@ -13,6 +13,7 @@
     "singleQuote": true
   },
   "dependencies": {
+    "@vue/cli": "^4.5.9",
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
     "iframe-resizer": "^4.2.11",
