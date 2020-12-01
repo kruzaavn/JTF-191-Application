@@ -33,6 +33,17 @@ class UserCreateView(CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegisterSerializer
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        model = serializer.create(serializer.validated_data)
+        headers = self.get_success_headers(serializer.data)
+        aviator = Aviator.objects.get(pk=kwargs['aviator_id'])
+        aviator.user = model
+        aviator.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
 
 class UserDetailView(RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
@@ -177,6 +188,14 @@ class EventDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def update(self, request, *args, **kwargs):
+        serializer = EventCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            model = serializer.update(self.get_object(), serializer.validated_data)
+            output_serializer = EventSerializer(model)
+            return Response(output_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class QualificationListView(ListCreateAPIView):

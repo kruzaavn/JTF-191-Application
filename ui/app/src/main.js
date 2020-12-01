@@ -16,7 +16,7 @@ new Vue({
       let parsedToken = JSON.parse(token)
       this.$store.commit('setToken', parsedToken)
       if (!this.$store.getters.tokenExpired) {
-        this.$store.dispatch('getUser')
+            setTimeout(() => {this.$store.dispatch('getUser')}, 1000)
       } else {
         this.$store.dispatch('logout')
       }

@@ -1,4 +1,5 @@
 <template>
+  <div>
     <v-dialog
         v-model="dialog"
         max-width="900px"
@@ -12,15 +13,15 @@
             v-bind="attrs"
             v-on="on"
         >
-          Add event
+          Manage Event
         </v-btn>
       </template>
 
       <v-card>
         <v-card-title class="headline">
-          Schedule New Event
+          Manage {{selectedEvent.name}}
         </v-card-title>
-        <v-form ref="newEventForm">
+        <v-form ref="selectedEventForm">
           <v-container>
             <v-row>
               <v-col cols="5">
@@ -78,31 +79,35 @@
                     v-model="newEvent.description"
                     label="Event Description"
                 ></v-textarea>
+                {{newEvent}}
               </v-col>
             </v-row>
           </v-container>
         </v-form>
         <v-card-actions>
           <v-btn
+              color="red"
               outlined
               tile
               depressed
-              @click="clearNewEvent"
+              @click="deleteEvent(); $emit('clear')"
           >
-            Clear Event
+            Delete Event
           </v-btn>
           <v-spacer></v-spacer>
           <v-btn
               outlined
               tile
               depressed
-              @click="submitNewEvent"
+              @click="updateEvent(); $emit('clear')"
           >
-            Create Event
+            Update Event
           </v-btn>
         </v-card-actions>
       </v-card>
+
     </v-dialog>
+  </div>
 </template>
 
 <script>
@@ -118,22 +123,24 @@ function DefaultNewEvent() {
 }
 
 export default {
+
   name: "UpdateEvent",
+  props: ['selectedEvent'],
   computed: {
     ...mapGetters(['squadrons']),
   },
   methods: {
-    ...mapActions(['addToSchedule']),
-    clearNewEvent: function ()
-    {
-        this.newEvent =  new DefaultNewEvent()
+    ...mapActions(['addToSchedule', 'removeFromSchedule', 'updateSchedule']),
+    deleteEvent: function () {
+      if (this.$refs.selectedEventForm.validate()) {
+        this.removeFromSchedule(this.formatEvent()).then(() => this.dialog=false)
+      }
     },
-    submitNewEvent: function () {
-      if (this.$refs.newEventForm.validate()) {
-        this.addToSchedule(this.formatEvent()).then(() => {
-          this.clearNewEvent()
-          this.dialog = false
-        })
+    updateEvent: function () {
+      if (this.$refs.selectedEventForm.validate()) {
+              if (this.$refs.selectedEventForm.validate()) {
+        this.updateSchedule(this.formatEvent()).then(() => this.dialog=false)
+      }
       }
     },
     formatEvent: function () {
@@ -148,6 +155,7 @@ export default {
       let end = new Date(start.getTime() + offset)
 
       return {
+        'id': this.newEvent.id,
         'start': start.toJSON(),
         'end': end.toJSON(),
         'description': this.newEvent.description,
@@ -156,11 +164,36 @@ export default {
         'name': this.newEvent.name
       }
     },
+       formatSelectedEvent: function () {
+
+      if (this.selectedEvent) {
+
+        const event = {...this.selectedEvent}
+        const start = new Date(event.start)
+        const end = new Date(event.end)
+        const diff = (end - start) / 1000
+        const dHH = Math.floor(diff / 3600)
+        const dMM = Math.floor((diff - dHH * 3600) / 60)
+
+        return {
+          "date": start.toLocaleDateString('en-CA'),
+          "start": `${start.getHours()}:${start.getMinutes() || '00'}`,
+          "duration": `${dHH}:${dMM || '00'}`,
+          "description": event.description,
+          "name": event.name,
+          "eventType": event.type,
+          "squadrons": event.required_squadrons.map(x => x.id),
+          'id': event.id
+        }
+        } else {
+          return new DefaultNewEvent()
+      }
+    },
   },
   data() {
     return {
       dialog: false,
-      newEvent: new DefaultNewEvent() ,
+      newEvent:  this.newEvent = this.formatSelectedEvent(),
       eventTypes: ['admin', 'training', 'operation'],
       rules: {
         blank: function (v) { return v.length > 0 || 'Must not be blank'},
@@ -169,6 +202,7 @@ export default {
       }
     }
   }
+
 }
 </script>
 

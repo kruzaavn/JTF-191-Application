@@ -63,11 +63,8 @@
                 outlined
                 >{{ squadron.designation }}</v-chip
               >
-
               <v-card-actions>
-                <v-btn text color="secondary" @click="selectedOpen = false">
-                  Manage
-                </v-btn>
+                  <UpdateEvent v-on:clear="hideEvent"  :selected-event="selectedEvent" :key="selectedEvent || -1"/>
               </v-card-actions>
             </v-card>
           </v-menu>
@@ -80,11 +77,11 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import Event from "@/components/Event";
-
+import UpdateEvent from "@/components/UpdateEvent";
 
 export default {
   name: 'Schedule',
-  components: { Event },
+  components: { Event, UpdateEvent },
   data: () => ({
     value: '',
     selectedEvent: {},
@@ -170,6 +167,9 @@ export default {
       }
 
       nativeEvent.stopPropagation()
+    },
+    hideEvent() {
+      this.selectedOpen = false
     },
   },
   mounted() {
