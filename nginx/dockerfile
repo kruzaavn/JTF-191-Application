@@ -3,9 +3,10 @@ FROM node:latest as build-stage
 WORKDIR /ui
 COPY ui/app/ /ui/
 RUN npm install
-# RUN npm run build
+RUN npm install -g @vue/cli
+RUN npm run build
 
 FROM linuxserver/swag as production-stage
 
 COPY nginx/nginx.conf /config/nginx/site-confs/default
-# COPY --from=build-stage /ui/dist /config/www
+COPY --from=build-stage /ui/dist /config/www
