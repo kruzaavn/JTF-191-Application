@@ -1,4 +1,11 @@
+FROM node:latest as build-stage
+WORKDIR /ui
+COPY package*.json .
+RUN npm install
+COPY ui/app .
+RUN npm run build
+
 FROM linuxserver/swag as production-stage
 
 COPY nginx/nginx.conf /config/nginx/site-confs/default
-# COPY ui/app/ /config/www
+COPY --from=build-stage /app/dist /config/www
