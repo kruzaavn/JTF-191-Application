@@ -11,7 +11,6 @@ services:
       - |
         python manage.py collectstatic --noinput
         daphne server.asgi:application -b 0.0.0.0
-
   nginx:
     build:
       dockerfile: ./nginx/dockerfile
@@ -26,15 +25,9 @@ services:
       - EMAIL=aleks.kruza@gmail.com
       - PUID=1000
       - PGID=1000
-      - NODE_ENV=production
-#      - STAGING=true # Uncomment this for local testing to prevent rate-limiting (will issue untrusted cert)
+#     - STAGING=true # Uncomment this for local testing to prevent rate-limiting (will issue untrusted cert)
     depends_on:
       - api-server
     volumes:
       - ./api-server/src/static:/www/static
       - ./api-server/src/media:/www/media
-      - nginx:/config
-
-
-volumes:
-  nginx:

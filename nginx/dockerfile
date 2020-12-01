@@ -1,4 +1,5 @@
 FROM node:14 as build-stage
+
 WORKDIR /ui
 COPY ui/app/package*.json /ui/
 RUN npm install
@@ -6,5 +7,6 @@ COPY ui/app /ui
 RUN npm run build
 
 FROM linuxserver/swag as production-stage
+
 COPY nginx/nginx.conf /config/nginx/site-confs/default
 COPY --from=build-stage /ui/dist /config/www
