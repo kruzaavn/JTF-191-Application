@@ -11,7 +11,7 @@
             outlined
             tile
             depressed
-            @click="logout"
+            @click="logout(); redirect()"
         >
           <v-icon left>mdi-logout</v-icon>{{ user.username }}
         </v-btn>
@@ -78,6 +78,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import router from "@/router";
 export default {
   name: 'Login',
   data() {
@@ -107,7 +108,11 @@ export default {
         })
       }
     },
+    redirect() {
+      router.push('/')
+    }
   },
+
   computed: {
     ...mapGetters(['user', 'isLoggedIn']),
   },

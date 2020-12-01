@@ -64,7 +64,7 @@
                 >{{ squadron.designation }}</v-chip
               >
               <v-card-actions>
-                  <UpdateEvent v-on:clear="hideEvent"  :selected-event="selectedEvent" :key="selectedEvent || -1"/>
+                  <UpdateEvent v-on:clear="hideEvent"  :selected-event="selectedEvent" :key="selectedEvent.id || -1"/>
               </v-card-actions>
             </v-card>
           </v-menu>
