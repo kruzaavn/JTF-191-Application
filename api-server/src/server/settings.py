@@ -183,7 +183,7 @@ SIMPLE_JWT = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-EMAIL_SECRET_PATH = pathlib.Path(BASE_DIR).joinpath('../cred.json')
+EMAIL_SECRET_PATH = pathlib.Path(BASE_DIR).joinpath('cred.json')
 
 if EMAIL_SECRET_PATH.is_file():
 
