@@ -1,7 +1,7 @@
 FROM node:latest as build-stage
 
 WORKDIR /ui
-COPY ui/app/ /ui/
+COPY ui/app/ /ui/app/
 RUN npm install
 RUN npm run build
 
