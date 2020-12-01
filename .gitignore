@@ -1,5 +1,4 @@
 *.ipynb
 *.idea
 pw.txt
-**/dist
 **/venv
