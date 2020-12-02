@@ -273,7 +273,7 @@ class ProspectiveAviator(Pilot):
             email=self.email,
             squadron=squadron,
         )
-        dcs_modules = [x for x in self.dcs_modules]
+        dcs_modules = [x for x in self.dcs_modules.all()]
 
         aviator.dcs_modules.add(*dcs_modules)
         aviator.save()
