@@ -75,7 +75,7 @@ def convert_to_aviator(modeladmin, request, queryset):
         send_registration_email(aviator)
 
 
-convert_to_aviator.short_description('Accept Prospective Aviator')
+convert_to_aviator.short_description = 'Accept Prospective Aviator'
 
 
 @admin.register(ProspectiveAviator)
