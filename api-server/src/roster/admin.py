@@ -25,24 +25,27 @@ class SquadronAdmin(admin.ModelAdmin):
 class HQAdmin(admin.ModelAdmin):
     pass
 
+def send_registration_email(aviator):
+
+    if aviator.user is None and aviator.email:
+
+        subject = f'{aviator.callsign} please register at JTF-191'
+        message = f"""{aviator.callsign}, please register your login at the following link https://jtf191.com/#/register/{aviator.id}.
+If you have any issues contact Brony on discord."""
+        recipient = [aviator.email]
+
+        send_mail(
+            subject,
+            message,
+            settings.EMAIL_HOST_USER,
+            recipient
+        )
+
 
 def email_registration(modeladmin, request, queryset):
 
     for aviator in queryset:
-
-        if aviator.user is None and aviator.email:
-
-            subject = f'{aviator.callsign} please register at JTF-191'
-            message = f"""{aviator.callsign}, please register your login at the following link https://jtf191.com/#/register/{aviator.id}.
-    If you have any issues contact Brony on discord."""
-            recipient = [aviator.email]
-
-            send_mail(
-                subject,
-                message,
-                settings.EMAIL_HOST_USER,
-                recipient
-            )
+        send_registration_email(aviator)
 
 
 email_registration.short_description = "Send Registration Email"
@@ -65,9 +68,23 @@ class DCSModuleAdmin(admin.ModelAdmin):
     pass
 
 
+def convert_to_aviator(modeladmin, request, queryset):
+
+    for prospect in queryset:
+        aviator = prospect.create_aviator()
+        send_registration_email(aviator)
+
+
+convert_to_aviator.short_description('Accept Prospective Aviator')
+
+
 @admin.register(ProspectiveAviator)
 class ProspectiveAviatorAdmin(admin.ModelAdmin):
     search_fields = ('callsign',)
+
+    list_display = ('callsign', 'status')
+
+    actions = [convert_to_aviator]
 
 
 @admin.register(Event)

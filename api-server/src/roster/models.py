@@ -49,11 +49,14 @@ class HQ(models.Model):
 
 class DCSModules(models.Model):
     module_types = ['aircraft', 'map']
+    services = ['navy', 'air force']
 
     name = models.CharField(max_length=64)
     module_type = models.CharField(max_length=64,
                                    choices=[(x, x) for x in module_types],
                                    default=module_types[0])
+
+    service = models.CharField(choices=[(x, x) for x in services], blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -237,15 +240,42 @@ class ProspectiveAviator(Pilot):
 
     this table keeps track of prospective members to the task force
     """
+
+    statuses = ['pending', 'accepted', 'rejected']
+
     discord = models.CharField(max_length=1024, blank=True, null=True)
     head_tracking = models.CharField(max_length=1024, default='Track IR')
     hotas = models.CharField(max_length=1024, default='x52')
     about = models.TextField(blank=True, null=True)
     submitted = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(choices=[(x, x) for x in statuses],
+                              default=statuses[0])
     preferred_airframe = models.ForeignKey(DCSModules,
                                            null=True,
                                            on_delete=models.SET_NULL,
                                            related_name='preferred_airframe')
+
+    def create_aviator(self):
+
+        squadron = Squadron.objects.get(
+            type='training',
+            hq__service=self.preferred_airframe.service
+        )
+
+        self.status = 'accepted'
+        self.save()
+
+        aviator = Aviator.objects.get_or_create(
+            first_name=self.first_name,
+            last_name=self.last_name,
+            dcs_modules=self.dcs_modules,
+            callsign=self.callsign,
+            email=self.email,
+            squadron=squadron,
+        )
+
+        return aviator
+
 
     def recruitment_email(self):
         return f"""Recruitment application submitted by {self.callsign} on {self.submitted.strftime("%m/%d/%y")}
