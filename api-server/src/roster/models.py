@@ -269,12 +269,13 @@ class ProspectiveAviator(Pilot):
         aviator = Aviator.objects.get_or_create(
             first_name=self.first_name,
             last_name=self.last_name,
-            dcs_modules=self.dcs_modules,
             callsign=self.callsign,
             email=self.email,
             squadron=squadron,
         )
+        dcs_modules = [x for x in self.dcs_modules]
 
+        aviator.dcs_modules.add(*dcs_modules)
         return aviator
 
 
