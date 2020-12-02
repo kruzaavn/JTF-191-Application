@@ -56,7 +56,7 @@ class DCSModules(models.Model):
                                    choices=[(x, x) for x in module_types],
                                    default=module_types[0])
 
-    service = models.CharField(choices=[(x, x) for x in services], blank=True, null=True)
+    service = models.CharField(choices=[(x, x) for x in services], blank=True, null=True, max_length=64)
 
     def __str__(self):
         return self.name
@@ -249,7 +249,8 @@ class ProspectiveAviator(Pilot):
     about = models.TextField(blank=True, null=True)
     submitted = models.DateTimeField(auto_now_add=True)
     status = models.CharField(choices=[(x, x) for x in statuses],
-                              default=statuses[0])
+                              default=statuses[0],
+                              max_length=64)
     preferred_airframe = models.ForeignKey(DCSModules,
                                            null=True,
                                            on_delete=models.SET_NULL,
