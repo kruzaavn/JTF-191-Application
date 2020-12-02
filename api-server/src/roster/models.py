@@ -266,17 +266,19 @@ class ProspectiveAviator(Pilot):
         self.status = 'accepted'
         self.save()
 
-        aviator = Aviator.objects.get_or_create(
+        aviator, created = Aviator.objects.get_or_create(
             first_name=self.first_name,
             last_name=self.last_name,
             callsign=self.callsign,
             email=self.email,
             squadron=squadron,
         )
-        dcs_modules = [x for x in self.dcs_modules.all()]
 
-        aviator.dcs_modules.add(*dcs_modules)
-        aviator.save()
+        if created:
+            dcs_modules = [x for x in self.dcs_modules.all()]
+
+            aviator.dcs_modules.add(*dcs_modules)
+            aviator.save()
 
         return aviator
 
