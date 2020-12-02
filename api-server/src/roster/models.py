@@ -276,6 +276,8 @@ class ProspectiveAviator(Pilot):
         dcs_modules = [x for x in self.dcs_modules]
 
         aviator.dcs_modules.add(*dcs_modules)
+        aviator.save()
+
         return aviator
 
 
