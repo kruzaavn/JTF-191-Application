@@ -1,4 +1,4 @@
-FROM node:14 as build-stage
+FROM node:alpine as build-stage
 
 WORKDIR /ui
 COPY ui/app/package*.json /ui/
