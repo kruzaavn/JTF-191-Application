@@ -3,11 +3,11 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import About from '../views/About.vue'
 // import GCI from '../views/GCI.vue'
-import Qualification from "@/views/Qualification";
+import Qualification from '@/views/Qualification'
 import Squadron from '../views/Squadron'
 import JoinUs from '../views/JoinUs'
 import Schedule from '@/views/Schedule'
-import Register from "@/views/Register";
+import Register from '@/views/Register'
 
 Vue.use(VueRouter)
 
@@ -73,7 +73,7 @@ const routes = [
     name: 'Qualification',
     props: true,
     component: Qualification,
-      meta: {
+    meta: {
       title: title(title_header, 'Qualifications'),
     },
   },
@@ -82,7 +82,7 @@ const routes = [
     name: 'Register',
     props: true,
     component: Register,
-      meta: {
+    meta: {
       title: title(title_header, 'Register'),
     },
   },

@@ -21,23 +21,23 @@
           </v-list-item-content>
         </v-list-item>
         <div v-if="isLoggedIn">
-        <v-list-item to="/qualification/list">
-          <v-list-item-content>
-            <v-list-item-title>Training Qualifications</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <!--        11/1/2020 Removing webgci -->
-        <!--        <v-list-item to="/gci">-->
-        <!--          <v-list-item-content>-->
-        <!--            <v-list-item-title>Web GCI</v-list-item-title>-->
-        <!--          </v-list-item-content>-->
-        <!--        </v-list-item>-->
-        <v-list-item to="/schedule">
-          <v-list-item-content>
-            <v-list-item-title>JTF Schedule</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-          </div>
+          <v-list-item to="/qualification/list">
+            <v-list-item-content>
+              <v-list-item-title>Training Qualifications</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <!--        11/1/2020 Removing webgci -->
+          <!--        <v-list-item to="/gci">-->
+          <!--          <v-list-item-content>-->
+          <!--            <v-list-item-title>Web GCI</v-list-item-title>-->
+          <!--          </v-list-item-content>-->
+          <!--        </v-list-item>-->
+          <v-list-item to="/schedule">
+            <v-list-item-content>
+              <v-list-item-title>JTF Schedule</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </div>
         <v-list-group v-for="hq in hqs" :key="hq.id">
           <template v-slot:activator>
             <v-list-item-content>
@@ -100,7 +100,7 @@ export default {
     }, 0)
     setTimeout(() => {
       this.getSquadrons()
-      }, 500)
+    }, 500)
     setTimeout(() => {
       this.getHQs()
     }, 1000)

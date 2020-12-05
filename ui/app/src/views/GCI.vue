@@ -59,7 +59,6 @@ export default {
       this.map.update_icons(data)
     },
     disconnectSocket: function () {
-
       if (this.socket) {
         this.socket.close()
       }

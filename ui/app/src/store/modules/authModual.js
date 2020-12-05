@@ -1,10 +1,10 @@
 import axios from 'axios'
-import jwtDecode from "jwt-decode"
+import jwtDecode from 'jwt-decode'
 
 // namespaced: true,
 const state = {
   token: null,
-  user: null
+  user: null,
 }
 
 const mutations = {
@@ -21,14 +21,14 @@ const mutations = {
   },
   setUser(state, user) {
     state.user = user
-  }
+  },
 }
 
 const getters = {
   userID: (state) => {
     try {
       return jwtDecode(state.token.access).user_id
-    } catch(error) {
+    } catch (error) {
       return null
     }
   },
@@ -36,31 +36,28 @@ const getters = {
   isLoggedIn: (state) => !!state.user,
   tokenExpiration: (state) => {
     try {
-      return (jwtDecode(state.token.access).exp * 1000 ) -  Date.now() <= 0
+      return jwtDecode(state.token.access).exp * 1000 - Date.now() <= 0
     } catch (error) {
       return null
     }
-  }
-
+  },
 }
-
 
 const actions = {
-  async getUser({commit, getters}) {
-    const response = await axios.get(`/api/roster/users/detail/${getters.userID}/`)
+  async getUser({ commit, getters }) {
+    const response = await axios.get(
+      `/api/roster/users/detail/${getters.userID}/`
+    )
     commit('setUser', response.data)
-
   },
-  async login({commit}, credentials) {
-      const response = await axios.post('/api/token_auth/token/', credentials)
-      commit('setToken', response.data)
+  async login({ commit }, credentials) {
+    const response = await axios.post('/api/token_auth/token/', credentials)
+    commit('setToken', response.data)
   },
-  logout({commit}) {
+  logout({ commit }) {
     commit('removeToken')
-  }
+  },
 }
-
-
 
 export default {
   state,

@@ -16,11 +16,12 @@ new Vue({
       let parsedToken = JSON.parse(token)
       this.$store.commit('setToken', parsedToken)
       if (!this.$store.getters.tokenExpired) {
-            setTimeout(() => {this.$store.dispatch('getUser')}, 1000)
+        setTimeout(() => {
+          this.$store.dispatch('getUser')
+        }, 1000)
       } else {
         this.$store.dispatch('logout')
       }
-
     }
   },
   render: (h) => h(App),

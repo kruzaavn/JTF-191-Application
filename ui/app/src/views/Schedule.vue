@@ -64,7 +64,11 @@
                 >{{ squadron.designation }}</v-chip
               >
               <v-card-actions>
-                  <UpdateEvent v-on:clear="hideEvent"  :selected-event="selectedEvent" :key="selectedEvent.id || -1"/>
+                <UpdateEvent
+                  v-on:clear="hideEvent"
+                  :selected-event="selectedEvent"
+                  :key="selectedEvent.id || -1"
+                />
               </v-card-actions>
             </v-card>
           </v-menu>
@@ -76,8 +80,8 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import Event from "@/components/Event";
-import UpdateEvent from "@/components/UpdateEvent";
+import Event from '@/components/Event'
+import UpdateEvent from '@/components/UpdateEvent'
 
 export default {
   name: 'Schedule',
