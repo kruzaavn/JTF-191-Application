@@ -17,4 +17,4 @@ RUN npm run build
 FROM linuxserver/swag as production-stage
 
 COPY nginx/nginx.conf /config/nginx/site-confs/default
-COPY --from=build-stage /ui/dist /config/www
+COPY --from=build-stage /app/dist /config/www
