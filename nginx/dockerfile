@@ -1,10 +1,5 @@
-FROM node:lts-alpine as build-stage
-
-# WORKDIR /ui
-# COPY ui/app/package*.json /ui/
-# RUN npm install
-# COPY ui/app /ui
-# RUN npm run build
+# vue build stage this code will create the static index.html and associated static files
+FROM node as build-stage
 
 WORKDIR /app
 COPY ui/app/package*.json ./
@@ -13,7 +8,7 @@ COPY ui/app .
 RUN npm run build
 
 
-
+# nginx server
 FROM linuxserver/swag as production-stage
 
 COPY nginx/nginx.conf /config/nginx/site-confs/default
