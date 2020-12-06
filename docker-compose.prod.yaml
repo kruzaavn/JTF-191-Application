@@ -26,7 +26,6 @@ services:
       - EMAIL=aleks.kruza@gmail.com
       - PUID=1000
       - PGID=1000
-      - NODE_ENV=development
 #     - STAGING=true # Uncomment this for local testing to prevent rate-limiting (will issue untrusted cert)
     depends_on:
       - api-server
