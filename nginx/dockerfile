@@ -1,10 +1,18 @@
-FROM node:alpine as build-stage
+FROM node:lts-alpine as build-stage
 
-WORKDIR /ui
-COPY ui/app/package*.json /ui/
+# WORKDIR /ui
+# COPY ui/app/package*.json /ui/
+# RUN npm install
+# COPY ui/app /ui
+# RUN npm run build
+
+WORKDIR /app
+COPY ui/app/package*.json ./
 RUN npm install
-COPY ui/app /ui
+COPY ui/app .
 RUN npm run build
+
+
 
 FROM linuxserver/swag as production-stage
 
