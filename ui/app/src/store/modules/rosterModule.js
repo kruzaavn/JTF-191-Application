@@ -93,7 +93,7 @@ const actions = {
   },
   async getQualifications({ commit }) {
     const response = await axios.get('/api/roster/qualifications/list/')
-    commit('setQualifications', response.date)
+    commit('setQualifications', response.data)
   },
   async getQualificationModules({ commit }) {
     const response = await axios.get('/api/roster/qualifications/modules/list/')
