@@ -1,8 +1,7 @@
 # vue build stage this code will create the static index.html and associated static files
-FROM node as build-stage
+FROM node:lts-alpine as build-stage
 
 WORKDIR /app
-RUN npm install -g @vue/cli
 COPY ui/app/package*.json ./
 RUN npm install
 COPY ui/app .
