@@ -2,6 +2,7 @@
   <v-container>
     <v-card v-if="!documentation" min-height="80vh">
       <v-card-title>Quals</v-card-title>
+      {{qualifications}}
       <v-list>
         <v-list-group
           v-for="qualification in qualifications"
