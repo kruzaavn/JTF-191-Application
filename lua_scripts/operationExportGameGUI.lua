@@ -75,20 +75,28 @@ end
 
 function callbacks.onSimulationStart()
 
+	dcs_log('did i get here?')
+	-- compute filename
+
+	local filename = lfs.writedir() .. '/Logs/' .. DCS.getMissionName() .. '.log'
+
 	-- create log file
 
-    export_file = io.open(lfs.write_dir() .. '/Logs/' .. DCS..getMissionName() .. '.log', 'w')
+	dcs_log(string.format('Create output file: %s', filename))
+
+	export_file = io.open(filename, 'w')
 
 end
 
 function callbacks.onSimulationStop()
 
+	dcs_log('closing out file')
 	-- dump state of the sim
 
 	export_file:write(ExportWorldObjects())
 
 
-	-- close log file
+	-- close log filec
 
 	export_file:close()
 	export_file = nil
