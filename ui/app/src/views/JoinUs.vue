@@ -178,18 +178,17 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import axios from 'axios'
+
 export default {
   name: 'JoinUs',
   computed: {
     ...mapGetters(['dcsModules']),
   },
   methods: {
-    ...mapActions(['getDcsModules']),
+    ...mapActions(['getDcsModules', 'addProspectiveAviator']),
     postApplication: function () {
       if (this.$refs.form.validate()) {
-        axios
-          .post('/api/roster/prospective_aviators/detail/', this.joinUsForm)
+        this.addProspectiveAviator(this.joinUsForm)
           .then(() => (this.submitted = true))
           .catch((response) => console.log(response.data))
       }

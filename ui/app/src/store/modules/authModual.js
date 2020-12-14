@@ -45,10 +45,11 @@ const getters = {
 
 const actions = {
   async getUser({ commit, getters }) {
-    const response = await axios.get(
-      `/api/roster/users/detail/${getters.userID}/`
-    )
+    const response = await axios.get(`/api/roster/user/${getters.userID}`)
     commit('setUser', response.data)
+  },
+  async registerUser(aviator_id, registration) {
+    await axios.post(`/api/roster/user/create/${aviator_id}`, registration)
   },
   async login({ commit }, credentials) {
     const response = await axios.post('/api/token_auth/token/', credentials)

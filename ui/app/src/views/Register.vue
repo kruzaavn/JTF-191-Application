@@ -66,7 +66,6 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import axios from 'axios'
 import router from '@/router'
 
 export default {
@@ -81,11 +80,10 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['getDcsModules']),
+    ...mapActions(['getDcsModules', 'registerUser']),
     postApplication: function () {
       if (this.$refs.form.validate()) {
-        axios
-          .post(`/api/roster/users/create/${this.id}/`, this.registerForm)
+        this.registerUser(this.id, this.registerForm)
           .then(() => {
             this.submitted = true
             setTimeout(() => {

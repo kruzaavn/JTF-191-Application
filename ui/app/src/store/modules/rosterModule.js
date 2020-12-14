@@ -57,47 +57,47 @@ const getters = {
 
 const actions = {
   async getRoster({ commit }) {
-    const response = await axios.get('/api/roster/aviators/list/')
+    const response = await axios.get('/api/roster/aviator')
     commit('setRoster', response.data)
   },
   async getSquadrons({ commit }) {
-    const response = await axios.get('/api/roster/squadrons/list/')
+    const response = await axios.get('/api/roster/squadron')
     commit('setSquadrons', response.data)
   },
   async getHQs({ commit }) {
-    const response = await axios.get('/api/roster/hqs/list/')
+    const response = await axios.get('/api/roster/hq')
     commit('setHQs', response.data)
   },
   async getDcsModules({ commit }) {
-    const response = await axios.get('/api/roster/modules/list/')
+    const response = await axios.get('/api/roster/module')
     commit('setDcsModules', response.data)
   },
   async getSchedule({ commit }) {
-    const response = await axios.get('/api/roster/event/list/')
+    const response = await axios.get('/api/roster/event')
     commit('setSchedule', response.data)
   },
   async addToSchedule({ commit }, event) {
-    const response = await axios.post('/api/roster/event/list/', event)
+    const response = await axios.post('/api/roster/event', event)
     commit('addEvent', response.data)
   },
   async updateSchedule({ commit }, event) {
-    const response = await axios.put(
-      `/api/roster/event/detail/${event.id}/`,
-      event
-    )
+    const response = await axios.put(`/api/roster/event/${event.id}`, event)
     commit('updateEvent', response.data)
   },
   async removeFromSchedule({ commit }, event) {
-    await axios.delete(`/api/roster/event/detail/${event.id}/`)
+    await axios.delete(`/api/roster/event/${event.id}`)
     commit('removeEvent', event)
   },
   async getQualifications({ commit }) {
-    const response = await axios.get('/api/roster/qualifications/list/')
+    const response = await axios.get('/api/roster/qualification')
     commit('setQualifications', response.data)
   },
   async getQualificationModules({ commit }) {
-    const response = await axios.get('/api/roster/qualifications/modules/list/')
+    const response = await axios.get('/api/roster/qualifications/module')
     commit('setQualificationModules', response.data)
+  },
+  async addProspectiveAviator(prospect) {
+    await axios.post('/api/roster/prospective_aviator', prospect)
   },
 }
 
