@@ -74,29 +74,26 @@ end
 
 
 function callbacks.onSimulationStart()
-
-	dcs_log('did i get here?')
-	-- compute filename
-
-	local filename = lfs.writedir() .. '/Logs/' .. DCS.getMissionName() .. '.log'
-
 	-- create log file
+	local filename = lfs.writedir() .. '/Logs/mission/' .. DCS.getMissionName() .. '.log'
 
-	dcs_log(string.format('Create output file: %s', filename))
-
+	dcs_log(string.format('Create mission output file at: %s', filename))
 	export_file = io.open(filename, 'w')
+	dcs_log('Writing out simulation start state')
+	export_file:write(ExportWorldObjects() .. '\n')
 
 end
 
 function callbacks.onSimulationStop()
 
-	dcs_log('closing out file')
+	dcs_log('Closing out file')
+
 	-- dump state of the sim
 
+	dcs_log('Writing out simulation end state')
 	export_file:write(ExportWorldObjects())
 
-
-	-- close log filec
+	-- close log file
 
 	export_file:close()
 	export_file = nil
@@ -125,9 +122,7 @@ function callbacks.onGameEvent(eventName, arg1, arg2, arg3, arg4, arg5, arg6, ar
 
 	if contains({'kill'}, eventName) then
 
-		event.group = DCS.getUnitProperty(arg4, DCS.UNIT_GROUPNAME)
 		event.victim = arg5
-		event.unit = Export.LoGetObjectById(arg4)
 
 	end
 
