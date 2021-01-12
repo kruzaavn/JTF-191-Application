@@ -75,12 +75,15 @@ end
 
 function callbacks.onSimulationStart()
 	-- create log file
-	local filename = lfs.writedir() .. '/Logs/mission/' .. DCS.getMissionName() .. '.log'
+	local filename = lfs.writedir() .. '/Logs/mission/' .. DCS.getMissionName() .. '_start.log'
 
 	dcs_log(string.format('Create mission output file at: %s', filename))
 	export_file = io.open(filename, 'w')
 	dcs_log('Writing out simulation start state')
 	export_file:write(ExportWorldObjects() .. '\n')
+	export_file:close()
+	dcs_log('Closing simulation start state file')
+	export_file = nil
 
 end
 
@@ -89,18 +92,19 @@ function callbacks.onSimulationStop()
 	dcs_log('Closing out file')
 
 	-- dump state of the sim
+	local filename = lfs.writedir() .. '/Logs/mission/' .. DCS.getMissionName() .. '_end.log'
 
+	dcs_log(string.format('Create mission output file at: %s', filename))
+	export_file = io.open(filename, 'w')
 	dcs_log('Writing out simulation end state')
-	export_file:write(ExportWorldObjects())
-
-	-- close log file
-
+	export_file:write(ExportWorldObjects() .. '\n')
 	export_file:close()
+	dcs_log('Closing simulation end state file')
 	export_file = nil
 
 end
 
-function callbacks.onGameEvent(eventName, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+--function callbacks.onGameEvent(eventName, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
     -- this function is required to send data on event to the api-server depending on the event triggered the the
     -- name and arguments are listed below.
         --"friendly_fire", playerID, weaponName, victimPlayerID
@@ -116,18 +120,18 @@ function callbacks.onGameEvent(eventName, arg1, arg2, arg3, arg4, arg5, arg6, ar
         --"landing", playerID, unit_missionID, airdromeName
         --"pilot_death", playerID, unit_missionID
 
-  	local event = {}
-	event.event = eventName
-	event.time = DCS.getRealTime()
+  	--local event = {}
+	--event.event = eventName
+	--event.time = DCS.getRealTime()
 
-	if contains({'kill'}, eventName) then
+	--if contains({'kill'}, eventName) then
 
-		event.victim = arg5
+		--event.victim = arg5
 
-	end
+	--end
 
-	Export2File(event)
-	dcs_log(string.format('Event: %4s', eventName))
+	--Export2File(event)
+	--dcs_log(string.format('Event: %4s', eventName))
 
 end
 
