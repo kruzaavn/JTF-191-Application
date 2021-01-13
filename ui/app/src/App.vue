@@ -59,6 +59,7 @@
           </v-list-item>
         </v-list-group>
       </v-list>
+      <Footer></Footer>
     </v-navigation-drawer>
     <v-main>
       <v-container class="fill-height" fluid>
@@ -66,6 +67,7 @@
           <router-view></router-view>
         </v-row>
       </v-container>
+
     </v-main>
   </v-app>
 </template>
@@ -73,10 +75,11 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Login from './components/Login'
+import Footer from "@/components/Footer";
 
 export default {
   name: 'Title',
-  components: { Login },
+  components: {Footer, Login },
   props: {
     source: String,
   },
