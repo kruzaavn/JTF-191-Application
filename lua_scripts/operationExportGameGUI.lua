@@ -74,8 +74,12 @@ end
 
 
 function callbacks.onSimulationStart()
+	-- create mission directory if it doesn't exist
+
+	lfs.mkdir(lfs.writedir() .. '/Logs/mission/')
+
 	-- create log file
-	local filename = lfs.writedir() .. '/Logs/mission/' .. DCS.getMissionName() .. '_start.log'
+	local filename = lfs.writedir() .. '/Logs/mission/' .. DCS.getMissionName() .. '_start.json'
 
 	dcs_log(string.format('Create mission output file at: %s', filename))
 	export_file = io.open(filename, 'w')
@@ -92,7 +96,7 @@ function callbacks.onSimulationStop()
 	dcs_log('Closing out file')
 
 	-- dump state of the sim
-	local filename = lfs.writedir() .. '/Logs/mission/' .. DCS.getMissionName() .. '_end.log'
+	local filename = lfs.writedir() .. '/Logs/mission/' .. DCS.getMissionName() .. '_end.json'
 
 	dcs_log(string.format('Create mission output file at: %s', filename))
 	export_file = io.open(filename, 'w')
@@ -133,7 +137,7 @@ end
 	--Export2File(event)
 	--dcs_log(string.format('Event: %4s', eventName))
 
-end
+-- end
 
 -- register callbacks to the DCS environment
 DCS.setUserCallbacks(callbacks)
