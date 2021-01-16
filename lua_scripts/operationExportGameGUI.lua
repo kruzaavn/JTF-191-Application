@@ -54,7 +54,7 @@ function ExportWorldObjects()
 
 	-- get all units in dcs
 	local o = Export.LoGetWorldObjects()
-	local message = '['
+	local message = '{'
 	local json
 
 	-- iterate through all units and compose json
@@ -62,11 +62,11 @@ function ExportWorldObjects()
 
 		json = JSON:encode(v)
 
-		message = message .. string.format('%s,', json)
+		message = message .. string.format('"%d":%s,', k,json)
 
 	end
 
-	message = message .. ']'
+	message = message .. '}'
 
 	return message
 end
