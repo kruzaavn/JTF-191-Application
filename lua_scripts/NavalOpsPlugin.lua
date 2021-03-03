@@ -3,11 +3,15 @@
     This Lua file is intended to act as a naval operations plugin to setup naval flight operations for blue forces
     according to the MOOSE AirBoss framework without additional user interface.
 
+    initial setup brony 2/1/2020
+
 ]]
 
-env.info( "=========================================================================================")
-env.info( "NavalOperations:      Setting up AirBoss." )
-env.info( "=========================================================================================")
+env.info([[
+=========================================================================================
+NavalOperations:      Setting up Naval Operations Plugin.
+=========================================================================================]]
+)
 
 -- utility functions
 function contains(list, x)
@@ -51,7 +55,7 @@ local morse = {
 }
 
 local StartDelay = "00:05" -- HH:MM from mission start time to begin recovery operations
-local RecoveryWindowLength = "01:00" -- HH:MM for recovery window
+local RecoveryWindowLength = "03:00" -- HH:MM for recovery window
 local RecoveryWindowBreak = "00:30" -- HH:MM for recovery window break to reposition carrier
 local MissionLength = "04:00" -- HH:MM mission length to plan for
 local msg = nil
@@ -78,7 +82,7 @@ function setup_airboss(unit)
 
         -- determine tacan and icls from hull number and ship type
         if contains({'CVN_71', 'CVN_72', 'CVN_73', 'CVN_74'}, unit:GetTypeName()) then
-            TACAN = tonumber(string.sub(unit:GetTypeName(), 5,6))
+            TACAN = tonumber(string.sub(unit:GetTypeName(), -2))
             ICLS = 7
             DeckWind = 27
         else
