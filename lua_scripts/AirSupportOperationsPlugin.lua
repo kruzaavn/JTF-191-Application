@@ -61,7 +61,7 @@ local awacs_callsigns = {
     "Overloard",
     "Magic",
     "Darkstar",
-    "Winzard",
+    "Wizzard",
     "Focus"
 }
 
