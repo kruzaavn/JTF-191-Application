@@ -28,6 +28,8 @@ class HQ(models.Model):
                       enumerate(["CO", "XO", "OPSO", ""])},
         services[2]: {i + 1: x for i, x in
                       enumerate(["CO", "XO", "OPSO", ""])},
+        services[3]: {i + 1: x for i, x in
+                      enumerate(["CO", "XO", "OPSO", ""])},
 
     }
 
