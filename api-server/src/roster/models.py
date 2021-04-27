@@ -9,7 +9,7 @@ class HQ(models.Model):
     hq table
     """
     # constants
-    services = ['navy', 'marine', 'air force']
+    services = ['navy', 'marine', 'air force', 'army']
     rank_table = {
         services[0]: {i + 1: x for i, x in
                       enumerate(["ENS", "LTJG", "LT", "LCDR", "CDR", "CAPT"])},
@@ -17,6 +17,8 @@ class HQ(models.Model):
             ["2ndLt", "1stLt", "Capt", "Maj", "LtCol", "Col"])},
         services[2]: {i + 1: x for i, x in enumerate(
             ["2d Lt", "1st Lt", "Capt", "Maj", "Lt Col", "Col"])},
+        services[3]: {i + 1: x for i, x in enumerate(
+            ["2LT", "1LT", "CPT", "MAJ", "LTC", "COL"])},
     }
 
     position_table = {
