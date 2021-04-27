@@ -53,7 +53,7 @@ class HQ(models.Model):
 
 class DCSModules(models.Model):
     module_types = ['aircraft', 'map']
-    services = ['navy', 'air force']
+    services = ['navy', 'air force', 'army']
 
     name = models.CharField(max_length=64)
     module_type = models.CharField(max_length=64,
