@@ -25,13 +25,16 @@ class SquadronAdmin(admin.ModelAdmin):
 class HQAdmin(admin.ModelAdmin):
     pass
 
+
 def send_registration_email(aviator):
 
     if aviator.user is None and aviator.email:
 
         subject = f'{aviator.callsign} please register at JTF-191'
-        message = f"""{aviator.callsign}, please register your login at the following link https://jtf191.com/#/register/{aviator.id}.
-If you have any issues contact Brony on discord."""
+        message = f"""{aviator.callsign}, please register your login at the following link 
+        https://jtf191.com/#/register/{aviator.id}. 
+        
+        If you have any issues contact Brony on discord."""
         recipient = [aviator.email]
 
         send_mail(
