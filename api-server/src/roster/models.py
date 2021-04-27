@@ -9,14 +9,16 @@ class HQ(models.Model):
     hq table
     """
     # constants
-    services = ['navy', 'marine', 'air force']
+    services = ['navy', 'marine', 'air force', 'army']
     rank_table = {
         services[0]: {i + 1: x for i, x in
                       enumerate(["ENS", "LTJG", "LT", "LCDR", "CDR", "CAPT"])},
         services[1]: {i + 1: x for i, x in enumerate(
             ["2ndLt", "1stLt", "Capt", "Maj", "LtCol", "Col"])},
         services[2]: {i + 1: x for i, x in enumerate(
-            ["2nd Lt", "1st Lt", "Capt", "Maj", "Lt Col", "Col"])},
+            ["2d Lt", "1st Lt", "Capt", "Maj", "Lt Col", "Col"])},
+        services[3]: {i + 1: x for i, x in enumerate(
+            ["2LT", "1LT", "CPT", "MAJ", "LTC", "COL"])},
     }
 
     position_table = {
@@ -25,6 +27,8 @@ class HQ(models.Model):
         services[1]: {i + 1: x for i, x in
                       enumerate(["CO", "XO", "OPSO", ""])},
         services[2]: {i + 1: x for i, x in
+                      enumerate(["CO", "XO", "OPSO", ""])},
+        services[3]: {i + 1: x for i, x in
                       enumerate(["CO", "XO", "OPSO", ""])},
 
     }
@@ -49,7 +53,7 @@ class HQ(models.Model):
 
 class DCSModules(models.Model):
     module_types = ['aircraft', 'map']
-    services = ['navy', 'air force']
+    services = ['navy', 'air force', 'army']
 
     name = models.CharField(max_length=64)
     module_type = models.CharField(max_length=64,
