@@ -11,14 +11,14 @@ class HQ(models.Model):
     # constants
     services = ['navy', 'marine', 'air force', 'army']
     rank_table = {
-        services[0]: {i + 1: x for i, x in
-                      enumerate(["ENS", "LTJG", "LT", "LCDR", "CDR", "CAPT"])},
+        services[0]: {i + 1: x for i, x in enumerate(
+            ["ENS", "LTJG", "LT", "LCDR", "CDR", "CAPT"])},
         services[1]: {i + 1: x for i, x in enumerate(
             ["2ndLt", "1stLt", "Capt", "Maj", "LtCol", "Col"])},
         services[2]: {i + 1: x for i, x in enumerate(
-            ["2d Lt", "1st Lt", "Capt", "Maj", "Lt Col", "Col"])},
+            ["2nd Lt", "1st Lt", "Capt", "Maj", "Lt Col", "Col"])},
         services[3]: {i + 1: x for i, x in enumerate(
-            ["2LT", "1LT", "CPT", "MAJ", "LTC", "COL"])},
+            ["WO1","CW2","CW3","CW4","CW5","2nd Lt", "1st Lt", "Capt", "Maj", "Lt Col", "Col"])},
     }
 
     position_table = {
@@ -53,7 +53,7 @@ class HQ(models.Model):
 
 class DCSModules(models.Model):
     module_types = ['aircraft', 'map']
-    services = ['navy', 'air force', 'army']
+    services = ['navy', 'air force']
 
     name = models.CharField(max_length=64)
     module_type = models.CharField(max_length=64,
@@ -181,7 +181,7 @@ class Aviator(Pilot):
                               default=statuses[0], max_length=128)
     operations = models.ManyToManyField(Operation, blank=True)
     rank_code = models.IntegerField(default=1,
-                                    validators=[MinValueValidator(1),
+                                    validators=[MinValueValidator(-4),
                                                 MaxValueValidator(6)],
                                     help_text=f'{rank_helper}')
     tail_number = models.CharField(max_length=64, blank=True, null=True)
