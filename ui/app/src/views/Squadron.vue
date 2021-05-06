@@ -87,12 +87,17 @@ export default {
   props: ['squadronDesignation'],
   data: () => ({
     ranks: {
-      1: 'second_lieutenant',
-      2: 'first_lieutenant',
-      3: 'captain',
-      4: 'major',
-      5: 'lieutenant_colonel',
-      6: 'colonel',
+      -4: 'https://www.army.mil/e2/images/rv7/ranks/badges/warrant_officer/cw1.jpg',
+      -3: 'https://www.army.mil/e2/images/rv7/ranks/badges/warrant_officer/cw2.jpg',
+      -2: 'https://www.army.mil/e2/images/rv7/ranks/badges/warrant_officer/cw3.jpg',
+      -1: 'https://www.army.mil/e2/images/rv7/ranks/badges/warrant_officer/cw4.jpg',
+      0: 'https://www.army.mil/e2/images/rv7/ranks/badges/warrant_officer/cw5.jpg',
+      1: 'https://www.army.mil/e2/images/rv7/ranks/badges/officer/officers_ranks01.jpg',
+      2: 'https://www.army.mil/e2/images/rv7/ranks/badges/officer/officers_ranks02.jpg',
+      3: 'https://www.army.mil/e2/images/rv7/ranks/badges/officer/officers_ranks03.jpg',
+      4: 'https://www.army.mil/e2/images/rv7/ranks/badges/officer/officers_ranks04.jpg',
+      5: 'https://www.army.mil/e2/images/rv7/ranks/badges/officer/officers_ranks05.jpg',
+      6: 'https://www.army.mil/e2/images/rv7/ranks/badges/officer/officers_ranks06.jpg',
     },
     hoursHeaders: [
       {
