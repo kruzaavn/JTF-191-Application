@@ -1,3 +1,5 @@
+import http
+
 from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -242,3 +244,10 @@ class QualificationCheckoffDetailView(RetrieveUpdateDestroyAPIView):
     queryset = QualificationCheckoff.objects.all()
     serializer_class = QualificationCheckoffSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+class LiveryListView(APIView):
+
+    def get(self, request):
+
+        return Response(status=status.HTTP_418_IM_A_TEAPOT)
