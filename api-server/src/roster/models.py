@@ -17,7 +17,7 @@ class HQ(models.Model):
             ["2ndLt", "1stLt", "Capt", "Maj", "LtCol", "Col"])},
         services[2]: {i + 1: x for i, x in enumerate(
             ["2nd Lt", "1st Lt", "Capt", "Maj", "Lt Col", "Col"])},
-        services[3]: {i + 1: x for i, x in enumerate(
+        services[3]: {i - 4: x for i, x in enumerate(
             ["WO1","CW2","CW3","CW4","CW5","2nd Lt", "1st Lt", "Capt", "Maj", "Lt Col", "Col"])},
     }
 
@@ -53,7 +53,7 @@ class HQ(models.Model):
 
 class DCSModules(models.Model):
     module_types = ['aircraft', 'map']
-    services = ['navy', 'air force']
+    services = ['navy', 'air force', 'army']
 
     name = models.CharField(max_length=64)
     module_type = models.CharField(max_length=64,
