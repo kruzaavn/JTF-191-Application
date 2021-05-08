@@ -1,4 +1,5 @@
 import http
+import zipfile
 
 from django.core.mail import send_mail
 from django.conf import settings
@@ -250,4 +251,36 @@ class LiveryListView(APIView):
 
     def get(self, request):
 
+        # create zipfile object
+
+        zip_file = zipfile.ZipFile('liveries.zip', 'w')
+
+        # get all aviators
+        aviators = Aviator.objects.all()
+
+        for aviator in aviators:
+
+            squadron = aviator.squadron
+
+            if aviator.position_code == 1 and squadron.co_livery:
+
+                img = squadron.co_livery
+
+            elif aviator.position_code == 2 and squadron.xo_livery:
+
+                img = squadron.xo_livery
+
+            elif aviator.position_code == 3 and squadron.opso_livery:
+
+                img = squadron.opso_livery
+
+            else:
+                img = squadron.livery
+
+            lua = squadron.air_frame.livery
+
+
+
+
         return Response(status=status.HTTP_418_IM_A_TEAPOT)
+

@@ -66,6 +66,17 @@ class DCSModules(models.Model):
         return self.name
 
 
+class LiveryImage(models.Model):
+    name = models.CharField()
+    img = models.ImageField(upload_to='liveries')
+
+
+class Livery(models.Model):
+    lua = models.FileField(upload_to='liveries')
+    air_frame = models.ForeignKey(DCSModules)
+    images = models.ManyToManyField(LiveryImage)
+    name = models.CharField()
+
 class Squadron(models.Model):
     """
     squadron table
@@ -85,6 +96,11 @@ class Squadron(models.Model):
     img = models.ImageField(upload_to='squadrons')
     callsign = models.CharField(max_length=1024, default='None')
     tri_code = models.CharField(max_length=3, default='NCS')
+
+    co_livery = models.ForeignKey(Livery, related_name='co_livery', blank=True, null=True)
+    xo_livery =models.ForeignKey(Livery, related_name='xo_livery', blank=True, null=True)
+    opso_livery = models.ForeignKey(Livery, related_name='opso_livery', blank=True, null=True)
+    livery = models.ForeignKey(Livery, related_name='livery')
 
     def __str__(self):
         return f'{self.name} - {self.designation}'
