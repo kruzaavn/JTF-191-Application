@@ -104,6 +104,21 @@ class Operation(models.Model):
         return f'{self.name}'
 
 
+class Munition(models.Model):
+
+    name = models.CharField(max_length=64)
+    dcs_name = models.CharField(max_length=64)
+
+
+class Stores(models.Model):
+
+    munition = models.ForeignKey(Munition, on_delete=models.CASCADE)
+    time = models.DateTimeField(auto_now_add=True)
+    count = models.IntegerField(default=0)
+    operation = models.ForeignKey(Operation, on_delete=models.CASCADE)
+    squadron = models.ForeignKey(Squadron, on_delete=models.CASCADE)
+
+
 class Pilot(models.Model):
     first_name = models.CharField(max_length=1024, default='John')
     last_name = models.CharField(max_length=1024, default='Doe')
@@ -285,7 +300,6 @@ class ProspectiveAviator(Pilot):
             aviator.save()
 
         return aviator
-
 
     def recruitment_email(self):
         return f"""Recruitment application submitted by {self.callsign} on {self.submitted.strftime("%m/%d/%y")}

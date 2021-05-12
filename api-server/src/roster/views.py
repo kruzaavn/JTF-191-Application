@@ -10,7 +10,7 @@ from rest_framework import permissions
 
 
 from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator, Event, Qualification, \
-    QualificationModule, QualificationCheckoff
+    QualificationModule, QualificationCheckoff, Munition, Stores, Operation
 
 from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
     DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, QualificationSerializer, \
@@ -119,6 +119,7 @@ class StatsView(APIView):
         event_name = request.data.get('event')
         callsign = request.data.get('callsign')
         time = float(request.data.get('time'))
+
         if callsign:
             aviators = [x for x in Aviator.objects.all() if x.callsign.lower() in callsign.lower()]
         else:
@@ -132,6 +133,21 @@ class StatsView(APIView):
 
                 aviator.stats['departure'] = {'airframe': request.data.get('airframe'),
                                               'time': time}
+
+                if 'Mission' in request.data.get('mission'):
+
+                    stores = request.data.get('stores')
+
+                    for munition in stores:
+
+                        stores = Stores(
+                            munition=Munition.objects.get(dcs_name=munition['desc']['typeName']),
+                            count=munition['count'] * -1,
+                            squadron=aviator.squadron,
+                            operation=Operation.objects.last()
+                        )
+
+                        stores.save()
 
             elif event_name == 'connect' and aviator.stats.get('departure'):
 
@@ -148,6 +164,20 @@ class StatsView(APIView):
                                                                     flight_time
                 elif flight_time > 0:
                     aviator.stats['hours'][departure['airframe']] = flight_time
+
+                if event_name == 'landing' and 'Mission' in request.data.mission:
+
+                    stores = request.data.get('stores')
+
+                    for munition in stores:
+                        stores = Stores(
+                            munition=Munition.objects.get(dcs_name=munition['desc']['typeName']),
+                            count=munition['count'],
+                            squadron=aviator.squadron,
+                            operation=Operation.objects.last()
+                        )
+
+                        stores.save()
 
             elif event_name in ['kill']:
 
