@@ -11,11 +11,11 @@ class HQ(models.Model):
     # constants
     services = ['navy', 'marine', 'air force', 'army']
     rank_table = {
-        services[0]: {i + 1: x for i, x in enumerate(
+        services[0]: {i - 4: x for i, x in enumerate(
             ["WO1", "CW2", "CW3", "CW4", "CW5", "ENS", "LTJG", "LT", "LCDR", "CDR", "CAPT"])},
-        services[1]: {i + 1: x for i, x in enumerate(
+        services[1]: {i - 4: x for i, x in enumerate(
             ["WO1", "CW2", "CW3", "CW4", "CW5", "2ndLt", "1stLt", "Capt", "Maj", "LtCol", "Col"])},
-        services[2]: {i + 1: x for i, x in enumerate(
+        services[2]: {i - 4: x for i, x in enumerate(
             ["WO1", "CW2", "CW3", "CW4", "CW5", "2nd Lt", "1st Lt", "Capt", "Maj", "Lt Col", "Col"])},
         services[3]: {i - 4: x for i, x in enumerate(
             ["WO1", "CW2", "CW3", "CW4", "CW5", "2nd Lt", "1st Lt", "Capt", "Maj", "Lt Col", "Col"])},
