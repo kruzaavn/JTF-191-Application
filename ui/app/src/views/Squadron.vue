@@ -23,11 +23,7 @@
                 <v-img
                   max-height="150"
                   contain
-                  :src="
-                    'https://www.army.mil/e2/images/rv7/ranks/badges/officer/sm/' +
-                    ranks[member.rank_code] +
-                    '.svg'
-                  "
+                  :src=ranks[member.rank_code.toString()]
                 >
                 </v-img>
               </v-col>
@@ -87,12 +83,17 @@ export default {
   props: ['squadronDesignation'],
   data: () => ({
     ranks: {
-      1: 'second_lieutenant',
-      2: 'first_lieutenant',
-      3: 'captain',
-      4: 'major',
-      5: 'lieutenant_colonel',
-      6: 'colonel',
+      "-4": 'https://www.army.mil/e2/images/rv7/ranks/badges/warrant_officer/sm/cw1.svg',
+      "-3": 'https://www.army.mil/e2/images/rv7/ranks/badges/warrant_officer/sm/cw2.svg',
+      "-2": 'https://www.army.mil/e2/images/rv7/ranks/badges/warrant_officer/sm/cw3.svg',
+      "-1": 'https://www.army.mil/e2/images/rv7/ranks/badges/warrant_officer/sm/cw4.svg',
+      "0": 'https://www.army.mil/e2/images/rv7/ranks/badges/warrant_officer/sm/cw5.svg',
+      "1": 'https://www.army.mil/e2/images/rv7/ranks/badges/officer/sm/second_lieutenant.svg',
+      "2": 'https://www.army.mil/e2/images/rv7/ranks/badges/officer/sm/first_lieutenant.svg',
+      "3": 'https://www.army.mil/e2/images/rv7/ranks/badges/officer/sm/captain.svg',
+      "4": 'https://www.army.mil/e2/images/rv7/ranks/badges/officer/sm/major.svg',
+      "5": 'https://www.army.mil/e2/images/rv7/ranks/badges/officer/sm/lieutenant_colonel.svg',
+      "6": 'https://www.army.mil/e2/images/rv7/ranks/badges/officer/sm/colonel.svg',
     },
     hoursHeaders: [
       {

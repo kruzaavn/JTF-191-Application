@@ -11,14 +11,14 @@ class HQ(models.Model):
     # constants
     services = ['navy', 'marine', 'air force', 'army']
     rank_table = {
-        services[0]: {i + 1: x for i, x in
-                      enumerate(["ENS", "LTJG", "LT", "LCDR", "CDR", "CAPT"])},
+        services[0]: {i + 1: x for i, x in enumerate(
+            ["WO1", "CW2", "CW3", "CW4", "CW5", "ENS", "LTJG", "LT", "LCDR", "CDR", "CAPT"])},
         services[1]: {i + 1: x for i, x in enumerate(
-            ["2ndLt", "1stLt", "Capt", "Maj", "LtCol", "Col"])},
+            ["WO1", "CW2", "CW3", "CW4", "CW5", "2ndLt", "1stLt", "Capt", "Maj", "LtCol", "Col"])},
         services[2]: {i + 1: x for i, x in enumerate(
-            ["2d Lt", "1st Lt", "Capt", "Maj", "Lt Col", "Col"])},
-        services[3]: {i + 1: x for i, x in enumerate(
-            ["2LT", "1LT", "CPT", "MAJ", "LTC", "COL"])},
+            ["WO1", "CW2", "CW3", "CW4", "CW5", "2nd Lt", "1st Lt", "Capt", "Maj", "Lt Col", "Col"])},
+        services[3]: {i - 4: x for i, x in enumerate(
+            ["WO1", "CW2", "CW3", "CW4", "CW5", "2nd Lt", "1st Lt", "Capt", "Maj", "Lt Col", "Col"])},
     }
 
     position_table = {
@@ -169,7 +169,6 @@ class Aviator(Pilot):
     # constants
     statuses = ['active', 'extended loa', 'reserve']
     positions = ['co', 'xo', 'opso', '']
-    rank_helper = {i + 1: f'O-{i + 1}' for i, x in enumerate(range(6))}
     position_helper = {i + 1: x for i, x in enumerate(positions)}
 
     # fields
@@ -181,9 +180,9 @@ class Aviator(Pilot):
                               default=statuses[0], max_length=128)
     operations = models.ManyToManyField(Operation, blank=True)
     rank_code = models.IntegerField(default=1,
-                                    validators=[MinValueValidator(1),
+                                    validators=[MinValueValidator(-4),
                                                 MaxValueValidator(6)],
-                                    help_text=f'{rank_helper}')
+                                    )
     tail_number = models.CharField(max_length=64, blank=True, null=True)
     position_code = models.IntegerField(default=4,
                                         validators=[MinValueValidator(1),
