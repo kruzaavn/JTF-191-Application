@@ -83,17 +83,17 @@ export default {
   props: ['squadronDesignation'],
   data: () => ({
     ranks: {
-      "-4": 'https://en.wikipedia.org/wiki/United_States_Army#/media/File:US-Army-WO1.svg',
-      "-3": 'https://en.wikipedia.org/wiki/United_States_Army#/media/File:US-Army-CW2.svg',
-      "-2": 'https://en.wikipedia.org/wiki/United_States_Army#/media/File:US-Army-CW3.svg',
-      "-1": 'https://en.wikipedia.org/wiki/United_States_Army#/media/File:US-Army-CW4.svg',
-      "0": 'https://en.wikipedia.org/wiki/United_States_Army#/media/File:US-Army-CW5.svg',
-      "1": 'https://en.wikipedia.org/wiki/United_States_Army#/media/File:US-O1_insignia.svg',
-      "2": 'https://en.wikipedia.org/wiki/United_States_Army#/media/File:US-O2_insignia.svg',
-      "3": 'https://en.wikipedia.org/wiki/United_States_Army#/media/File:US-O3_insignia.svg',
-      "4": 'https://en.wikipedia.org/wiki/United_States_Army#/media/File:US-O4_insignia.svg',
-      "5": 'https://en.wikipedia.org/wiki/United_States_Army#/media/File:US-O5_insignia.svg',
-      "6": 'https://en.wikipedia.org/wiki/Captain_(United_States_O-6)#/media/File:US-O6_insignia.svg',
+      "-4": 'https://www.army.mil/e2/images/rv7/ranks/badges/warrant_officer/sm/cw1.svg',
+      "-3": 'https://www.army.mil/e2/images/rv7/ranks/badges/warrant_officer/sm/cw2.svg',
+      "-2": 'https://www.army.mil/e2/images/rv7/ranks/badges/warrant_officer/sm/cw3.svg',
+      "-1": 'https://www.army.mil/e2/images/rv7/ranks/badges/warrant_officer/sm/cw4.svg',
+      "0": 'https://www.army.mil/e2/images/rv7/ranks/badges/warrant_officer/sm/cw5.svg',
+      "1": 'https://www.army.mil/e2/images/rv7/ranks/badges/officer/sm/second_lieutenant.svg',
+      "2": 'https://www.army.mil/e2/images/rv7/ranks/badges/officer/sm/first_lieutenant.svg',
+      "3": 'https://www.army.mil/e2/images/rv7/ranks/badges/officer/sm/captain.svg',
+      "4": 'https://www.army.mil/e2/images/rv7/ranks/badges/officer/sm/major.svg',
+      "5": 'https://www.army.mil/e2/images/rv7/ranks/badges/officer/sm/lieutenant_colonel.svg',
+      "6": 'https://www.army.mil/e2/images/rv7/ranks/badges/officer/sm/colonel.svg',
     },
     hoursHeaders: [
       {
