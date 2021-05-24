@@ -37,23 +37,25 @@
 import { mapGetters } from 'vuex'
 export default {
     name: 'Munitions',
-    data: () => ({
+    data: () => {
+      return ({
 
-    munitionsHeader: [
-        {
+        munitionsHeader: [
+          {
             text: 'Munition',
             align: 'start',
             sortable: true,
             value: 'munition',
-        },
-        {
+          },
+          {
             text: 'Count',
             sortable: true,
             align: 'start',
             value: 'count',
 
-        },
-    }),
+          },
+      });
+    },
     
     computed: {
         ...mapGetters(['munitions']),
