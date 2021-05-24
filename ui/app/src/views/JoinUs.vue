@@ -103,7 +103,7 @@
           <v-col>
             <v-text-field
               v-model="joinUsForm.discord"
-              label="Discord Name"
+              label="Discord Name (e.g. Payno#1234)"
               :rules="rules.blank"
             >
             </v-text-field>
