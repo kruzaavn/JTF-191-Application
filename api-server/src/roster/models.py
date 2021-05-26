@@ -108,6 +108,7 @@ class Munition(models.Model):
 
     name = models.CharField(max_length=64)
     dcs_name = models.CharField(max_length=64)
+    munitionType = models.IntegerField(default=0)
 
 
 class Stores(models.Model):
