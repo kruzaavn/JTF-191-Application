@@ -189,7 +189,7 @@ class Aviator(Pilot):
                                                     MaxValueValidator(4)],
                                         help_text=f'{position_helper}')
     user = models.ForeignKey(User, blank=True, null=True,
-                             on_delete=models.CASCADE)
+                             on_delete=models.SET_NULL)
     stats = models.JSONField(default=stats_default)
     division = models.IntegerField(default=4, validators=[MinValueValidator(1),
                                                           MaxValueValidator(

@@ -27,6 +27,16 @@
         >
           <v-icon left>mdi-login</v-icon>Login
         </v-btn>
+        <v-btn
+          color="white"
+          outlined
+          tile
+          depressed
+          v-bind="attrs"
+          v-on="on"
+        >
+         {{isAdmin}}
+        </v-btn>
       </template>
       <v-card>
         <v-card-title primary-title>
@@ -111,7 +121,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['user', 'isLoggedIn']),
+    ...mapGetters(['user', 'isLoggedIn', 'isAdmin']),
   },
 }
 </script>
