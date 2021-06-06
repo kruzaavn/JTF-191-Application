@@ -106,9 +106,15 @@ class Operation(models.Model):
 
 class Munition(models.Model):
 
+    types = ['rocket', 'bomb', 'missile']
+
     name = models.CharField(max_length=64)
     dcs_name = models.CharField(max_length=64)
-    munitionType = models.IntegerField(default=0)
+    munitionType = models.CharField(max_length=1024, choices=[(x, x) for x in types],
+                            default=types[0])
+
+    def __str__(self):
+        return f'{self.name}'
 
 
 class Stores(models.Model):
@@ -118,6 +124,9 @@ class Stores(models.Model):
     count = models.IntegerField(default=0)
     operation = models.ForeignKey(Operation, on_delete=models.CASCADE)
     squadron = models.ForeignKey(Squadron, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.munition.name}'
 
 
 class Pilot(models.Model):

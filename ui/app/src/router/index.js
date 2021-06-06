@@ -8,6 +8,7 @@ import Squadron from '../views/Squadron'
 import JoinUs from '../views/JoinUs'
 import Schedule from '@/views/Schedule'
 import Register from '@/views/Register'
+import Tracker from '@/views/Tracker'
 
 Vue.use(VueRouter)
 
@@ -84,6 +85,15 @@ const routes = [
     component: Register,
     meta: {
       title: title(title_header, 'Register'),
+    },
+  },
+  {
+    path: '/tracker',
+    name: 'Tracker',
+    props: true,
+    component: Tracker,
+    meta: {
+      title: title(title_header, 'Tracker'),
     },
   },
 ]

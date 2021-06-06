@@ -121,3 +121,13 @@ class QualificationCheckoffAdmin(admin.ModelAdmin):
     list_display = ('module', 'aviator', 'date', 'current')
 
     list_filter = ('module__name', 'aviator__callsign')
+
+
+@admin.register(Munition)
+class MunitionAdmin(admin.ModelAdmin):
+    pass
+
+
+@admin.register(Stores)
+class StoresAdmin(admin.ModelAdmin):
+    pass

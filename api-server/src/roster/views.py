@@ -15,7 +15,7 @@ from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator, Event
 from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
     DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, QualificationSerializer, \
     QualificationModuleSerializer, QualificationCheckoffSerializer, UserSerializer, UserRegisterSerializer, \
-    EventCreateSerializer
+    EventCreateSerializer, MunitionSerializer, StoresSerializer
 
 
 class AviatorListView(ListCreateAPIView):
@@ -252,7 +252,6 @@ class QualificationModuleListView(ListCreateAPIView):
     serializer_class = QualificationModuleSerializer
     permission_classes = [permissions.IsAuthenticated]
 
-
 class QualificationModuleDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = QualificationModule.objects.all()
@@ -272,3 +271,13 @@ class QualificationCheckoffDetailView(RetrieveUpdateDestroyAPIView):
     queryset = QualificationCheckoff.objects.all()
     serializer_class = QualificationCheckoffSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+class MunitionListView(ListCreateAPIView):
+    queryset = Munition.objects.all()
+    serializer_class = MunitionSerializer
+
+
+class StoresListView(ListCreateAPIView):
+    queryset = Stores.objects.all()
+    serializer_class = StoresSerializer
