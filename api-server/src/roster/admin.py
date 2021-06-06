@@ -57,11 +57,11 @@ email_registration.short_description = "Send Registration Email"
 @admin.register(Aviator)
 class AviatorAdmin(admin.ModelAdmin):
 
-    list_display = ('callsign', 'squadron', 'position', 'rank', 'date_joined')
+    list_display = ('callsign', 'user', 'squadron', 'position', 'rank', 'date_joined', 'status', )
 
-    list_filter = ('squadron__designation', 'squadron__hq__name')
+    list_filter = ('squadron__designation', 'squadron__hq__name', 'status')
 
-    search_fields = ('callsign',)
+    search_fields = ('callsign', 'user__username')
 
     actions = [email_registration]
 
