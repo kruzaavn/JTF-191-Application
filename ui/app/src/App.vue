@@ -6,6 +6,16 @@
         <v-img contain max-width="130px" src="@/assets/logo.png"> </v-img>
       </router-link>
       <v-spacer></v-spacer>
+      <v-btn
+        v-if="isAdmin"
+        color="white"
+        outlined
+        tile
+        depressed
+        href="https://www.jtf191.com/admin/"
+      >
+        ADMIN
+      </v-btn>
       <Login />
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" app>
@@ -67,7 +77,6 @@
           <router-view></router-view>
         </v-row>
       </v-container>
-
     </v-main>
   </v-app>
 </template>
@@ -75,11 +84,11 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import Login from './components/Login'
-import Footer from "@/components/Footer";
+import Footer from '@/components/Footer'
 
 export default {
   name: 'Title',
-  components: {Footer, Login },
+  components: { Footer, Login },
   props: {
     source: String,
   },
@@ -87,7 +96,13 @@ export default {
     drawer: true,
   }),
   computed: {
-    ...mapGetters(['squadrons', 'hqs', 'isLoggedIn', 'tokenExpiration']),
+    ...mapGetters([
+      'squadrons',
+      'hqs',
+      'isLoggedIn',
+      'tokenExpiration',
+      'isAdmin',
+    ]),
   },
   methods: {
     ...mapActions(['getRoster', 'getHQs', 'getSquadrons']),

@@ -34,6 +34,13 @@ const getters = {
   },
   user: (state) => state.user,
   isLoggedIn: (state) => !!state.user,
+  isAdmin: (state) => {
+    if (state.user) {
+      return state.user.is_staff || state.user.is_superuser
+    } else {
+      return false
+    }
+  },
   tokenExpiration: (state) => {
     try {
       return jwtDecode(state.token.access).exp * 1000 - Date.now() <= 0
