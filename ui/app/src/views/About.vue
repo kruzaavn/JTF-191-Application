@@ -6,7 +6,21 @@
         <p>
           JTF-191 was formed in June of 2020 and is composed of
           {{ squadrons.length }} squadrons with {{ roster.length }} active
-          members. We operate as a tactical realism group with an emphasis on joint operations with all branches of military aviation. We have a detailed training program for all new pilots that focuses on teaching a working knowledge of the airframe and relevant tactics. Our training is built to both teach new pilots about their chosen airframes or to provide refreshers to experienced pilots. With detailed courses on everything from take-off and landings to air-to-air tactics, the training program is designed to ensure you are comfortable in your role and up to the task of joining our ranks. Upon finishing your training, you are placed into an operational squadron with a custom livery made just for you. Each squadron handles their own training, keeping their pilots skills up to par with the unit standards. We have several dedicated servers that are up 24/7 and a unit-wide mission night every Saturday. Saturday missions range from fun PvP missions to organized pre-planned sorties built in an ongoing deployment campaign.
+          members. We operate as a tactical realism group with an emphasis on
+          joint operations with all branches of military aviation. We have a
+          detailed training program for all new pilots that focuses on teaching
+          a working knowledge of the airframe and relevant tactics. Our training
+          is built to both teach new pilots about their chosen airframes or to
+          provide refreshers to experienced pilots. With detailed courses on
+          everything from take-off and landings to air-to-air tactics, the
+          training program is designed to ensure you are comfortable in your
+          role and up to the task of joining our ranks. Upon finishing your
+          training, you are placed into an operational squadron with a custom
+          livery made just for you. Each squadron handles their own training,
+          keeping their pilots skills up to par with the unit standards. We have
+          several dedicated servers that are up 24/7 and a unit-wide mission
+          night every Saturday. Saturday missions range from fun PvP missions to
+          organized pre-planned sorties built in an ongoing deployment campaign.
         </p>
       </v-col>
     </v-row>

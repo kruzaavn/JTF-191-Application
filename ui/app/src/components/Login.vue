@@ -14,7 +14,8 @@
             redirect()
           "
         >
-          <v-icon left>mdi-logout</v-icon>{{ user.username }}
+          <v-icon left>mdi-logout</v-icon>
+          {{ user.username }}
         </v-btn>
         <v-btn
           v-else
@@ -25,17 +26,8 @@
           v-bind="attrs"
           v-on="on"
         >
-          <v-icon left>mdi-login</v-icon>Login
-        </v-btn>
-        <v-btn
-          color="white"
-          outlined
-          tile
-          depressed
-          v-bind="attrs"
-          v-on="on"
-        >
-         {{isAdmin}}
+          <v-icon left>mdi-login</v-icon>
+          Login
         </v-btn>
       </template>
       <v-card>
@@ -85,6 +77,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import router from '@/router'
+
 export default {
   name: 'Login',
   data() {

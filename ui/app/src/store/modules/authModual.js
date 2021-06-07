@@ -37,7 +37,9 @@ const getters = {
   isAdmin: (state) => {
     if (state.user) {
       return state.user.is_staff || state.user.is_superuser
-    } else { return false}
+    } else {
+      return false
+    }
   },
   tokenExpiration: (state) => {
     try {
