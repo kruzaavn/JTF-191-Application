@@ -10,6 +10,7 @@ const state = {
   qualificationModuleList: [],
   storesList: [],
   munitionList: [],
+  operationList: []
 }
 
 const mutations = {
@@ -50,6 +51,9 @@ const mutations = {
   },
   setStores(state, stores) {
     state.storesList = stores
+  },
+  setOperation(state, operation) {
+    state.operationList = operation
   }
 }
 
@@ -62,7 +66,8 @@ const getters = {
   qualifications: (state) => state.qualificationList,
   qualificationModules: (state) => state.qualificationModuleList,
   munitions: (state) => state.munitionList,
-  stores: (state) => state.storesList
+  stores: (state) => state.storesList,
+  operation: (state) => state.operationList
 }
 
 const actions = {
@@ -116,6 +121,10 @@ const actions = {
   async getStoresList({commit}) {
     const response = await axios.get('/api/roster/stores/list/')
     commit('setStores', response.data)
+  },
+    async getOperationList({commit}) {
+      const response = await axios.get('/api/roster/operation/list/')
+      commit('setOperation', response.data)
   }
 }
 

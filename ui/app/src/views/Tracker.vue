@@ -29,17 +29,18 @@ export default {
       }
     ),
   methods: {
-    ...mapActions(['getMunitionsList','getStoresList'])
+    ...mapActions(['getMunitionsList','getStoresList','getOperationList'])
 
   },
 
   computed: {
-    ...mapGetters(['munitions', 'stores']),
+    ...mapGetters(['munitions', 'stores', 'operation']),
 
   },
   mounted() {
     this.getMunitionsList();
-    this.getStoresList()
+    this.getStoresList();
+    this.getOperationList()
   }
 }
 </script>
