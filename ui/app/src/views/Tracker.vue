@@ -2,14 +2,14 @@
   <v-container fluid>
     <v-row>
       <v-col cols="2">
-      Big Hairy Balls!
+        Big Hairy Balls!
       </v-col>
       <v-data-table
-        dense
-        :headers="munitionsHeader"
-        :items="toMunitionsTable(stores)"
-        item-key="name"
-        class="elevation-1"
+          dense
+          :headers="munitionsHeader"
+          :items="toMunitionsTable(stores)"
+          item-key="name"
+          class="elevation-1"
       ></v-data-table>
     </v-row>
 
@@ -52,23 +52,20 @@ export default {
     ...mapActions(['getMunitionsList', 'getStoresList']),
 
     toMunitionsTable(stores) {
-      let data = []
 
-      for (var i = 0; i < stores.length; i++) {
-        if (store.munition =  ){
+      var munitionsObj = stores.reduce(function (acc, arsenal) {
 
+        return {...acc, [arsenal.type]: arsenal}
+      }, {})
+
+      var finalCount = munitionsObj
+
+      for (var i=0; i<8; i++) {
+        finalCount[stores[i].type].count += stores[i].count
       }
-    }
-      /* Example Output
-      let data = {
-      "count":54,
-      "munition":4,
-      "operation":1,
-      "squadron":1}
-       */
-      return data;
-    },
 
+      return finalCount
+    }
   },
 }
 
@@ -77,3 +74,5 @@ export default {
 <style scoped>
 
 </style>
+
+
