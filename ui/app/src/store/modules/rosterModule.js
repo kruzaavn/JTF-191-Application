@@ -62,7 +62,27 @@ const getters = {
   qualifications: (state) => state.qualificationList,
   qualificationModules: (state) => state.qualificationModuleList,
   munitions: (state) => state.munitionList,
-  stores: (state) => state.storesList
+  stores: (state) => state.storesList,
+  munitionsTable: (state) => {
+
+    let table = state.storesList.reduce((acc, element) => {
+
+      const previous = acc.find(e => e.id === element.id && e.squadron === element.squadron)
+
+      if (previous) {
+
+        previous.count += element.count
+
+      } else {
+        element.name = state.munitionList.find(e => e.id = element.id).name
+        element.squadron_name = state.squadrons.find(e => e.id = element.squadron_name).name
+        acc.push(element)
+      }
+
+    }, [])
+
+    return table
+  }
 }
 
 const actions = {
