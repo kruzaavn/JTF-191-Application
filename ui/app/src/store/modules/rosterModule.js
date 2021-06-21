@@ -49,7 +49,7 @@ const mutations = {
     state.munitionList = munitions
   },
   setStores(state, stores) {
-    state.storesList = stores
+    state.storesList = stores;
   }
 }
 

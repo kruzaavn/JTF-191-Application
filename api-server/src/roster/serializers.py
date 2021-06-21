@@ -118,3 +118,5 @@ class StoresSerializer(serializers.ModelSerializer):
     class Meta:
         model = Stores
         fields = '__all__'
+
+
