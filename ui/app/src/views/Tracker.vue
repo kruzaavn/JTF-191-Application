@@ -3,6 +3,13 @@
     <v-row>
       <v-col cols="2">
         Big Hairy Balls!
+      <v-data-table
+          dense
+          :headers="munitionsHeader"
+          :items="toMunitionsTable(stores)"
+          item-key="name"
+          class="elevation-1"
+      ></v-data-table>
       </v-col>
       <v-data-table
           dense
@@ -39,7 +46,7 @@ export default {
 
 
   computed: {
-    ...mapGetters(['munitions', 'stores']),
+    ...mapGetters(['munitions', 'stores','munitionsTable']),
 
     // eslint-disable-next-line vue/return-in-computed-property
     mounted() {
