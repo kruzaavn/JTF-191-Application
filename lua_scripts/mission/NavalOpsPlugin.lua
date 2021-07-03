@@ -51,6 +51,7 @@ local morse = {
     ['CVN_72'] = 'AHL',
     ['CVN_73'] = 'GWC',
     ['CVN_74'] = 'JCS',
+    ['CVN_75'] = 'HST',
     ['LHA_Tarawa'] = 'TWA'
 }
 
@@ -74,14 +75,14 @@ function setup_airboss(unit)
     local MissionEnd = MissionStart + HHMM2sec(MissionLength)
 
 
-    if (unit:IsShip() and unit:GetCoalition() == coalition.side.BLUE and contains({'CVN_71', 'CVN_72', 'CVN_73','CVN_74', 'LHA_Tarawa'}, unit:GetTypeName())) then
+    if (unit:IsShip() and unit:GetCoalition() == coalition.side.BLUE and contains({'CVN_71', 'CVN_72', 'CVN_73','CVN_74', 'CVN_75', 'LHA_Tarawa'}, unit:GetTypeName())) then
 
         -- create airboss instance
         boss = AIRBOSS:New(unit:GetCallsign(), morse[unit:GetTypeName()])
         TACAN = nil
 
         -- determine tacan and icls from hull number and ship type
-        if contains({'CVN_71', 'CVN_72', 'CVN_73', 'CVN_74'}, unit:GetTypeName()) then
+        if contains({'CVN_71', 'CVN_72', 'CVN_73', 'CVN_74', 'CVN_75'}, unit:GetTypeName()) then
             TACAN = tonumber(string.sub(unit:GetTypeName(), -2))
             ICLS = 7
             DeckWind = 27
