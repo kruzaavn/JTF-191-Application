@@ -5,7 +5,6 @@ name: CI
 env:
   REGISTRY_URL: jtf191.azurecr.io
 
-
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
@@ -23,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        component: [api-relay, api-server]
+        component: [api-relay, api-server, nginx, tcpeter]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -36,7 +35,8 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
-      - name: test
-        run: |
-          docker image build ./${{matrix.component}} -t ${{env.REGISTRY_URL}}/${{matrix.component}}:latest
-          docker push ${{env.REGISTRY_URL}}/${{matrix.component}}:latest
+      - name: build image
+        run: docker image build ./${{matrix.component}} -t ${{env.REGISTRY_URL}}/${{matrix.component}}:latest
+
+      - name: push image
+        run: docker push ${{env.REGISTRY_URL}}/${{matrix.component}}:latest
