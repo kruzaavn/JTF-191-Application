@@ -2,6 +2,10 @@
 
 name: CI
 
+env:
+  REGISTRY_URL: jtf191.azurecr.io
+
+
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
@@ -23,12 +27,13 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
+      # Connect to Azure Container Registry (ACR)
+      - uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.REGISTRY_URL }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
