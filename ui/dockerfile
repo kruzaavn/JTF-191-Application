@@ -2,9 +2,9 @@
 FROM node:lts-alpine as build-stage
 
 WORKDIR /app
-COPY ui/app/package*.json ./
+COPY ./app/package*.json ./
 RUN npm install
-COPY ui/app .
+COPY ./app .
 RUN npm run build
 
 
