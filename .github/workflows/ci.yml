@@ -46,6 +46,4 @@ jobs:
 #        run: echo ${{ steps.docker_build.outputs.digest }}
 
       - name: test
-        run: |
-        docker image build ./api-server -t api-relay:test
-        docker push api-relay:test
+        run: docker image build ./api-server -t api-relay:test
