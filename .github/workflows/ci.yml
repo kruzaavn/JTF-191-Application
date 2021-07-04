@@ -47,5 +47,5 @@ jobs:
 
       - name: test
         run: |
-          docker image build ./api-relay -t api-relay:test
-          docker push api-relay:test
+          docker image build ./api-relay -t ${{env.REGISTRY_URL}}/api-relay:test
+          docker push ${{env.REGISTRY_URL}}/api-relay:test
