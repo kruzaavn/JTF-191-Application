@@ -56,7 +56,7 @@ jobs:
           cluster-name: ${{ env.CLUSTER_NAME }}
           resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
 
-        run: kubectl get namespaces
+      - run: kubectl get namespaces
 
       # Sets up helm for deployment on cluster
       - uses: azure/setup-helm@v1
