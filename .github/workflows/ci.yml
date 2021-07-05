@@ -38,3 +38,12 @@ jobs:
 
       - name: push image
         run: docker push ${{env.REGISTRY_URL}}/${{matrix.component}}:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: test
+        run: echo hello world
