@@ -2,6 +2,8 @@ name: CI
 
 env:
   REGISTRY_URL: jtf191.azurecr.io
+  CLUSTER_NAME: jtf191
+  CLUSTER_RESOURCE_GROUP: jtf191.app.server_group
 
 on:
   # this will launch every time there is a push to master
@@ -47,6 +49,12 @@ jobs:
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE
       - uses: actions/checkout@v1
+
+      - uses: azure/aks-set-context@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
 
       # Sets up helm for deployment on cluster
       - uses: azure/setup-helm@v1
