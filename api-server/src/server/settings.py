@@ -17,6 +17,8 @@ import secrets
 from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import django.db.models
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
@@ -101,17 +103,56 @@ WSGI_APPLICATION = 'server.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'database',
-        'USER': 'root',
-        'PASSWORD': 'my-secret-pw',
-        'HOST': 'db',
-        'PORT': '5432'
-    }
-}
+if PRODUCTION is None:
 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'database',
+            'USER': 'root',
+            'PASSWORD': 'my-secret-pw',
+            'HOST': 'db',
+            'PORT': '5432'
+        }
+    }
+
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [('redis', 6379)],
+                "capacity": 5000,
+                "expiry": 5
+            },
+        },
+    }
+
+else:
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'database',
+            'USER': 'postgres',
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+            'HOST': 'db-postgresql.default.svc.cluster.local',
+            'PORT': '5432'
+        }
+    }
+
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [('redis', 6379)],
+                "capacity": 5000,
+                "expiry": 5
+            },
+        },
+    }
+
+
+DEFAULT_AUTO_FIELD = django.db.models.BigAutoField
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -154,17 +195,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
 ASGI_APPLICATION = 'server.routing.application'
-
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [('redis', 6379)],
-            "capacity": 5000,
-            "expiry": 5
-        },
-    },
-}
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

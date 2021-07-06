@@ -50,13 +50,12 @@ jobs:
       # Checks-out the repository under $GITHUB_WORKSPACE
       - uses: actions/checkout@v1
 
+      # Sign into azure
       - uses: azure/aks-set-context@v1
         with:
           creds: '${{ secrets.AZURE_CREDENTIALS }}'
           cluster-name: ${{ env.CLUSTER_NAME }}
           resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
-
-      - run: kubectl get namespaces
 
       # Sets up helm for deployment on cluster
       - uses: azure/setup-helm@v1
