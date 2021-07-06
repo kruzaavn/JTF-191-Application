@@ -3,11 +3,11 @@ kind: Service
 metadata:
   annotations:
     service.beta.kubernetes.io/azure-load-balancer-resource-group: jtf191.app.server_group
-  name: api-server-service
+  name: api-server
 spec:
   ports:
     - protocol: TCP
-      port: 80
+      port: 443
       targetPort: 8000
   selector:
     app: api-server
@@ -37,7 +37,7 @@ spec:
             claimName: api-server-pvc
       containers:
       - name: api-server
-        image: {{.Values.registryUrl}}/api-server:latest
+        image: "{{.Values.image.registryUrl}}/api-server:{{.Values.image.tag}}"
         imagePullPolicy: Always
         command: ["/bin/sh","-c"]
         args:

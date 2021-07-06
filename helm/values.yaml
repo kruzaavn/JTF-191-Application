@@ -2,6 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-registryUrl: jtf191.azurecr.io
+image:
+  registryUrl: jtf191.azurecr.io
+  tag: "latest"
 
 gatewayIp: "52.152.237.67"

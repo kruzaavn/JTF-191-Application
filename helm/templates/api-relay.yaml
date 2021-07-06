@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
       - name: api-relay
-        image: {{.Values.registryUrl}}/api-relay:latest
+        image: "{{ .Values.image.registryUrl }}/api-relay:{{.Values.image.tag}}"
         imagePullPolicy: Always
         command: ["python"]
         args: ["-u", "serve.py"]

@@ -39,11 +39,8 @@ spec:
     spec:
       containers:
       - name: gateway
-        image: {{.Values.registryUrl}}/gateway:latest
+        image: "{{.Values.image.registryUrl}}/gateway:{{.Values.image.tag}}"
         imagePullPolicy: Always
-#        ports:
-#        - containerPort: 80
-#        - containerPort: 443
         env:
           - name: PUID
             value: "1000"
