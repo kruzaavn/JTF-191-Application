@@ -2,3 +2,5 @@
 *.idea
 pw.txt
 **/venv
+
+local_*.sh

@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'token_auth',
     'channels',
+    'storages',
     'roster',
     'gci',
 ]
@@ -151,6 +152,17 @@ else:
         },
     }
 
+    DEFAULT_FILE_STORAGE = 'backend.custom_azure.AzureMediaStorage'
+    STATICFILES_STORAGE = 'backend.custom_azure.AzureStaticStorage'
+
+    STATIC_LOCATION = "static"
+    MEDIA_LOCATION = "media"
+
+    AZURE_ACCOUNT_NAME = "jtf191blobstorage"
+    AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
+    STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
+    MEDIA_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -206,10 +218,6 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7.5),
 }
-
-# CORS_ORIGIN_WHITELIST = [
-#     'http://localhost:8080',
-# ]
 
 CORS_ORIGIN_ALLOW_ALL = True
 
