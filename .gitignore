@@ -4,3 +4,4 @@ pw.txt
 **/venv
 
 local_*.sh
+secret.yaml

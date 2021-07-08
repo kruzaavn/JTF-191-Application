@@ -5,15 +5,18 @@ metadata:
     service.beta.kubernetes.io/azure-load-balancer-resource-group: jtf191.app.server_group
   name: api-relay
 spec:
+  loadBalancerIP: {{.Values.relayIp}}
+  type: LoadBalancer
   ports:
     - protocol: TCP
-      port: 80
+      port: 7225
       targetPort: 7225
   selector:
     app: api-relay
 
 
 ---
+
 
 apiVersion: apps/v1
 kind: Deployment

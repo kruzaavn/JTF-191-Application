@@ -19,6 +19,7 @@ spec:
   selector:
     app: gateway
 
+
 ---
 
 apiVersion: apps/v1

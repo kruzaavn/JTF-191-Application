@@ -221,21 +221,11 @@ SIMPLE_JWT = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-EMAIL_SECRET_PATH = pathlib.Path(BASE_DIR).joinpath('cred.json')
-
-if EMAIL_SECRET_PATH.is_file():
-
-    EMAIL_SECRET = json.loads(EMAIL_SECRET_PATH.read_text())
-
-else:
-
-    EMAIL_SECRET = {}
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = SERVER_EMAIL = EMAIL_SECRET.get('host', 'test@test.com')
-EMAIL_HOST_PASSWORD = EMAIL_SECRET.get('password')
+EMAIL_HOST_USER = SERVER_EMAIL = os.getenv('EMAIL_HOST', 'test@test.com')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

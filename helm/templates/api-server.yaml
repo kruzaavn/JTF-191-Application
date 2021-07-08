@@ -15,6 +15,7 @@ spec:
 
 ---
 
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -44,7 +45,20 @@ spec:
         env:
           - name: PRODUCTION
             value: "true"
+          - name: EMAIL_HOST
+            value: "jtf191@gmail.com"
           - name: POSTGRES_PASSWORD
-            value: {{.Values.postgresPassword}}
+            valueFrom:
+              secretKeyRef:
+                name: db-postgresql
+                key: postgresql-password
           - name: AZURE_STORAGE_KEY
-            value: {{.Values.azureStorageKey}}
+            valueFrom:
+              secretKeyRef:
+                name: secret
+                key: azureStorageKey
+          - name: EMAIL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret
+                key: emailPassword
