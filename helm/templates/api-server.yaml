@@ -32,13 +32,25 @@ spec:
       labels:
         app: api-server
     spec:
+      volumes:
+        - name: api-server-gci-migrations-storage
+          persistentVolumeClaim:
+            claimName: api-server-gci-migrations-pvc
+        - name: api-server-roster-migrations-storage
+          persistentVolumeClaim:
+            claimName: api-server-roster-migrations-pvc
       containers:
       - name: api-server
         image: "{{.Values.image.registryUrl}}/api-server:{{.Values.image.tag}}"
+        volumeMounts:
+          - mountPath: "/server/roster/migrations"
+            name: api-server-roster-migrations-storage
+          - mountPath: "/server/gci/migrations"
+            name: api-server-gci-migrations-storage
         imagePullPolicy: Always
         command: ["/bin/sh","-c"]
         args:
-          - python manage.py makemigrations --noinput;
+          - python manage.py makemigrations roster gci --noinput;
             python manage.py migrate --noinput;
             python manage.py collectstatic --noinput;
             daphne server.asgi:application -b 0.0.0.0
