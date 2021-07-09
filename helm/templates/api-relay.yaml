@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-resource-group: jtf191.app.server_group
+  name: api-relay
+spec:
+  loadBalancerIP: {{.Values.relayIp}}
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 7225
+      targetPort: 7225
+  selector:
+    app: api-relay
+
+
+---
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-relay-deployment
+  labels:
+    app: api-relay
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: api-relay
+  template:
+    metadata:
+      labels:
+        app: api-relay
+    spec:
+      containers:
+      - name: api-relay
+        image: "{{ .Values.image.registryUrl }}/api-relay:{{.Values.image.tag}}"
+        imagePullPolicy: Always
+        command: ["python"]
+        args: ["-u", "serve.py"]

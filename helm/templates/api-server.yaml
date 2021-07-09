@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-resource-group: jtf191.app.server_group
+  name: api-server
+spec:
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  selector:
+    app: api-server
+
+
+---
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-server-deployment
+  labels:
+    app: api-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-server
+  template:
+    metadata:
+      labels:
+        app: api-server
+    spec:
+      volumes:
+        - name: api-server-gci-migrations-storage
+          persistentVolumeClaim:
+            claimName: api-server-gci-migrations-pvc
+        - name: api-server-roster-migrations-storage
+          persistentVolumeClaim:
+            claimName: api-server-roster-migrations-pvc
+      containers:
+      - name: api-server
+        image: "{{.Values.image.registryUrl}}/api-server:{{.Values.image.tag}}"
+        volumeMounts:
+          - mountPath: "/server/roster/migrations"
+            name: api-server-roster-migrations-storage
+          - mountPath: "/server/gci/migrations"
+            name: api-server-gci-migrations-storage
+        imagePullPolicy: Always
+        command: ["/bin/sh","-c"]
+        args:
+          - python manage.py makemigrations roster gci --noinput;
+            python manage.py migrate --noinput;
+            python manage.py collectstatic --noinput;
+            daphne server.asgi:application -b 0.0.0.0
+        env:
+          - name: PRODUCTION
+            value: "true"
+          - name: EMAIL_HOST
+            value: "jtf191@gmail.com"
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-postgresql
+                key: postgresql-password
+          - name: AZURE_STORAGE_KEY
+            valueFrom:
+              secretKeyRef:
+                name: secret
+                key: azureStorageKey
+          - name: EMAIL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret
+                key: emailPassword

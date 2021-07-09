@@ -23,7 +23,7 @@ package.cpath = package.cpath..";"..lfs.currentdir().."LuaSocket\\?.dll"
 local c = nil
 local socket = require('socket')
 JSON = require('JSON')
-local host = 'www.jtf191.com'  -- change to tcpeter application dns name or ip
+local host = 'relay.jtf191.com'  -- change to tcpeter application dns name or ip
 local port = 7225  -- change to tcpeter app port
 
 function connect_socket()

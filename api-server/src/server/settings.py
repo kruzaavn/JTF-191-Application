@@ -17,6 +17,8 @@ import secrets
 from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import django.db.models
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
@@ -62,6 +64,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'token_auth',
     'channels',
+    'storages',
     'roster',
     'gci',
 ]
@@ -101,17 +104,67 @@ WSGI_APPLICATION = 'server.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'database',
-        'USER': 'root',
-        'PASSWORD': 'my-secret-pw',
-        'HOST': 'db',
-        'PORT': '5432'
-    }
-}
+if PRODUCTION is None:
 
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'database',
+            'USER': 'root',
+            'PASSWORD': 'my-secret-pw',
+            'HOST': 'db',
+            'PORT': '5432'
+        }
+    }
+
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [('redis', 6379)],
+                "capacity": 5000,
+                "expiry": 5
+            },
+        },
+    }
+
+else:
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'database',
+            'USER': 'postgres',
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+            'HOST': 'db-postgresql.default.svc.cluster.local',
+            'PORT': '5432'
+        }
+    }
+
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "channels_redis.core.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [('redis', 6379)],
+                "capacity": 5000,
+                "expiry": 5
+            },
+        },
+    }
+
+    DEFAULT_FILE_STORAGE = 'backend.custom_azure.AzureMediaStorage'
+    STATICFILES_STORAGE = 'backend.custom_azure.AzureStaticStorage'
+
+    STATIC_LOCATION = "static"
+    MEDIA_LOCATION = "media"
+
+    AZURE_ACCOUNT_NAME = "jtf191blobstorage"
+    AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
+    STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
+    MEDIA_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
+
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -155,17 +208,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 ASGI_APPLICATION = 'server.routing.application'
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [('redis', 6379)],
-            "capacity": 5000,
-            "expiry": 5
-        },
-    },
-}
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication'
@@ -177,27 +219,13 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7.5),
 }
 
-# CORS_ORIGIN_WHITELIST = [
-#     'http://localhost:8080',
-# ]
-
 CORS_ORIGIN_ALLOW_ALL = True
-
-EMAIL_SECRET_PATH = pathlib.Path(BASE_DIR).joinpath('cred.json')
-
-if EMAIL_SECRET_PATH.is_file():
-
-    EMAIL_SECRET = json.loads(EMAIL_SECRET_PATH.read_text())
-
-else:
-
-    EMAIL_SECRET = {}
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = SERVER_EMAIL = EMAIL_SECRET.get('host', 'test@test.com')
-EMAIL_HOST_PASSWORD = EMAIL_SECRET.get('password')
+EMAIL_HOST_USER = SERVER_EMAIL = os.getenv('EMAIL_HOST', 'test@test.com')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
