@@ -33,4 +33,4 @@ Listed below are the underlying technologies used to build the app
 
 ## DCS Server Export Logging
 
-Hours & Kills export logging script can be found [here](/lua_scripts/server/hooks/apihookGameGUI.lua)
+Hours & Kills export logging script can be found here [apihookGameGUI.lua](/lua_scripts/server/hooks/)
