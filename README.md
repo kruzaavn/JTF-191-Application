@@ -12,7 +12,7 @@ an issue.
 
 Anyone can contribute to here and is encouraged to do so. You don't need to know website design, 
 coding, cloud management to start, we will help you. There are always a lot of good first issues
-for you to acclimate to our development process over time as skills grow you can have a larger and
+for you to acclimate to our development process. Over time as skills grow you can have a larger and
 larger impact. 
 
 Listed below are the underlying technologies used to build the app
