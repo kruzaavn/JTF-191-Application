@@ -52,6 +52,4 @@ spec:
           - name: VALIDATION
             value: http
           - name: URL
-            value: test.jtf191.com
-          - name: STAGING
-            value: "true"
+            value: jtf191.com
