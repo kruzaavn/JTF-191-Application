@@ -46,6 +46,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
+    strategy:
+      matrix:
+        # listed here are the directories to build from
+        component: [ api-relay, api-server, ui ]
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE
       - uses: actions/checkout@v1
@@ -58,4 +62,7 @@ jobs:
           resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
 
       # Sets up helm for deployment on cluster
-      - uses: azure/setup-helm@v1
+#      - uses: azure/setup-helm@v1
+
+      - name: restart-pods
+        run: kubectl delete pod -l app=${{matrix.component}}
