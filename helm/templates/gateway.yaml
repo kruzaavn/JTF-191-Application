@@ -53,3 +53,5 @@ spec:
             value: http
           - name: URL
             value: jtf191.com
+          - name: SUBDOMAINS
+            value: www,
