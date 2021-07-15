@@ -285,7 +285,6 @@ class ProspectiveAviator(Pilot):
 
         return aviator
 
-
     def recruitment_email(self):
         return f"""Recruitment application submitted by {self.callsign} on {self.submitted.strftime("%m/%d/%y")}
                         Email: {self.email}
@@ -315,3 +314,13 @@ class Event(models.Model):
 
     def __str___(self):
         return f'{self.name}'
+
+
+class UserImage(models.Model):
+
+    file = models.ImageField('user_images')
+    squadron = models.ForeignKey(Squadron, on_delete=models.SET_NULL, blank=True, null=True)
+    datetime = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.file.name}'
