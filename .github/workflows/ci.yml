@@ -23,7 +23,7 @@ jobs:
     strategy:
       matrix:
         # listed here are the directories to build from
-        component: [api-relay, api-server, tcpeter, gateway, ui]
+        component: [api-relay, api-server, bot, gateway, tcpeter, ui]
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE
       - uses: actions/checkout@v2
@@ -49,7 +49,7 @@ jobs:
     strategy:
       matrix:
         # listed here are the directories to build from
-        component: [ api-relay, api-server, ui ]
+        component: [ api-server, bot, ui ]
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE
       - uses: actions/checkout@v1

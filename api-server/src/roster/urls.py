@@ -36,5 +36,6 @@ urlpatterns = [
     path('qualifications/modules/detail/<int:pk>', QualificationModuleDetailView.as_view()),
     path('qualifications/checkoffs/list/', QualificationCheckoffListView.as_view()),
     path('qualifications/checkoffs/detail/<int:pk>', QualificationCheckoffDetailView.as_view()),
+    path('user_images/list/', UserImageListView.as_view())
 
 ]

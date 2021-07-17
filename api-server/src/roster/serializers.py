@@ -102,3 +102,10 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         user.save()
         return user
+
+
+class UserImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserImage
+        fields = '__all__'

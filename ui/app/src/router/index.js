@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 import About from '../views/About.vue'
 // import GCI from '../views/GCI.vue'
 import Qualification from '@/views/Qualification'
@@ -8,6 +7,8 @@ import Squadron from '../views/Squadron'
 import JoinUs from '../views/JoinUs'
 import Schedule from '@/views/Schedule'
 import Register from '@/views/Register'
+import SquadronList from '@/views/SquadronList'
+import Photos from '@/views/Photos'
 
 Vue.use(VueRouter)
 
@@ -21,9 +22,9 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home,
+    component: Photos,
     meta: {
-      title: title(title_header, 'Home'),
+      title: title(title_header, 'Photos'),
     },
   },
   {
@@ -48,6 +49,14 @@ const routes = [
     name: 'Squadron',
     component: Squadron,
     props: true,
+    meta: {
+      title: title(title_header, 'Squadrons'),
+    },
+  },
+  {
+    path: '/squadron',
+    name: 'SquadronList',
+    component: SquadronList,
     meta: {
       title: title(title_header, 'Squadrons'),
     },

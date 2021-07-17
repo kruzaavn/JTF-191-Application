@@ -121,3 +121,8 @@ class QualificationCheckoffAdmin(admin.ModelAdmin):
     list_display = ('module', 'aviator', 'date', 'current')
 
     list_filter = ('module__name', 'aviator__callsign')
+
+
+@admin.register(UserImage)
+class UserImageAdmin(admin.ModelAdmin):
+    pass

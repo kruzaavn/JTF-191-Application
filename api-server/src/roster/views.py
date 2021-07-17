@@ -10,12 +10,12 @@ from rest_framework import permissions
 
 
 from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator, Event, Qualification, \
-    QualificationModule, QualificationCheckoff
+    QualificationModule, QualificationCheckoff, UserImage
 
 from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
     DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, QualificationSerializer, \
     QualificationModuleSerializer, QualificationCheckoffSerializer, UserSerializer, UserRegisterSerializer, \
-    EventCreateSerializer
+    EventCreateSerializer, UserImageSerializer
 
 
 class AviatorListView(ListCreateAPIView):
@@ -242,3 +242,8 @@ class QualificationCheckoffDetailView(RetrieveUpdateDestroyAPIView):
     queryset = QualificationCheckoff.objects.all()
     serializer_class = QualificationCheckoffSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+
+class UserImageListView(ListCreateAPIView):
+    queryset = UserImage.objects.all().order_by('-datetime')
+    serializer_class = UserImageSerializer
