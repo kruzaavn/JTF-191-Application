@@ -48,26 +48,11 @@
             </v-list-item-content>
           </v-list-item>
         </div>
-        <v-list-group v-for="hq in hqs" :key="hq.id">
-          <template v-slot:activator>
-            <v-list-item-content>
-              <v-list-item-title>{{ hq.name }}</v-list-item-title>
-            </v-list-item-content>
-          </template>
-          <v-list-item
-            v-for="subSquadron in squadrons.filter(
-              (squadron) => squadron.hq && hq.id && squadron.hq.id === hq.id
-            )"
-            :key="subSquadron.id"
-            :to="/squadron/ + subSquadron.designation"
-          >
-            <v-list-item-content>
-              <v-list-item-title>
-                {{ subSquadron.designation }}
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-group>
+        <v-list-item to="/squadron">
+          <v-list-item-content>
+            <v-list-item-title>Squadrons</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
       <Footer></Footer>
     </v-navigation-drawer>
@@ -113,15 +98,9 @@ export default {
     },
   },
   mounted() {
-    setTimeout(() => {
-      this.getRoster()
-    }, 0)
-    setTimeout(() => {
-      this.getSquadrons()
-    }, 500)
-    setTimeout(() => {
-      this.getHQs()
-    }, 1000)
+    this.getRoster()
+    this.getSquadrons()
+    this.getHQs()
   },
 }
 </script>

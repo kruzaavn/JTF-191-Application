@@ -318,9 +318,9 @@ class Event(models.Model):
 
 class UserImage(models.Model):
 
-    file = models.ImageField('user_images')
-    squadron = models.ForeignKey(Squadron, on_delete=models.SET_NULL, blank=True, null=True)
+    file = models.ImageField('user_images', blank=True, null=True)
+    url = models.URLField(blank=True, null=True, unique=True)
     datetime = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.file.name}'
+        return f'{self.file.name or self.url}'

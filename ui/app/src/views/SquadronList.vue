@@ -56,7 +56,7 @@
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  name: 'Home',
+  name: 'SquadronList',
   components: {},
   data: () => ({
     local: location.host,
