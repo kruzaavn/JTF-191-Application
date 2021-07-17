@@ -20,6 +20,11 @@
     </v-app-bar>
     <v-navigation-drawer v-model="drawer" app>
       <v-list nav dense>
+        <v-list-item to="/">
+          <v-list-item-content>
+            <v-list-item-title>Photos</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-list-item to="/about">
           <v-list-item-content>
             <v-list-item-title>About Us</v-list-item-title>
