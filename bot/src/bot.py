@@ -34,7 +34,7 @@ class Client(discord.Client):
 
         votes = next(filter(lambda reaction: str(reaction.emoji) == camera_emoji, message.reactions))
 
-        if votes.count >= 2:
+        if votes.count >= 4:
             async with aiohttp.ClientSession(auth=auth) as session:
                 async with session.post(f'http://api-server:8000/api/roster/user_images/list/',
                                         json={'url': message.attachments[0].url},
