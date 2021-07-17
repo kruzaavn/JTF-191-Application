@@ -32,6 +32,7 @@ class AviatorDetailView(RetrieveUpdateDestroyAPIView):
 class UserCreateView(CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegisterSerializer
+    permissions = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
         aviator = Aviator.objects.get(pk=kwargs['aviator_id'])
@@ -51,7 +52,6 @@ class UserCreateView(CreateAPIView):
 class UserDetailView(RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class SquadronListView(ListCreateAPIView):
@@ -72,6 +72,7 @@ class DCSModuleListView(ListCreateAPIView):
 class ProspectiveAviatorDetailView(CreateAPIView):
     queryset = ProspectiveAviator.objects.all()
     serializer_class = ProspectiveAviatorSerializer
+    permissions = [permissions.AllowAny]
 
     def create(self, request, *args, **kwargs):
 
@@ -109,10 +110,13 @@ class ProspectiveAviatorDetailView(CreateAPIView):
 
 class StatsView(APIView):
 
+
     """
         for tracking flight hours it is assumed that the departure key of the aviators.stats will have the correct
         airframe and simtime in second from start
     """
+
+    permissions = [permissions.AllowAny]
 
     def post(self, request, format=None):
         event_name = request.data.get('event')
@@ -174,7 +178,6 @@ class EventListView(ListCreateAPIView):
 
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def create(self, request, *args, **kwargs):
         serializer = EventCreateSerializer(data=request.data)
@@ -190,7 +193,6 @@ class EventDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def update(self, request, *args, **kwargs):
         serializer = EventCreateSerializer(data=request.data)
@@ -205,45 +207,38 @@ class QualificationListView(ListCreateAPIView):
 
     queryset = Qualification.objects.all()
     serializer_class = QualificationSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class QualificationDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = Qualification.objects.all()
     serializer_class = QualificationSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class QualificationModuleListView(ListCreateAPIView):
 
     queryset = QualificationModule.objects.all()
     serializer_class = QualificationModuleSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class QualificationModuleDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = QualificationModule.objects.all()
     serializer_class = QualificationModuleSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class QualificationCheckoffListView(ListCreateAPIView):
 
     queryset = QualificationCheckoff.objects.all()
     serializer_class = QualificationCheckoffSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class QualificationCheckoffDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = QualificationCheckoff.objects.all()
     serializer_class = QualificationCheckoffSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class UserImageListView(ListCreateAPIView):
     queryset = UserImage.objects.all().order_by('-datetime')
     serializer_class = UserImageSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
