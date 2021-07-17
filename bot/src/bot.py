@@ -11,6 +11,7 @@ password = os.getenv('API_SERVER_PASSWORD')
 camera_emoji = emoji.emojize(":camera:")
 supported_image_formats = ['jpg', 'jpeg', 'png', 'tiff', 'bmp']
 
+auth = aiohttp.BasicAuth(login=user, password=password)
 
 class Client(discord.Client):
 
@@ -30,6 +31,16 @@ class Client(discord.Client):
     async def upload_image(self, payload):
         channel = self.get_channel(payload.channel_id)
         message = await channel.fetch_message(payload.message_id)
+
+        votes = next(filter(lambda reaction: str(reaction.emoji) == camera_emoji, message.reactions))
+
+        if votes.count >= 2:
+            async with aiohttp.ClientSession(auth=auth) as session:
+                async with session.post(f'http://api-server:8000/api/roster/user_images/list/',
+                                        json={'url': message.attachments[0].url},
+                                        ) as r:
+
+                    print(f'Uploaded {message.attachments[0].url}: {r.status}')
 
     def is_attachment_image(self, attachment):
 
