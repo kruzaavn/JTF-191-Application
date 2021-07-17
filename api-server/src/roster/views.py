@@ -48,11 +48,10 @@ class UserCreateView(CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-
 class UserDetailView(RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class SquadronListView(ListCreateAPIView):
@@ -175,7 +174,7 @@ class EventListView(ListCreateAPIView):
 
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def create(self, request, *args, **kwargs):
         serializer = EventCreateSerializer(data=request.data)
@@ -191,7 +190,7 @@ class EventDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = Event.objects.all()
     serializer_class = EventSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def update(self, request, *args, **kwargs):
         serializer = EventCreateSerializer(data=request.data)
@@ -206,44 +205,45 @@ class QualificationListView(ListCreateAPIView):
 
     queryset = Qualification.objects.all()
     serializer_class = QualificationSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class QualificationDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = Qualification.objects.all()
     serializer_class = QualificationSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class QualificationModuleListView(ListCreateAPIView):
 
     queryset = QualificationModule.objects.all()
     serializer_class = QualificationModuleSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class QualificationModuleDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = QualificationModule.objects.all()
     serializer_class = QualificationModuleSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class QualificationCheckoffListView(ListCreateAPIView):
 
     queryset = QualificationCheckoff.objects.all()
     serializer_class = QualificationCheckoffSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class QualificationCheckoffDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = QualificationCheckoff.objects.all()
     serializer_class = QualificationCheckoffSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class UserImageListView(ListCreateAPIView):
     queryset = UserImage.objects.all().order_by('-datetime')
     serializer_class = UserImageSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]

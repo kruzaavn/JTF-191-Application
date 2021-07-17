@@ -5,7 +5,7 @@
              :key="photo.key" cols="4"
              class="d-flex child-flex"
       >
-        <v-img :src="photo.url || photo.file" contain> </v-img>
+        <v-img :src="photo.url || photo.file" > </v-img>
       </v-col>
     </v-row>
   </v-container>
