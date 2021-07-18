@@ -252,5 +252,5 @@ class QualificationCheckoffDetailView(RetrieveUpdateDestroyAPIView):
 class UserImageListView(ListCreateAPIView):
     queryset = UserImage.objects.all().order_by('-datetime')
     serializer_class = UserImageSerializer
-    authentication_classes = [authentication.SessionAuthentication]
+    authentication_classes = [authentication.BasicAuthentication, authentication.SessionAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
