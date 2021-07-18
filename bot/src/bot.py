@@ -41,12 +41,12 @@ class Client(discord.Client):
                 async with session.post(f'http://api-server:8000/api/roster/user_images/list/',
                                         json={'url': message.attachments[0].url},
                                         ) as r:
-                    message = await r.json()
+                    response_message = await r.json()
 
                     if r.ok:
                         print(f'Uploaded {message.attachments[0].url}')
                     else:
-                        print(message)
+                        print(response_message)
 
     def is_attachment_image(self, attachment):
 
