@@ -76,6 +76,7 @@ class Squadron(models.Model):
     # fields
     name = models.CharField(max_length=1024)
     designation = models.CharField(max_length=1024)
+    description = models.TextField(blank=True, null=True)
     type = models.CharField(max_length=1024, choices=[(x, x) for x in types],
                             default=types[0])
     air_frame = models.ForeignKey(DCSModules, on_delete=models.SET_NULL,

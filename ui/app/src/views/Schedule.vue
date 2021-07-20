@@ -53,8 +53,9 @@
 
               <v-card-subtitle>Event Description</v-card-subtitle>
               <v-card-text>
-                {{ selectedEvent.description }}
+                <markdown-it-vue :content=selectedEvent.description></markdown-it-vue>
               </v-card-text>
+
               <v-card-subtitle>Required Squadrons</v-card-subtitle>
               <v-chip
                 v-for="squadron in selectedEvent.required_squadrons"
