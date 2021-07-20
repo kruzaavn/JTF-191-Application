@@ -1,11 +1,13 @@
 <template>
   <v-container>
     <v-row>
-      <v-col v-for="photo in photos"
-             :key="photo.key" cols="4"
-             class="d-flex child-flex"
+      <v-col
+        v-for="photo in photos"
+        :key="photo.key"
+        cols="4"
+        class="d-flex child-flex"
       >
-        <v-img :src="photo.url || photo.file" > </v-img>
+        <v-img :src="photo.url || photo.file"> </v-img>
       </v-col>
     </v-row>
   </v-container>

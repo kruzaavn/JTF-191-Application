@@ -18,32 +18,27 @@
               (x) => x.type === squadron_type
             )"
             :key="squadron.id"
-            cols="3"
+            md="4"
+            lg="3"
+            sm="12"
+            class="d-flex child-flex"
           >
             <v-card
-              width="450"
-              class="my-4 mx-4 py-2 px-2"
               :to="'/squadron/' + squadron.designation"
               dark
-              color="#00000077"
+              color="grey"
+              class="mx-auto"
               tile
             >
-              <v-img
-                contain
-                position="center"
-                max-height="300px"
-                height="300px"
-                class="mx-1 my-2"
-                :src="squadron.img"
-              >
-              </v-img>
-              <v-divider></v-divider>
-              <v-card-title>
-                {{ squadron.name }}
-              </v-card-title>
-              <v-card-subtitle>
-                {{ squadron.designation }}
-              </v-card-subtitle>
+              <v-img contain :src="squadron.img" height="30vh" class="my-1"></v-img>
+              <div class="squadron-description mt-auto">
+                <v-card-title>
+                  {{ squadron.name }}
+                </v-card-title>
+                <v-card-subtitle>
+                  {{ squadron.designation }}
+                </v-card-subtitle>
+              </div>
             </v-card>
           </v-col>
         </v-row>
@@ -75,3 +70,9 @@ export default {
   },
 }
 </script>
+
+<style>
+.squadron-description {
+  background-color: darkgray;
+}
+</style>
