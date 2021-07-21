@@ -121,7 +121,7 @@ if PRODUCTION is None:
         "default": {
             "BACKEND": "channels_redis.core.RedisChannelLayer",
             "CONFIG": {
-                "hosts": [('redis', 6379)],
+                "hosts": [f"redis://:{os.getenv('REDIS_PASSWORD','')}@redis-gci-master:6379/0"],
                 "capacity": 5000,
                 "expiry": 5
             },

@@ -16,8 +16,8 @@
 local c
 local socket
 local JSON
-local host = 'www.jtf191.com'  -- change to tcpeter application dns name or ip
-local port = 7224  -- change to tcpeter app port
+local host = 'relay.jtf191.com'  -- change to application dns name or ip
+local port = 7224  -- change to gci-relay app port
 
 package.path  = package.path..";"..lfs.currentdir().."/LuaSocket/?.lua" .. ';' ..lfs.currentdir().. '/Scripts/?.lua'
 package.cpath = package.cpath..";"..lfs.currentdir().."/LuaSocket/?.dll"

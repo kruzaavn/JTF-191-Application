@@ -1,6 +1,8 @@
 # chat/views.py
 from django.shortcuts import render
-from rest_framework import generics
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework import permissions, authentication
+
 from .serializers import DCSServerSerializer, DCSListServerSerializer
 from .models import DCSServer
 
@@ -15,12 +17,16 @@ def room(request, room_name):
     })
 
 
-class ServerDetailView(generics.RetrieveUpdateDestroyAPIView):
+class ServerDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = DCSServer.objects.all()
     serializer_class = DCSServerSerializer
+    authentication_classes = [authentication.BasicAuthentication]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
-class ServerListView(generics.ListCreateAPIView):
+class ServerListView(ListCreateAPIView):
     queryset = DCSServer.objects.all()
     serializer_class = DCSServerSerializer
+    authentication_classes = [authentication.BasicAuthentication]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]

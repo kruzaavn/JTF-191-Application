@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-resource-group: jtf191.app.server_group
+  name: gci-relay
+spec:
+  loadBalancerIP: {{.Values.relayIp}}
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 7224
+      targetPort: 7224
+  selector:
+    app: gci-relay

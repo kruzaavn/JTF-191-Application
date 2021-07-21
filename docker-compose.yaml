@@ -22,9 +22,9 @@ services:
       - dbdata:/var/lib/postgresql/data/
 
 #  11/1/2020 remove webgci
-#  tcpeter:
+#  gci-relay:
 #    restart: always
-#    build: ./tcpeter
+#    build: ./gci-relay
 #    ports:
 #      - "7224:7224"
 #    environment:

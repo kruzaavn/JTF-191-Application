@@ -11,8 +11,11 @@ from tornado.ioloop import IOLoop
 def log(string):
     print(f'{datetime.datetime.now()}: {string}', flush=True)
 
+user = os.getenv('API_SERVER_USER')
+password = os.getenv('API_SERVER_PASSWORD')
 
-class TCPeter(TCPServer):
+
+class GCIRelay(TCPServer):
 
     async def handle_stream(self, stream, address):
         source = f'{address[0]}:{address[1]}'
@@ -56,7 +59,7 @@ class TCPeter(TCPServer):
 
 if __name__ == '__main__':
 
-    server = TCPeter()
+    server = GCIRelay()
     port = int(os.getenv('PORT', 7224))
     log(f'listening on {port}')
     server.bind(port)

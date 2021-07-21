@@ -36,7 +36,15 @@ spec:
     spec:
       containers:
       - name: api-relay
-        image: "{{ .Values.image.registryUrl }}/api-relay:{{.Values.image.tag}}"
+        image: "{{ .Values.image.registryUrl }}/api-relay:{{ .Values.image.tag }}"
         imagePullPolicy: Always
         command: ["python"]
         args: ["-u", "serve.py"]
+        env:
+          - name: API_SERVER_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret
+                key: apiServerBotPassword
+          - name: API_SERVER_USER
+            value: jp5bot

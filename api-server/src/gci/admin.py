@@ -6,4 +6,5 @@ from .models import *
 
 @admin.register(DCSServer)
 class DCSServerAdmin(admin.ModelAdmin):
-    pass
+
+    list_display = ('name', 'theater', 'mission')
