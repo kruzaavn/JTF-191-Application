@@ -57,6 +57,11 @@ spec:
         env:
           - name: PRODUCTION
             value: "true"
+          - name: DJANGO_KEY
+            valueFrom:
+              secretKeyRef:
+                key: djangoKey
+                name: secret
           - name: EMAIL_HOST
             value: "jtf191@gmail.com"
           - name: POSTGRES_PASSWORD
