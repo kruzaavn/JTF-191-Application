@@ -121,12 +121,14 @@ if PRODUCTION is None:
         "default": {
             "BACKEND": "channels_redis.core.RedisChannelLayer",
             "CONFIG": {
-                "hosts": [f"redis://:{os.getenv('REDIS_PASSWORD','')}@redis-gci-master:6379/0"],
+                "hosts": [('redis', 6379)],
                 "capacity": 5000,
                 "expiry": 5
             },
         },
     }
+
+
 
 else:
 
@@ -145,12 +147,13 @@ else:
         "default": {
             "BACKEND": "channels_redis.core.RedisChannelLayer",
             "CONFIG": {
-                "hosts": [('redis', 6379)],
+                "hosts": [f"redis://:{os.getenv('REDIS_PASSWORD','')}@redis-gci-master:6379/0"],
                 "capacity": 5000,
                 "expiry": 5
             },
         },
     }
+
 
     DEFAULT_FILE_STORAGE = 'backend.custom_azure.AzureMediaStorage'
     STATICFILES_STORAGE = 'backend.custom_azure.AzureStaticStorage'
