@@ -79,8 +79,3 @@ spec:
               secretKeyRef:
                 name: secret
                 key: emailPassword
-          - name: REDIS_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: redis-gci
-                key: redis-password

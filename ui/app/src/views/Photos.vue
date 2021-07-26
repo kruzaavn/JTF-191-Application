@@ -7,7 +7,9 @@
         cols="4"
         class="d-flex child-flex"
       >
-        <v-img :src="photo.url || photo.file"> </v-img>
+        <v-lazy>
+          <v-img :src="photo.url || photo.file"> </v-img>
+        </v-lazy>
       </v-col>
     </v-row>
   </v-container>

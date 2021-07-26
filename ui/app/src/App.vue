@@ -12,7 +12,7 @@
         outlined
         tile
         depressed
-        :href=adminLink
+        :href="adminLink"
       >
         ADMIN
       </v-btn>
@@ -94,14 +94,12 @@ export default {
       'isAdmin',
     ]),
     adminLink: function () {
-
       if (window.location.hostname === 'localhost') {
         return 'http://localhost:8000/admin/'
       } else {
         return `https://${window.location.hostname}/admin/`
       }
-
-    }
+    },
   },
   methods: {
     ...mapActions(['getRoster', 'getHQs', 'getSquadrons']),

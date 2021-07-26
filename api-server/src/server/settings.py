@@ -108,19 +108,6 @@ if PRODUCTION is None:
         }
     }
 
-    CHANNEL_LAYERS = {
-        "default": {
-            "BACKEND": "channels_redis.core.RedisChannelLayer",
-            "CONFIG": {
-                "hosts": [('redis', 6379)],
-                "capacity": 5000,
-                "expiry": 5
-            },
-        },
-    }
-
-
-
 else:
 
     DATABASES = {
@@ -134,22 +121,6 @@ else:
         }
     }
 
-    CHANNEL_LAYERS = {
-        "default": {
-            "BACKEND": "channels_redis.core.RedisChannelLayer",
-            "CONFIG": {
-                "hosts": [
-                    {
-                        'address': ('redis-gci-master.default.svc.cluster.local', 6379),
-                        'password': os.getenv('REDIS_PASSWORD')
-                    },
-                ],
-                "capacity": 5000,
-                "expiry": 5
-            },
-        },
-    }
-
     DEFAULT_FILE_STORAGE = 'backend.custom_azure.AzureMediaStorage'
     STATICFILES_STORAGE = 'backend.custom_azure.AzureStaticStorage'
 
@@ -160,6 +131,16 @@ else:
     AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
     STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
     MEDIA_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+            "capacity": 5000,
+        },
+    },
+}
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

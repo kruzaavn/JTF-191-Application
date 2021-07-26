@@ -12,10 +12,11 @@
               Aviators: {{ members.length }}
             </v-card-title>
           </v-img>
-          <v-card
-          class="mx-4 my-5 py-2"
-          >
-            <markdown-it-vue class="px-2" :content=squadron.description></markdown-it-vue>
+          <v-card class="mx-4 my-5 py-2">
+            <markdown-it-vue
+              class="px-2"
+              :content="squadron.description"
+            ></markdown-it-vue>
           </v-card>
 
           <div v-for="member in members" :key="member.id">
@@ -86,7 +87,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
 
 export default {
   name: 'Squadron',
