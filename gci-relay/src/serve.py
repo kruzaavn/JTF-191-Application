@@ -21,7 +21,12 @@ class GCIRelay(TCPServer):
         source = f'{address[0]}:{address[1]}'
         log(f'connected to {source}')
 
-        connection_config = json.loads(await stream.read_until(b"\n"))
+        try:
+            connection_config = json.loads(await stream.read_until(b"\n"))
+            log(connection_config)
+
+        except StreamClosedError:
+            pass
 
         log(f"registering connection {connection_config['name']} for {source}")
 
