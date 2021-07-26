@@ -4,7 +4,7 @@
     maintainers Brony aleks.kruza@gmail.com
 
     Initial config Brony 6/15/2020
-    Update to communicate direct to tcpeter Brony 8/9/2020
+    Update to communicate direct to gci-relay Brony 8/9/2020
 
     purpose this file is intended to send event based updates to the api-server, for continuous export data stream see
     gciexport.lua
@@ -23,8 +23,8 @@ package.cpath = package.cpath..";"..lfs.currentdir().."LuaSocket\\?.dll"
 local c = nil
 local socket = require('socket')
 JSON = require('JSON')
-local host = 'relay.jtf191.com'  -- change to tcpeter application dns name or ip
-local port = 7225  -- change to tcpeter app port
+local host = 'relay.jtf191.com'  -- change to application dns name or ip
+local port = 7225  -- change to app port
 
 function connect_socket()
 

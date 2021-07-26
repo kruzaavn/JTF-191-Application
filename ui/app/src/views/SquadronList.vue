@@ -30,7 +30,12 @@
               class="mx-auto"
               tile
             >
-              <v-img contain :src="squadron.img" height="30vh" class="my-1"></v-img>
+              <v-img
+                contain
+                :src="squadron.img"
+                height="30vh"
+                class="my-1"
+              ></v-img>
               <div class="squadron-description mt-auto">
                 <v-card-title>
                   {{ squadron.name }}

@@ -12,7 +12,7 @@
         outlined
         tile
         depressed
-        href="https://www.jtf191.com/admin/"
+        :href="adminLink"
       >
         ADMIN
       </v-btn>
@@ -93,6 +93,13 @@ export default {
       'tokenExpiration',
       'isAdmin',
     ]),
+    adminLink: function () {
+      if (window.location.hostname === 'localhost') {
+        return 'http://localhost:8000/admin/'
+      } else {
+        return `https://${window.location.hostname}/admin/`
+      }
+    },
   },
   methods: {
     ...mapActions(['getRoster', 'getHQs', 'getSquadrons']),

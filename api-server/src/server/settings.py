@@ -22,7 +22,6 @@ import django.db.models
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-SECRET_FILE = pathlib.Path(BASE_DIR).joinpath('secrets.txt')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -31,15 +30,9 @@ PRODUCTION = os.getenv('PRODUCTION')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-if PRODUCTION is None:
-    SECRET_KEY = '%yg))7dqy#6c=l2cu+#%28tfg4p1n29c7xwc5%%tk8*hbv2o2e'
 
-elif PRODUCTION is not None and SECRET_FILE.is_file():
-    SECRET_KEY = SECRET_FILE.read_text()
+SECRET_KEY = os.getenv('DJANGO_KEY', '%yg))7dqy#6c=l2cu+#%28tfg4p1n29c7xwc5%%tk8*hbv2o2e')
 
-else:
-    SECRET_KEY = secrets.token_urlsafe(64)
-    SECRET_FILE.write_text(SECRET_KEY)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = PRODUCTION is None
@@ -49,7 +42,6 @@ ALLOWED_HOSTS = [
     '.jtf191.com',
     'api-server'
 ]
-
 
 # Application definition
 
@@ -100,7 +92,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'server.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
@@ -117,17 +108,6 @@ if PRODUCTION is None:
         }
     }
 
-    CHANNEL_LAYERS = {
-        "default": {
-            "BACKEND": "channels_redis.core.RedisChannelLayer",
-            "CONFIG": {
-                "hosts": [('redis', 6379)],
-                "capacity": 5000,
-                "expiry": 5
-            },
-        },
-    }
-
 else:
 
     DATABASES = {
@@ -141,17 +121,6 @@ else:
         }
     }
 
-    CHANNEL_LAYERS = {
-        "default": {
-            "BACKEND": "channels_redis.core.RedisChannelLayer",
-            "CONFIG": {
-                "hosts": [('redis', 6379)],
-                "capacity": 5000,
-                "expiry": 5
-            },
-        },
-    }
-
     DEFAULT_FILE_STORAGE = 'backend.custom_azure.AzureMediaStorage'
     STATICFILES_STORAGE = 'backend.custom_azure.AzureStaticStorage'
 
@@ -163,6 +132,15 @@ else:
     STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
     MEDIA_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
 
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("redis", 6379)],
+            "capacity": 5000,
+        },
+    },
+}
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -184,7 +162,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -198,15 +175,13 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-
-ASGI_APPLICATION = 'server.routing.application'
+ASGI_APPLICATION = 'server.asgi.application'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

@@ -53,7 +53,9 @@
 
               <v-card-subtitle>Event Description</v-card-subtitle>
               <v-card-text>
-                <markdown-it-vue :content=selectedEvent.description></markdown-it-vue>
+                <markdown-it-vue
+                  :content="selectedEvent.description"
+                ></markdown-it-vue>
               </v-card-text>
 
               <v-card-subtitle>Required Squadrons</v-card-subtitle>
