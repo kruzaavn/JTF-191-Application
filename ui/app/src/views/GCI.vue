@@ -124,7 +124,7 @@ export default {
     },
     utcFormat: function (value) {
       let date = new Date(value)
-      return `${date.toLocaleString('en-US', { timeZone: 'UTC' })}`
+      return `${date.toString()}`
     },
   },
   mounted() {
