@@ -10,9 +10,10 @@ class DCSServer(models.Model):
 
     name = models.CharField(max_length=128)
     mission = models.CharField(max_length=1024)
-    theater = models.CharField(max_length=1024)
-    active = models.BooleanField(default=True)
-    connection_time = models.DateTimeField(auto_now_add=True)
+    theatre = models.CharField(max_length=1024)
+    start_time = models.DateTimeField()
+    password = models.CharField(max_length=1024, null=True, blank=True)
+    connection_time = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name

@@ -35,29 +35,28 @@
             <v-list-item-title>Join Us</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item to="/squadron">
+          <v-list-item-content>
+            <v-list-item-title>Squadrons</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <div v-if="isLoggedIn">
           <v-list-item to="/qualification/list">
             <v-list-item-content>
               <v-list-item-title>Training Qualifications</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <!--        11/1/2020 Removing webgci -->
-          <!--        <v-list-item to="/gci">-->
-          <!--          <v-list-item-content>-->
-          <!--            <v-list-item-title>Web GCI</v-list-item-title>-->
-          <!--          </v-list-item-content>-->
-          <!--        </v-list-item>-->
           <v-list-item to="/schedule">
             <v-list-item-content>
               <v-list-item-title>JTF Schedule</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+          <v-list-item to="/server">
+            <v-list-item-content>
+              <v-list-item-title>Servers</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
         </div>
-        <v-list-item to="/squadron">
-          <v-list-item-content>
-            <v-list-item-title>Squadrons</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
       </v-list>
       <Footer></Footer>
     </v-navigation-drawer>
