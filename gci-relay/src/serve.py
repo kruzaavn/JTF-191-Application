@@ -2,6 +2,7 @@ import os
 import requests
 import datetime
 import json
+import pprint
 from tornado.tcpserver import TCPServer
 from tornado.websocket import websocket_connect
 from tornado.iostream import StreamClosedError
@@ -18,48 +19,102 @@ password = os.getenv('API_SERVER_PASSWORD')
 class GCIRelay(TCPServer):
 
     async def handle_stream(self, stream, address):
-        source = f'{address[0]}:{address[1]}'
-        log(f'connected to {source}')
 
+        websocket = None
+
+        # configure server
         try:
-            connection_config = json.loads(await stream.read_until(b"\n"))
-            log(connection_config)
+            server_config = json.loads(await stream.read_until(b"\n"))
+
+            pprint.pp(server_config)
+
+            session = requests.session()
+            session.auth = (user, password)
+
+            self.register_or_update_server(session, server_config)
+            websocket = await self.connect_websocket(server_config)
 
         except StreamClosedError:
             pass
 
-        log(f"registering connection {connection_config['name']} for {source}")
+        # connect to websocket and push data
 
-        r = requests.post('http://api-server:8000/api/gci/server/list/',
-                          data={'name': connection_config['name'].replace(' ', '_'),
-                                'ip': address[0]})
+        while websocket:
+            try:
+                data = json.loads(await stream.read_until(b"\n"))
+                await websocket.write_message(data)
 
-        registered_server = r.json()
-        if r.status_code == 201:
+            except StreamClosedError:
+                log(f"disconnect websocket")
+                websocket.close()
+                websocket = None
 
-            websocket_url = f"ws://api-server:8000/ws/gci/{connection_config['name'].replace(' ', '_')}/"
-            log(f'establishing websocket connection to {websocket_url}')
-            websocket = await websocket_connect(websocket_url)
+        # log(f"registering connection {connection_config['name']} for {source}")
+        #
+        # r = requests.post('http://api-server:8000/api/gci/server/list/',
+        #                   data={'name': connection_config['name'].replace(' ', '_'),
+        #                         'ip': address[0]})
+        #
+        # registered_server = r.json()
+        # if r.status_code == 201:
+        #
+        #     websocket_url = f"ws://api-server:8000/ws/gci/{connection_config['name'].replace(' ', '_')}/"
+        #     log(f'establishing websocket connection to {websocket_url}')
+        #     websocket = await websocket_connect(websocket_url)
+        #
+        #     while True:
+        #         try:
+        #             data = await stream.read_until(b"\n")
+        #             await websocket.write_message(data)
+        #
+        #         except StreamClosedError:
+        #             r = requests.delete(f'http://api-server:8000/api/gci/server/detail/{registered_server["id"]}/')
+        #             websocket.close()
+        #             log(f'disconnecting websocket connection to {websocket_url}')
+        #
+        #             if r.status_code == 204:
+        #                 log(f'de-registered {registered_server["name"]}')
+        #             else:
+        #                 log(f'error de-registering {registered_server["name"]}')
+        #
+        #             break
+        #
+        # else:
+        #     log(f"unable to register {connection_config['name']} for {source}")
 
-            while True:
-                try:
-                    data = await stream.read_until(b"\n")
-                    await websocket.write_message(data)
+    def register_or_update_server(self, session, config):
 
-                except StreamClosedError:
-                    r = requests.delete(f'http://api-server:8000/api/gci/server/detail/{registered_server["id"]}/')
-                    websocket.close()
-                    log(f'disconnecting websocket connection to {websocket_url}')
+        registered_servers = [x for x in session.get('http://api-server:8000/api/gci/server/list/').json() if x['name'] == config['name']]
 
-                    if r.status_code == 204:
-                        log(f'de-registered {registered_server["name"]}')
-                    else:
-                        log(f'error de-registering {registered_server["name"]}')
+        server_date = {k.lower(): v for k, v in config.pop('date').items()}
+        server_time = config.pop('start_time')
 
-                    break
+        dt = datetime.datetime(**server_date) + datetime.timedelta(seconds=server_time)
+
+        config['start_time'] = dt.isoformat()
+
+        if registered_servers:
+
+            id = registered_servers[0]['id']
+
+            r = session.put(f'http://api-server:8000/api/gci/server/detail/{id}/', data=config)
+            log(r.json())
+            log(f'updated server {config["name"]}')
 
         else:
-            log(f"unable to register {connection_config['name']} for {source}")
+
+            r = session.post(f'http://api-server:8000/api/gci/server/list/', data=config)
+            log(r.json())
+            log(f'registered server {config["name"]}')
+
+    async def connect_websocket(self, config):
+
+        websocket_url = f"ws://api-server:8000/ws/gci/{config['name'].replace(' ', '_')}/"
+        websocket = await websocket_connect(websocket_url)
+
+        log(f'connected to websocket at {websocket_url}')
+
+        return websocket
 
 
 if __name__ == '__main__':

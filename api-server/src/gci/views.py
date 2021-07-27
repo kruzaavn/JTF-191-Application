@@ -3,7 +3,7 @@ from django.shortcuts import render
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework import permissions, authentication
 
-from .serializers import DCSServerSerializer, DCSListServerSerializer
+from .serializers import DCSServerSerializer
 from .models import DCSServer
 
 

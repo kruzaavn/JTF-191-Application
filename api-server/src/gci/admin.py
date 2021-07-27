@@ -7,4 +7,4 @@ from .models import *
 @admin.register(DCSServer)
 class DCSServerAdmin(admin.ModelAdmin):
 
-    list_display = ('name', 'theater', 'mission')
+    list_display = ('name', 'mission', 'theatre')
