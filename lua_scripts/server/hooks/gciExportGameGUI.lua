@@ -28,9 +28,6 @@ local port = 7224  -- change to app port
 
 dofile(lfs.writedir() .. [[Config\serverSettings.lua]])
 
-
-
-
 function connect_socket()
 
 	if not c then
@@ -47,7 +44,7 @@ function disconnect_socket()
 		c:close()
 		c = nil
 	end
-	dcs_log('disconnected from api-relay')
+	dcs_log('disconnected from gci-relay')
 end
 
 function Export2Socket(message)
@@ -62,7 +59,18 @@ end
 
 function register_server()
 
-    Export2Socket(DCS.getMissionOptions())
+	server = {}
+	server.name = cfg["name"]
+	server.password = cfg["password"]
+	server.description = cfg["description"]
+
+	mission = DCS.getCurrentMission()
+	server.theatre = mission["mission"]["theatre"]
+	server.date = mission["mission"]["date"]
+	server.start_time = mission["mission"]["start_time"]
+	server.mission = DCS.getMissionName()
+
+	Export2Socket(server)
 
 end
 
@@ -85,6 +93,7 @@ function ExportWorldObjects()
 end
 
 local callbacks = {}
+callbacks.send_time = -1
 
 function callbacks.onSimulationStart()
 
@@ -102,12 +111,16 @@ end
 
 function callbacks.onSimulationFrame()
 
-	local check_time = DCS.getRealTime() % 1
+	local check_time = math.floor(DCS.getModelTime())
 
-	if (check_time == 0) then
+	if (check_time ~= callbacks.send_time) then
 
 		ExportWorldObjects()
-
+		callbacks.send_time = check_time
 	end
 
 end
+
+DCS.setUserCallbacks(callbacks)
+
+dcs_log('GCI Loaded')
