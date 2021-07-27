@@ -4,7 +4,7 @@ import datetime
 import json
 import pprint
 from tornado.tcpserver import TCPServer
-from tornado.websocket import websocket_connect
+from tornado.websocket import websocket_connect, WebSocketClosedError
 from tornado.iostream import StreamClosedError
 from tornado.ioloop import IOLoop
 
@@ -44,10 +44,16 @@ class GCIRelay(TCPServer):
                 data = json.loads(await stream.read_until(b"\n"))
                 await websocket.write_message(data)
 
-            except StreamClosedError:
-                log(f"disconnect websocket")
+            except StreamClosedError as e:
+                log(f"disconnecting {e}")
                 websocket.close()
                 websocket = None
+                break
+
+            except WebSocketClosedError as e:
+                log(f"disconnecting {e}")
+                websocket = None
+                break
 
     def register_or_update_server(self, session, config):
 

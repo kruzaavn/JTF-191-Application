@@ -82,9 +82,9 @@ export default {
     ...mapActions(['getServers']),
     configureSocketConnection: function (server) {
       if (window.location.hostname === 'localhost') {
-        return `ws://${window.location.hostname}:8000/ws/gci/${server.name}/`
+        return `ws://${window.location.hostname}:8000/ws/gci/${server.name.replaceAll(' ', '_')}/`
       } else {
-        return `wss://${window.location.hostname}/ws/gci/${server.name}/`
+        return `wss://${window.location.hostname}/ws/gci/${server.name.replaceAll(' ', '_')}/`
       }
     },
     onSocketMessage: function (event) {
@@ -124,7 +124,7 @@ export default {
     },
     utcFormat: function (value) {
       let date = new Date(value)
-      return `${date.toLocaleString('en-US', { timeZone: 'UTC' })}`
+      return `${date.toString()}`
     },
   },
   mounted() {
