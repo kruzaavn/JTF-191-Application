@@ -8,7 +8,7 @@
         class="d-flex child-flex"
       >
         <v-lazy>
-          <v-img :src="photo.url || photo.file"> </v-img>
+          <v-img :src="photo.url || photo.file" height="30vh"> </v-img>
         </v-lazy>
       </v-col>
     </v-row>

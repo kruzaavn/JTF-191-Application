@@ -98,14 +98,20 @@ class GCIRelay(TCPServer):
             id = registered_servers[0]['id']
 
             r = session.put(f'http://api-server:8000/api/gci/server/detail/{id}/', data=config)
-            log(r.json())
-            log(f'updated server {config["name"]}')
+
+            if r.status_code < 300:
+                log(f'updated server {config["name"]}')
+            else:
+                log(r.json())
 
         else:
 
             r = session.post(f'http://api-server:8000/api/gci/server/list/', data=config)
-            log(r.json())
-            log(f'registered server {config["name"]}')
+
+            if r.status_code < 300:
+                log(f'registered server {config["name"]}')
+            else:
+                log(r.json())
 
     async def connect_websocket(self, config):
 
