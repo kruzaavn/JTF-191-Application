@@ -46,13 +46,13 @@ class GCIRelay(TCPServer):
                     data = json.loads(await stream.read_until(b"\n"))
                     await websocket.write_message(data)
 
-                except StreamClosedError as e:
-                    log(f"disconnecting {e}")
+                except StreamClosedError:
+                    log(f"Stream closed disconnecting {server_config['name']}")
                     websocket.close()
                     break
 
-                except WebSocketClosedError as e:
-                    log(f"disconnecting {e}")
+                except WebSocketClosedError:
+                    log(f"Websocket closed disconnecting {server_config['name']}")
                     stream.close()
                     break
 
