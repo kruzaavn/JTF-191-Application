@@ -29,20 +29,22 @@
               >
               </v-img>
               <div class="server-description">
-                <v-card-title>Server {{ server.name }}</v-card-title>
+                <v-card-title>{{ server.name }}</v-card-title>
                 <v-divider></v-divider>
                 <v-card-text>
                   <v-row>
                     <v-col>
                       Mission <v-spacer></v-spacer> Map
-                      <v-spacer></v-spacer> Password <v-spacer></v-spacer>
-                      Mission Start Time
+                      <v-spacer></v-spacer> Password <v-spacer></v-spacer> Start
+                      Time <v-spacer></v-spacer>
+                      Connection Time
                     </v-col>
                     <v-col>
                       {{ server.mission }}<v-spacer></v-spacer>
                       {{ server.theatre }}<v-spacer></v-spacer>
                       {{ server.password }}<v-spacer></v-spacer>
-                      {{ server.start_time | utcFormat }}
+                      {{ server.start_time | utcFormat }}<v-spacer></v-spacer>
+                      {{ server.connection_time | dateFormat }}
                     </v-col>
                   </v-row>
                 </v-card-text>
@@ -82,9 +84,13 @@ export default {
     ...mapActions(['getServers']),
     configureSocketConnection: function (server) {
       if (window.location.hostname === 'localhost') {
-        return `ws://${window.location.hostname}:8000/ws/gci/${server.name.replaceAll(' ', '_')}/`
+        return `ws://${
+          window.location.hostname
+        }:8000/ws/gci/${server.name.replaceAll(' ', '_')}/`
       } else {
-        return `wss://${window.location.hostname}/ws/gci/${server.name.replaceAll(' ', '_')}/`
+        return `wss://${
+          window.location.hostname
+        }/ws/gci/${server.name.replaceAll(' ', '_')}/`
       }
     },
     onSocketMessage: function (event) {
@@ -120,11 +126,11 @@ export default {
   filters: {
     dateFormat: function (value) {
       let date = new Date(value)
-      return `${date.toLocaleString()}`
+      return `${date.toLocaleString('en-US')}`
     },
     utcFormat: function (value) {
       let date = new Date(value)
-      return `${date.toString()}`
+      return `${date.toLocaleString('en-US', { timeZone: 'America/New_York' })}`
     },
   },
   mounted() {
