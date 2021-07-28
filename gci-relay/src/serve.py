@@ -39,21 +39,22 @@ class GCIRelay(TCPServer):
 
         # connect to websocket and push data
 
-        while websocket:
-            try:
-                data = json.loads(await stream.read_until(b"\n"))
-                await websocket.write_message(data)
+        if websocket:
 
-            except StreamClosedError as e:
-                log(f"disconnecting {e}")
-                websocket.close()
-                websocket = None
-                break
+            while True:
+                try:
+                    data = json.loads(await stream.read_until(b"\n"))
+                    await websocket.write_message(data)
 
-            except WebSocketClosedError as e:
-                log(f"disconnecting {e}")
-                websocket = None
-                break
+                except StreamClosedError as e:
+                    log(f"disconnecting {e}")
+                    websocket.close()
+                    break
+
+                except WebSocketClosedError as e:
+                    log(f"disconnecting {e}")
+                    stream.close()
+                    break
 
     def register_or_update_server(self, session, config):
 

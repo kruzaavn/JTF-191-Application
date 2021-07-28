@@ -7,7 +7,7 @@ export default class Map {
     let defaults = {
       tile_provider: {
         default:
-          'https://tile.jawg.io/ca78d3b5-f055-4b15-a618-0d8df2bcb947/{z}/{x}/{y}.png?access-token=uAlt2i4a7SyNzAzOthIeEwFZiz4wBCzNipoARw3ENWHNzssJ12SQeABzhgrvTPml',
+          'https://tile.jawg.io/ca78d3b5-f055-4b15-a618-0d8df2bcb947/{z}/{x}/{y}{r}.png?access-token=uAlt2i4a7SyNzAzOthIeEwFZiz4wBCzNipoARw3ENWHNzssJ12SQeABzhgrvTPml',
       },
       tile_options: {
         attribution:
