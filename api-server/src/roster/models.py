@@ -321,6 +321,7 @@ class UserImage(models.Model):
 
     file = models.ImageField('user_images', blank=True, null=True)
     url = models.URLField(blank=True, null=True, unique=True)
+    display = models.BooleanField(default=True)
     datetime = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
