@@ -9,8 +9,8 @@
           <v-col
             v-for="server in servers"
             :key="server.id"
-            md="4"
-            lg="3"
+            md="6"
+            lg="4"
             sm="12"
             class="d-flex child-flex"
           >
@@ -34,17 +34,12 @@
                 <v-card-text>
                   <v-row>
                     <v-col>
-                      Mission <v-spacer></v-spacer> Map
-                      <v-spacer></v-spacer> Password <v-spacer></v-spacer> Start
-                      Time <v-spacer></v-spacer>
-                      Connection Time
-                    </v-col>
-                    <v-col>
-                      {{ server.mission }}<v-spacer></v-spacer>
-                      {{ server.theatre }}<v-spacer></v-spacer>
-                      {{ server.password }}<v-spacer></v-spacer>
-                      {{ server.start_time | utcFormat }}<v-spacer></v-spacer>
-                      {{ server.connection_time | dateFormat }}
+                      Mission <span class="float-right">{{ server.mission }}</span><v-spacer></v-spacer>
+                      Map <span class="float-right">{{ server.theatre }}</span><v-spacer></v-spacer>
+                      Password <span class="float-right">{{ server.password }}</span><v-spacer></v-spacer>
+                      Start Time <span class="float-right">{{ server.start_time | utcFormat }}</span><v-spacer></v-spacer>
+                      Connection Time <span class="float-right">{{ server.connection_time | dateFormat }}</span><v-spacer></v-spacer>
+
                     </v-col>
                   </v-row>
                 </v-card-text>
