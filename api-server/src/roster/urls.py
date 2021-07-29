@@ -38,6 +38,6 @@ urlpatterns = [
     path('qualifications/checkoffs/detail/<int:pk>', QualificationCheckoffDetailView.as_view()),
     path('munition/list/', MunitionListView.as_view()),
     path('stores/list/', StoresListView.as_view()),
-    path('operation/list/',OperationListView.as_view())
+    #path('operation/list/',OperationListView.as_view())
 
 ]

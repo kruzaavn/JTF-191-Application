@@ -1,25 +1,22 @@
 <template>
   <v-container fluid>
     <v-row>
-      <v-col cols="2">
-        Big Hairy Balls!
-      <v-data-table
-          dense
-          :headers="munitionsHeader"
-          :items="toMunitionsTable(stores)"
-          item-key="name"
-          class="elevation-1"
-      ></v-data-table>
+      <v-col>
+        Big Harry Ballz!
       </v-col>
-      <v-data-table
-          dense
-          :headers="munitionsHeader"
-          :items="toMunitionsTable(stores)"
-          item-key="name"
-          class="elevation-1"
-      ></v-data-table>
     </v-row>
-
+    <v-row>
+      <v-col>
+        <v-data-table
+          :headers="munitionsHeader"
+          :items="munitionsTable"
+          item-key="name"
+          group-by="squadron_name"
+          class="elevation-1"
+          >
+        </v-data-table>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -30,15 +27,10 @@ export default {
   name: "Tracker",
   data: () => ({
         munitionsHeader: [
-          {
-            text: 'Stores',
-            align: 'start',
-            sortable: true,
-            value: 'type',
-          },
-          {text: 'Munition', value:'munition'},
+          {text: 'Squadron', value: 'squadron_name'},
+          {text: 'Munition', value:'munition_name'},
           {text: 'Count', value:'count'},
-          {text: 'Category', value: 'munitionType'},
+          {text: 'Category', value: 'munition_type'},
         ],
 
       }
@@ -57,24 +49,8 @@ export default {
 
   methods: {
     ...mapActions(['getMunitionsList', 'getStoresList']),
-
-    toMunitionsTable(stores) {
-
-      var munitionsObj = stores.reduce(function (acc, arsenal) {
-
-        return {...acc, [arsenal.type]: arsenal}
-      }, {})
-
-      var finalCount = munitionsObj
-
-      for (var i=0; i<8; i++) {
-        finalCount[stores[i].type].count += stores[i].count
-      }
-
-      return finalCount
-    }
   },
-}
+  }
 
 </script>
 
