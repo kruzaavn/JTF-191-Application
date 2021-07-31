@@ -1,13 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 import About from '../views/About.vue'
-// import GCI from '../views/GCI.vue'
+import GCI from '../views/GCI.vue'
 import Qualification from '@/views/Qualification'
 import Squadron from '../views/Squadron'
 import JoinUs from '../views/JoinUs'
 import Schedule from '@/views/Schedule'
 import Register from '@/views/Register'
+import SquadronList from '@/views/SquadronList'
+import Photos from '@/views/Photos'
 import Tracker from '@/views/Tracker'
 
 Vue.use(VueRouter)
@@ -22,9 +23,9 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home,
+    component: Photos,
     meta: {
-      title: title(title_header, 'Home'),
+      title: title(title_header, 'Photos'),
     },
   },
   {
@@ -35,20 +36,27 @@ const routes = [
       title: title(title_header, 'About Us'),
     },
   },
-  // 11/1/2020 removing WEB GCI
-  // {
-  //   path: '/gci',
-  //   name: 'GCI',
-  //   component: GCI,
-  //   meta: {
-  //     title: title(title_header, 'GCI'),
-  //   },
-  // },
+  {
+    path: '/server',
+    name: 'GCI',
+    component: GCI,
+    meta: {
+      title: title(title_header, 'Servers'),
+    },
+  },
   {
     path: '/squadron/:squadronDesignation',
     name: 'Squadron',
     component: Squadron,
     props: true,
+    meta: {
+      title: title(title_header, 'Squadrons'),
+    },
+  },
+  {
+    path: '/squadron',
+    name: 'SquadronList',
+    component: SquadronList,
     meta: {
       title: title(title_header, 'Squadrons'),
     },
@@ -98,8 +106,17 @@ const routes = [
   },
 ]
 
+function scrollBehavior(to, from, savedPosition) {
+  if (savedPosition) {
+    return savedPosition
+  } else {
+    return { x: 0, y: 0 }
+  }
+}
+
 const router = new VueRouter({
   routes,
+  scrollBehavior,
 })
 
 export default router

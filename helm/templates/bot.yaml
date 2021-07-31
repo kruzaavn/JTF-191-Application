@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bot-deployment
+  labels:
+    app: bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bot
+  template:
+    metadata:
+      labels:
+        app: bot
+    spec:
+      containers:
+      - name: bot
+        image: "{{.Values.image.registryUrl}}/bot:{{.Values.image.tag}}"
+        imagePullPolicy: Always
+        command: ["python"]
+        args: ["-u", "bot.py"]
+        env:
+          - name: DISCORD_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: secret
+                key: discordToken
+          - name: API_SERVER_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret
+                key: apiServerBotPassword
+          - name: API_SERVER_USER
+            value: jp5bot

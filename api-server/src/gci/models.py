@@ -9,8 +9,11 @@ class DCSServer(models.Model):
     """
 
     name = models.CharField(max_length=128)
-    ip = models.GenericIPAddressField()
-    connection_time = models.DateTimeField(auto_now_add=True)
+    mission = models.CharField(max_length=1024)
+    theatre = models.CharField(max_length=1024)
+    start_time = models.DateTimeField()
+    password = models.CharField(max_length=1024, null=True, blank=True)
+    connection_time = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name

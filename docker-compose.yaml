@@ -21,17 +21,16 @@ services:
     volumes:
       - dbdata:/var/lib/postgresql/data/
 
-#  11/1/2020 remove webgci
-#  tcpeter:
-#    restart: always
-#    build: ./tcpeter
-#    ports:
-#      - "7224:7224"
-#    environment:
-#      PORT: 7224
-#    depends_on:
-#      - api-server
-#    command: python -u serve.py
+  gci-relay:
+    restart: always
+    build: ./gci-relay
+    ports:
+      - "7224:7224"
+    environment:
+      PORT: 7224
+    depends_on:
+      - api-server
+    command: python -u serve.py
 
   api-relay:
     restart: always

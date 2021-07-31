@@ -8,6 +8,7 @@ const state = {
   schedule: [],
   qualificationList: [],
   qualificationModuleList: [],
+  photos: [],
   storesList: [],
   munitionList: [],
 }
@@ -45,6 +46,9 @@ const mutations = {
   setQualificationModules(state, modules) {
     state.qualificationModuleList = modules
   },
+  setPhotos(state, photos) {
+    state.photos = photos
+  },
   setMunition(state, munitions) {
     state.munitionList = munitions
   },
@@ -61,6 +65,7 @@ const getters = {
   schedule: (state) => state.schedule,
   qualifications: (state) => state.qualificationList,
   qualificationModules: (state) => state.qualificationModuleList,
+  photos: (state) => state.photos,
   munitions: (state) => state.munitionList,
   stores: (state) => state.storesList,
   munitionsTable: (state) => {
@@ -131,6 +136,10 @@ const actions = {
   async getQualificationModules({ commit }) {
     const response = await axios.get('/api/roster/qualifications/modules/list/')
     commit('setQualificationModules', response.data)
+  },
+  async getPhotos({ commit }) {
+    const response = await axios.get('/api/roster/user_images/list/')
+    commit('setPhotos', response.data)
   },
   async getMunitionsList({commit}) {
     const response = await axios.get('/api/roster/munition/list/')

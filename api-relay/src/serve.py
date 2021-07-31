@@ -11,6 +11,10 @@ def log(string):
     print(f'{datetime.datetime.now()}: {string}', flush=True)
 
 
+user = os.getenv('API_SERVER_USER')
+password = os.getenv('API_SERVER_PASSWORD')
+
+
 class APIRelay(TCPServer):
 
     async def handle_stream(self, stream, address):
