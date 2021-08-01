@@ -81,15 +81,26 @@ function EventHandler:onEvent(_event)
 	if contains({3,4}, _event.id) then
 
 		event = {
-			['type'] = 'stores'
+			['type'] = 'stores',
+			['event'] = event_names[_event.id],
+			['callsign'] = _event.initiator:getPlayerName(),
+			['stores'] = {}
 		}
-		event.name = event_names[_event.id]
 
-		unit = _event.initiator
+		munitions =  _event.initiator:getAmmo()
 
-		event.callsign = unit.getPlayerName()
-		event.stores = unit.getAmmo()
+		-- compress stores_array
 
+		for i, munition in ipairs(munitions) do
+
+			event.stores[i] = {
+				['count'] = munition['count'],
+				['displayName'] = munition['desc']['displayName'],
+				['typeName'] = munition['desc']['typeName'],
+				['category'] = munition['desc']['category']
+			}
+
+		end
 
 		Export2Socket(event)
 
