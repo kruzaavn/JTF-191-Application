@@ -1,0 +1,10 @@
+# Default values for helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  registryUrl: jtf191.azurecr.io
+  tag: "latest"
+
+gatewayIp: "52.152.237.67"
+relayIp: "52.170.167.216"

@@ -99,11 +99,17 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         fields = ['username', 'password']
 
     def create(self, validated_data):
-        password = validated_data.pop('password')
-        user = User(**validated_data)
-        user.set_password(password)
+        user = User.objects.create_user(**validated_data)
         user.save()
         return user
+
+
+class UserImageSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserImage
+        fields = '__all__'
+
 
 
 class MunitionSerializer(serializers.ModelSerializer):

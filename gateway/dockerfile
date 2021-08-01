@@ -1,0 +1,3 @@
+# gateway server
+FROM linuxserver/swag as production-stage
+COPY http.conf /config/nginx/site-confs/default

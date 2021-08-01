@@ -7,10 +7,3 @@ class DCSServerSerializer(serializers.ModelSerializer):
     class Meta:
         model = DCSServer
         fields = '__all__'
-
-
-class DCSListServerSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = DCSServer
-        exclude = ['ip']

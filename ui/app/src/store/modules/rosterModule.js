@@ -8,6 +8,7 @@ const state = {
   schedule: [],
   qualificationList: [],
   qualificationModuleList: [],
+  photos: [],
   storesList: [],
   munitionList: [],
 }
@@ -45,6 +46,9 @@ const mutations = {
   setQualificationModules(state, modules) {
     state.qualificationModuleList = modules
   },
+  setPhotos(state, photos) {
+    state.photos = photos
+  },
   setMunition(state, munitions) {
     state.munitionList = munitions
   },
@@ -61,23 +65,27 @@ const getters = {
   schedule: (state) => state.schedule,
   qualifications: (state) => state.qualificationList,
   qualificationModules: (state) => state.qualificationModuleList,
+  photos: (state) => state.photos,
   munitions: (state) => state.munitionList,
   stores: (state) => state.storesList,
   munitionsTable: (state) => {
 
     let table = state.storesList.reduce((acc, element) => {
 
-      const previous = acc.find(e => e.id === element.id && e.squadron === element.squadron)
+      const previous = acc.find(x => x.munition === element.munition && x.squadron === element.squadron)
 
       if (previous) {
 
         previous.count += element.count
 
       } else {
-        element.name = state.munitionList.find(e => e.id = element.id).name
-        element.squadron_name = state.squadrons.find(e => e.id = element.squadron_name).name
+        const munition = state.munitionList.find(x => x.id === element.munition)
+        element.munition_name = munition.name
+        element.munition_type = munition.munitionType
+        element.squadron_name = state.squadronList.find(x => x.id === element.squadron).name
         acc.push(element)
       }
+      return acc
 
     }, [])
 
@@ -128,6 +136,10 @@ const actions = {
   async getQualificationModules({ commit }) {
     const response = await axios.get('/api/roster/qualifications/modules/list/')
     commit('setQualificationModules', response.data)
+  },
+  async getPhotos({ commit }) {
+    const response = await axios.get('/api/roster/user_images/list/')
+    commit('setPhotos', response.data)
   },
   async getMunitionsList({commit}) {
     const response = await axios.get('/api/roster/munition/list/')

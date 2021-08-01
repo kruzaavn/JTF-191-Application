@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-resource-group: jtf191.app.server_group
+  name: gci-relay
+spec:
+  loadBalancerIP: {{.Values.relayIp}}
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 7224
+      targetPort: 7224
+  selector:
+    app: gci-relay
+
+---
+
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gci-relay-deployment
+  labels:
+    app: gci-relay
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gci-relay
+  template:
+    metadata:
+      labels:
+        app: gci-relay
+    spec:
+      containers:
+      - name: gci-relay
+        image: "{{ .Values.image.registryUrl }}/gci-relay:{{ .Values.image.tag }}"
+        imagePullPolicy: Always
+        command: ["python"]
+        args: ["-u", "serve.py"]
+        env:
+          - name: API_SERVER_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: secret
+                key: apiServerBotPassword
+          - name: API_SERVER_USER
+            value: jp5bot

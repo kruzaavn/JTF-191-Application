@@ -3,6 +3,8 @@ import App from './App.vue'
 import store from './store'
 import router from './router'
 import vuetify from './plugins/vuetify'
+import MarkdownItVue from 'markdown-it-vue'
+import 'markdown-it-vue/dist/markdown-it-vue.css'
 
 Vue.config.productionTip = false
 
@@ -26,3 +28,5 @@ new Vue({
   },
   render: (h) => h(App),
 }).$mount('#app')
+
+Vue.use(MarkdownItVue)

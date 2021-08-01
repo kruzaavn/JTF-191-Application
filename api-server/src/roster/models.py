@@ -76,6 +76,7 @@ class Squadron(models.Model):
     # fields
     name = models.CharField(max_length=1024)
     designation = models.CharField(max_length=1024)
+    description = models.TextField(blank=True, null=True)
     type = models.CharField(max_length=1024, choices=[(x, x) for x in types],
                             default=types[0])
     air_frame = models.ForeignKey(DCSModules, on_delete=models.SET_NULL,
@@ -214,7 +215,7 @@ class Aviator(Pilot):
                                                     MaxValueValidator(4)],
                                         help_text=f'{position_helper}')
     user = models.ForeignKey(User, blank=True, null=True,
-                             on_delete=models.CASCADE)
+                             on_delete=models.SET_NULL)
     stats = models.JSONField(default=stats_default)
     division = models.IntegerField(default=4, validators=[MinValueValidator(1),
                                                           MaxValueValidator(
@@ -339,3 +340,14 @@ class Event(models.Model):
 
     def __str___(self):
         return f'{self.name}'
+
+
+class UserImage(models.Model):
+
+    file = models.ImageField('user_images', blank=True, null=True)
+    url = models.URLField(blank=True, null=True, unique=True)
+    display = models.BooleanField(default=True)
+    datetime = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.file.name or self.url}'

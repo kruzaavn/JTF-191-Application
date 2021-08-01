@@ -133,6 +133,9 @@ class StoresAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(Operation)
-class OperationAdmin(admin.ModelAdmin):
+
+
+
+@admin.register(UserImage)
+class UserImageAdmin(admin.ModelAdmin):
     pass
