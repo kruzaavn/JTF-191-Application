@@ -95,7 +95,7 @@ function EventHandler:onEvent(_event)
 
 			event.stores[i] = {
 				['count'] = munition['count'],
-				['displayName'] = munition['desc']['displayName'],
+				['name'] = munition['desc']['displayName'],
 				['typeName'] = munition['desc']['typeName'],
 				['category'] = munition['desc']['category']
 			}
