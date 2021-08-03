@@ -11,6 +11,7 @@ const state = {
   photos: [],
   storesList: [],
   munitionList: [],
+  operationList: [],
 }
 
 const mutations = {
@@ -53,8 +54,11 @@ const mutations = {
     state.munitionList = munitions
   },
   setStores(state, stores) {
-    state.storesList = stores;
-  }
+    state.storesList = stores
+  },
+  setOperations(state, operations) {
+    state.operationList = operations
+  },
 }
 
 const getters = {
@@ -69,28 +73,33 @@ const getters = {
   munitions: (state) => state.munitionList,
   stores: (state) => state.storesList,
   munitionsTable: (state) => {
-
     let table = state.storesList.reduce((acc, element) => {
-
-      const previous = acc.find(x => x.munition === element.munition && x.squadron === element.squadron)
+      const previous = acc.find(
+        (x) =>
+          x.munition === element.munition && x.squadron === element.squadron
+      )
 
       if (previous) {
-
         previous.count += element.count
-
       } else {
-        const munition = state.munitionList.find(x => x.id === element.munition)
+        const munition = state.munitionList.find(
+          (x) => x.id === element.munition
+        )
         element.munition_name = munition.name
         element.munition_type = munition.munitionType
-        element.squadron_name = state.squadronList.find(x => x.id === element.squadron).name
+        element.squadron_name = state.squadronList.find(
+          (x) => x.id === element.squadron
+        ).name
         acc.push(element)
       }
       return acc
-
     }, [])
 
     return table
-  }
+  },
+  operations: (state) => {
+    return state.operationList
+  },
 }
 
 const actions = {
@@ -141,14 +150,20 @@ const actions = {
     const response = await axios.get('/api/roster/user_images/list/')
     commit('setPhotos', response.data)
   },
-  async getMunitionsList({commit}) {
+  async getMunitionsList({ commit }) {
     const response = await axios.get('/api/roster/munition/list/')
     commit('setMunition', response.data)
   },
-  async getStoresList({commit}) {
-    const response = await axios.get('/api/roster/stores/list/')
+  async getStoresList({ commit }, operationName) {
+    const response = await axios.get(
+      `/api/roster/stores/list/${operationName}/`
+    )
     commit('setStores', response.data)
-  }
+  },
+  async getOperations({ commit }) {
+    const response = await axios.get('/api/roster/operation/list')
+    commit('setOperations', response.data)
+  },
 }
 
 export default {

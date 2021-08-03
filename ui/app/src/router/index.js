@@ -9,7 +9,8 @@ import Schedule from '@/views/Schedule'
 import Register from '@/views/Register'
 import SquadronList from '@/views/SquadronList'
 import Photos from '@/views/Photos'
-import Tracker from '@/views/Tracker'
+import Operation from '@/views/Operation'
+import OperationList from '@/views/OperationList'
 
 Vue.use(VueRouter)
 
@@ -96,12 +97,20 @@ const routes = [
     },
   },
   {
-    path: '/tracker',
-    name: 'Tracker',
-    props: true,
-    component: Tracker,
+    path: '/operation',
+    name: 'OperationList',
+    component: OperationList,
     meta: {
-      title: title(title_header, 'Tracker'),
+      title: title(title_header, 'Operations'),
+    },
+  },
+  {
+    path: '/operation/:operationName',
+    name: 'Operation',
+    component: Operation,
+    props: true,
+    meta: {
+      title: title(title_header, 'Operations'),
     },
   },
 ]

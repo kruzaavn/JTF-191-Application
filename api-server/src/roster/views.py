@@ -14,7 +14,7 @@ from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator, Event
 from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
     DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, QualificationSerializer, \
     QualificationModuleSerializer, QualificationCheckoffSerializer, UserSerializer, UserRegisterSerializer, \
-    EventCreateSerializer, MunitionSerializer, StoresSerializer, UserImageSerializer
+    EventCreateSerializer, MunitionSerializer, StoresSerializer, UserImageSerializer, OperationSerializer
 
 
 class AviatorListView(ListCreateAPIView):
@@ -139,21 +139,6 @@ class StatsView(APIView):
                 aviator.stats['departure'] = {'airframe': request.data.get('airframe'),
                                               'time': time}
 
-                if 'Mission' in request.data.get('mission'):
-
-                    stores = request.data.get('stores')
-
-                    for munition in stores:
-
-                        stores = Stores(
-                            munition=Munition.objects.get(dcs_name=munition['desc']['typeName']),
-                            count=munition['count'] * -1,
-                            squadron=aviator.squadron,
-                            operation=Operation.objects.last()
-                        )
-
-                        stores.save()
-
             elif event_name == 'connect' and aviator.stats.get('departure'):
 
                 aviator.stats.pop('departure')
@@ -203,6 +188,35 @@ class StatsView(APIView):
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
         else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class StoresView(APIView):
+
+    def post(self, request, format=None):
+
+        event = request.data
+
+        if event.callsign:
+            aviators = [x for x in Aviator.objects.all() if x.callsign.lower() in event.callsign.lower()]
+        else:
+            aviators = []
+
+        if aviators and event.type == 'stores':
+
+            squadron = aviators[0].squadron
+            operation = Operation.objects.last()
+
+            for store in event.stores:
+
+                munition = Munition.objects.get(name=store.name)
+
+                store = Stores(squadron=squadron, operation=operation, count=store.count, munition=munition)
+
+            return Response(status=status.HTTP_202_ACCEPTED)
+
+        else:
+
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -291,5 +305,15 @@ class MunitionListView(ListCreateAPIView):
 
 
 class StoresListView(ListCreateAPIView):
-    queryset = Stores.objects.all()
+
     serializer_class = StoresSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+
+        return Stores.objects.filter(operation__name=self.kwargs.get('name'))
+
+
+class OperationListView(ListCreateAPIView):
+    queryset = Operation.objects.all().order_by('-start')
+    serializer_class = OperationSerializer

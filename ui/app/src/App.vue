@@ -56,6 +56,11 @@
               <v-list-item-title>Servers</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
+          <v-list-item to="/operation">
+            <v-list-item-content>
+              <v-list-item-title>Operations</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
         </div>
       </v-list>
       <Footer></Footer>
@@ -101,7 +106,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['getRoster', 'getHQs', 'getSquadrons']),
+    ...mapActions(['getRoster', 'getHQs', 'getSquadrons', 'getOperations']),
   },
   watch: {
     $route(to) {
@@ -112,6 +117,7 @@ export default {
     this.getRoster()
     this.getSquadrons()
     this.getHQs()
+    this.getOperations()
   },
 }
 </script>

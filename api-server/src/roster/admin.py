@@ -130,10 +130,9 @@ class MunitionAdmin(admin.ModelAdmin):
 
 @admin.register(Stores)
 class StoresAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('munition', 'count', 'squadron', 'operation', 'time')
 
-
-
+    list_filter = ('munition__name', 'squadron__name', 'operation__name')
 
 
 @admin.register(UserImage)

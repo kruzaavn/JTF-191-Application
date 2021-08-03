@@ -180,9 +180,7 @@ export default {
     },
   },
   mounted() {
-    setTimeout(() => {
-      this.getSchedule()
-    }, 250)
+    this.getSchedule()
   },
 }
 </script>
