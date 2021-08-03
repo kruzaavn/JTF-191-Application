@@ -21,6 +21,7 @@
             lazy-src="https://dummyimage.com/600x400/bfbfbf/bfbfbf.png"
             height="30vh"
             class="my-1"
+            contain
           >
           </v-img>
           <div class="description-card">
