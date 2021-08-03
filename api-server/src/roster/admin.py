@@ -125,7 +125,9 @@ class QualificationCheckoffAdmin(admin.ModelAdmin):
 
 @admin.register(Munition)
 class MunitionAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('name', 'munition_type')
+    list_filter = ('munition_type',)
+    search_fields = ('name',)
 
 
 @admin.register(Stores)
