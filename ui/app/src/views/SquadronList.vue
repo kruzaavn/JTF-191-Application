@@ -36,7 +36,7 @@
                 height="30vh"
                 class="my-1"
               ></v-img>
-              <div class="squadron-description mt-auto">
+              <div class="description-card mt-auto">
                 <v-card-title>
                   {{ squadron.name }}
                 </v-card-title>
@@ -75,9 +75,3 @@ export default {
   },
 }
 </script>
-
-<style>
-.squadron-description {
-  background-color: darkgray;
-}
-</style>

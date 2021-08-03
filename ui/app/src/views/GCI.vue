@@ -28,18 +28,27 @@
                 class="my-1"
               >
               </v-img>
-              <div class="server-description">
+              <div class="description-card">
                 <v-card-title>{{ server.name }}</v-card-title>
                 <v-divider></v-divider>
                 <v-card-text>
                   <v-row>
                     <v-col>
-                      Mission <span class="float-right">{{ server.mission }}</span><v-spacer></v-spacer>
-                      Map <span class="float-right">{{ server.theatre }}</span><v-spacer></v-spacer>
-                      Password <span class="float-right">{{ server.password }}</span><v-spacer></v-spacer>
-                      Start Time <span class="float-right">{{ server.start_time | utcFormat }}</span><v-spacer></v-spacer>
-                      Connection Time <span class="float-right">{{ server.connection_time | dateFormat }}</span><v-spacer></v-spacer>
-
+                      Mission
+                      <span class="float-right">{{ server.mission }}</span
+                      ><v-spacer></v-spacer> Map
+                      <span class="float-right">{{ server.theatre }}</span
+                      ><v-spacer></v-spacer> Password
+                      <span class="float-right">{{ server.password }}</span
+                      ><v-spacer></v-spacer> Start Time
+                      <span class="float-right">{{
+                        server.start_time | utcFormat
+                      }}</span
+                      ><v-spacer></v-spacer> Connection Time
+                      <span class="float-right">{{
+                        server.connection_time | dateFormat
+                      }}</span
+                      ><v-spacer></v-spacer>
                     </v-col>
                   </v-row>
                 </v-card-text>
@@ -141,9 +150,5 @@ export default {
 #map {
   height: 80vh;
   background-color: rgba(255, 0, 0, 0);
-}
-
-.server-description {
-  background-color: darkgray;
 }
 </style>

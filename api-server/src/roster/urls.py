@@ -36,6 +36,10 @@ urlpatterns = [
     path('qualifications/modules/detail/<int:pk>', QualificationModuleDetailView.as_view()),
     path('qualifications/checkoffs/list/', QualificationCheckoffListView.as_view()),
     path('qualifications/checkoffs/detail/<int:pk>', QualificationCheckoffDetailView.as_view()),
-    path('user_images/list/', UserImageListView.as_view())
+    path('user_images/list/', UserImageListView.as_view()),
+    path('munition/list/', MunitionListView.as_view()),
+    path('stores/', StoresView.as_view()),
+    path('stores/list/<str:name>/', StoresListView.as_view()),
+    path('operation/list/', OperationListView.as_view())
 
 ]

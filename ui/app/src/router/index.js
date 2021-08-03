@@ -9,6 +9,8 @@ import Schedule from '@/views/Schedule'
 import Register from '@/views/Register'
 import SquadronList from '@/views/SquadronList'
 import Photos from '@/views/Photos'
+import Operation from '@/views/Operation'
+import OperationList from '@/views/OperationList'
 
 Vue.use(VueRouter)
 
@@ -92,6 +94,23 @@ const routes = [
     component: Register,
     meta: {
       title: title(title_header, 'Register'),
+    },
+  },
+  {
+    path: '/operation',
+    name: 'OperationList',
+    component: OperationList,
+    meta: {
+      title: title(title_header, 'Operations'),
+    },
+  },
+  {
+    path: '/operation/:operationName',
+    name: 'Operation',
+    component: Operation,
+    props: true,
+    meta: {
+      title: title(title_header, 'Operations'),
     },
   },
 ]

@@ -91,11 +91,11 @@ function callbacks.onGameEvent(eventName, arg1, arg2, arg3, arg4, arg5, arg6, ar
         --"change_slot", playerID, slotID, prevSide
         --"connect", playerID, name
         --"disconnect", playerID, name, playerSide, reason_code
-        --"crash", playerID, unit_missionID
-        --"eject", playerID, unit_missionID
-        --"takeoff", playerID, unit_missionID, airdromeName
-        --"landing", playerID, unit_missionID, airdromeName
-        --"pilot_death", playerID, unit_missionID
+        --"crash", playerID, unitID
+        --"eject", playerID, unitID
+        --"takeoff", playerID, unitID, airdromeName
+        --"landing", playerID, unitID, airdromeName
+        --"pilot_death", playerID, unitID
 
   	local event = {}
 	event.event = eventName
@@ -112,6 +112,7 @@ function callbacks.onGameEvent(eventName, arg1, arg2, arg3, arg4, arg5, arg6, ar
 	if contains({'takeoff', 'landing', 'pilot_death', 'eject'}, eventName) then
 
 		event.airframe = DCS.getUnitProperty(arg2, DCS.UNIT_TYPE)
+		event.stores = DCS.unit.getUnit(arg2).getAmmo()
 
 	end
 

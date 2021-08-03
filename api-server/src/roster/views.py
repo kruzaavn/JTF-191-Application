@@ -9,12 +9,12 @@ from rest_framework.generics import ListCreateAPIView, \
 from rest_framework import permissions, authentication
 
 from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator, Event, Qualification, \
-    QualificationModule, QualificationCheckoff, UserImage
+    QualificationModule, QualificationCheckoff, UserImage, Munition, Stores, Operation
 
 from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
     DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, QualificationSerializer, \
     QualificationModuleSerializer, QualificationCheckoffSerializer, UserSerializer, UserRegisterSerializer, \
-    EventCreateSerializer, UserImageSerializer
+    EventCreateSerializer, MunitionSerializer, StoresSerializer, UserImageSerializer, OperationSerializer
 
 
 class AviatorListView(ListCreateAPIView):
@@ -124,6 +124,7 @@ class StatsView(APIView):
         event_name = request.data.get('event')
         callsign = request.data.get('callsign')
         time = float(request.data.get('time'))
+
         if callsign:
             aviators = [x for x in Aviator.objects.all() if x.callsign.lower() in callsign.lower()]
         else:
@@ -154,6 +155,20 @@ class StatsView(APIView):
                 elif flight_time > 0:
                     aviator.stats['hours'][departure['airframe']] = flight_time
 
+                if event_name == 'landing' and 'Mission' in request.data.mission:
+
+                    stores = request.data.get('stores')
+
+                    for munition in stores:
+                        stores = Stores(
+                            munition=Munition.objects.get(dcs_name=munition['desc']['typeName']),
+                            count=munition['count'],
+                            squadron=aviator.squadron,
+                            operation=Operation.objects.last()
+                        )
+
+                        stores.save()
+
             elif event_name in ['kill']:
 
                 victim = request.data.get('victim')
@@ -173,6 +188,35 @@ class StatsView(APIView):
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
         else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class StoresView(APIView):
+
+    def post(self, request, format=None):
+
+        event = request.data
+
+        if event.callsign:
+            aviators = [x for x in Aviator.objects.all() if x.callsign.lower() in event.callsign.lower()]
+        else:
+            aviators = []
+
+        if aviators and event.type == 'stores':
+
+            squadron = aviators[0].squadron
+            operation = Operation.objects.last()
+
+            for store in event.stores:
+
+                munition = Munition.objects.get(name=store.name)
+
+                store = Stores(squadron=squadron, operation=operation, count=store.count, munition=munition)
+
+            return Response(status=status.HTTP_202_ACCEPTED)
+
+        else:
+
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -227,7 +271,6 @@ class QualificationModuleListView(ListCreateAPIView):
     serializer_class = QualificationModuleSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-
 class QualificationModuleDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = QualificationModule.objects.all()
@@ -254,3 +297,23 @@ class UserImageListView(ListCreateAPIView):
     serializer_class = UserImageSerializer
     authentication_classes = [authentication.BasicAuthentication, authentication.SessionAuthentication]
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+
+class MunitionListView(ListCreateAPIView):
+    queryset = Munition.objects.all()
+    serializer_class = MunitionSerializer
+
+
+class StoresListView(ListCreateAPIView):
+
+    serializer_class = StoresSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+
+        return Stores.objects.filter(operation__name=self.kwargs.get('name'))
+
+
+class OperationListView(ListCreateAPIView):
+    queryset = Operation.objects.all().order_by('-start')
+    serializer_class = OperationSerializer

@@ -4,6 +4,7 @@ import store from './store'
 import router from './router'
 import vuetify from './plugins/vuetify'
 import MarkdownItVue from 'markdown-it-vue'
+import '@/assets/css/main.css'
 import 'markdown-it-vue/dist/markdown-it-vue.css'
 
 Vue.config.productionTip = false

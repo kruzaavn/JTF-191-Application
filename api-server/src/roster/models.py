@@ -105,6 +105,29 @@ class Operation(models.Model):
         return f'{self.name}'
 
 
+class Munition(models.Model):
+
+    types = ['rocket', 'bomb', 'aa_missile', 'as_missile', 'utility']
+
+    name = models.CharField(max_length=1024)
+    munition_type = models.CharField(max_length=1024, choices=[(x, x) for x in types], default=types[0])
+
+    def __str__(self):
+        return f'{self.name}'
+
+
+class Stores(models.Model):
+
+    munition = models.ForeignKey(Munition, on_delete=models.CASCADE)
+    time = models.DateTimeField(auto_now_add=True)
+    count = models.IntegerField(default=0)
+    operation = models.ForeignKey(Operation, on_delete=models.CASCADE)
+    squadron = models.ForeignKey(Squadron, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.munition.name}'
+
+
 class Pilot(models.Model):
     first_name = models.CharField(max_length=1024, default='John')
     last_name = models.CharField(max_length=1024, default='Doe')

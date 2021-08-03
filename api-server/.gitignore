@@ -1,4 +1,5 @@
 migrations
+fixtures
 media
 cred.json
 __pycache__

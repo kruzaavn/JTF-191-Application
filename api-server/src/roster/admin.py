@@ -123,6 +123,20 @@ class QualificationCheckoffAdmin(admin.ModelAdmin):
     list_filter = ('module__name', 'aviator__callsign')
 
 
+@admin.register(Munition)
+class MunitionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'munition_type')
+    list_filter = ('munition_type',)
+    search_fields = ('name',)
+
+
+@admin.register(Stores)
+class StoresAdmin(admin.ModelAdmin):
+    list_display = ('munition', 'count', 'squadron', 'operation', 'time')
+
+    list_filter = ('munition__name', 'squadron__name', 'operation__name')
+
+
 @admin.register(UserImage)
 class UserImageAdmin(admin.ModelAdmin):
     pass

@@ -109,3 +109,20 @@ class UserImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserImage
         fields = '__all__'
+
+
+
+class MunitionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Munition
+        fields = '__all__'
+
+
+class StoresSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Stores
+        fields = '__all__'
+
+
