@@ -109,8 +109,8 @@ class Munition(models.Model):
 
     types = ['rocket', 'bomb', 'aa_missile', 'as_missile', 'utility']
 
-    name = models.CharField(max_length=64)
-    munitionType = models.CharField(max_length=1024, choices=[(x, x) for x in types], default=types[0])
+    name = models.CharField(max_length=1024)
+    munition_type = models.CharField(max_length=1024, choices=[(x, x) for x in types], default=types[0])
 
     def __str__(self):
         return f'{self.name}'

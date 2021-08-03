@@ -3,7 +3,8 @@
     <v-row>
       <v-col>
         <v-card class="py-4" tile>
-          <v-img v-if="operation" :src="operation.img" contain height="30vh"> </v-img>
+          <v-img v-if="operation" :src="operation.img" contain height="30vh">
+          </v-img>
         </v-card>
       </v-col>
     </v-row>
@@ -44,7 +45,7 @@ export default {
   computed: {
     ...mapGetters(['operations', 'munitionsTable']),
     operation: function () {
-        return this.operations.find((op) => op.name === this.operationName)
+      return this.operations.find((op) => op.name === this.operationName)
     },
   },
   methods: {

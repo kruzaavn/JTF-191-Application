@@ -7,7 +7,7 @@
         md="4"
         lg="3"
         sm="12"
-                    class="d-flex child-flex"
+        class="d-flex child-flex"
       >
         <v-card
           :to="'/operation/' + operation.name"
