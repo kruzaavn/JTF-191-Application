@@ -14,6 +14,13 @@ def log(string):
 user = os.getenv('API_SERVER_USER')
 password = os.getenv('API_SERVER_PASSWORD')
 
+host = 'https://api-server:8000'
+
+
+def get_url(path, host=host):
+
+    return f'{host}{path}'
+
 
 class APIRelay(TCPServer):
 
@@ -21,16 +28,25 @@ class APIRelay(TCPServer):
         source = f'{address[0]}:{address[1]}'
         log(f'connected to {source}')
 
+        session = requests.session()
+        session.auth(user, password)
+
         while True:
             try:
                 data = await stream.read_until(b"\n")
                 data = json.loads(data)
 
                 event = data.get('event')
+                stores = data.get('stores')
 
-                if not event or event != 'keepalive':
+                if event and event != 'keepalive':
+
                     log(f'{source} {data}')
-                    r = requests.post('http://api-server:8000/api/roster/stats/', data=data)
+
+                    if stores:
+                        r = session.post(get_url('/api/roster/stores/'), data=data)
+                    else:
+                        r = session.post(get_url('/api/roster/stats/'), data=data)
 
             except StreamClosedError:
                 log(f'{source} disconnected')
