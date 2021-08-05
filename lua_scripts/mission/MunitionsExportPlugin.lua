@@ -81,7 +81,6 @@ function EventHandler:onEvent(_event)
 	if contains({3,4}, _event.id) then
 
 		event = {
-			['type'] = 'stores',
 			['event'] = event_names[_event.id],
 			['callsign'] = _event.initiator:getPlayerName(),
 			['stores'] = {}
