@@ -17,6 +17,11 @@ from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
     EventCreateSerializer, MunitionSerializer, StoresSerializer, UserImageSerializer, OperationSerializer
 
 
+stores_case = {
+    'takeoff': -1,
+    'landing': 1
+}
+
 class AviatorListView(ListCreateAPIView):
 
     queryset = Aviator.objects.all().order_by('-rank_code', 'position_code')
@@ -155,20 +160,6 @@ class StatsView(APIView):
                 elif flight_time > 0:
                     aviator.stats['hours'][departure['airframe']] = flight_time
 
-                if event_name == 'landing' and 'Mission' in request.data.mission:
-
-                    stores = request.data.get('stores')
-
-                    for munition in stores:
-                        stores = Stores(
-                            munition=Munition.objects.get(dcs_name=munition['desc']['typeName']),
-                            count=munition['count'],
-                            squadron=aviator.squadron,
-                            operation=Operation.objects.last()
-                        )
-
-                        stores.save()
-
             elif event_name in ['kill']:
 
                 victim = request.data.get('victim')
@@ -202,7 +193,7 @@ class StoresView(APIView):
         else:
             aviators = []
 
-        if aviators and event.type == 'stores':
+        if aviators:
 
             squadron = aviators[0].squadron
             operation = Operation.objects.last()
@@ -211,7 +202,10 @@ class StoresView(APIView):
 
                 munition = Munition.objects.get(name=store.name)
 
-                store = Stores(squadron=squadron, operation=operation, count=store.count, munition=munition)
+                store = Stores(squadron=squadron,
+                               operation=operation,
+                               count=store.count * stores_case[event.event],
+                               munition=munition)
 
             return Response(status=status.HTTP_202_ACCEPTED)
 
