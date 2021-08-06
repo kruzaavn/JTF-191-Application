@@ -188,24 +188,23 @@ class StoresView(APIView):
 
         event = request.data
 
-        if event.callsign:
-            aviators = [x for x in Aviator.objects.all() if x.callsign.lower() in event.callsign.lower()]
-        else:
-            aviators = []
+        tricode = event.callsign.split('|')[0][:2]
+        squadron = Squadron.objects.get(tricode=tricode)
 
-        if aviators:
+        if squadron:
 
-            squadron = aviators[0].squadron
             operation = Operation.objects.last()
 
             for store in event.stores:
 
                 munition = Munition.objects.get(name=store.name)
 
-                store = Stores(squadron=squadron,
+                new_store = Stores(squadron=squadron,
                                operation=operation,
                                count=store.count * stores_case[event.event],
                                munition=munition)
+
+                new_store.save()
 
             return Response(status=status.HTTP_202_ACCEPTED)
 
