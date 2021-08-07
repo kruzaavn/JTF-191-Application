@@ -85,7 +85,7 @@ class Squadron(models.Model):
                            null=True)
     img = models.ImageField(upload_to='squadrons')
     callsign = models.CharField(max_length=1024, default='None')
-    tri_code = models.CharField(max_length=3, default='NCS')
+    tri_code = models.CharField(max_length=3, default='NCS', unique=True)
 
     def __str__(self):
         return f'{self.name} - {self.designation}'
