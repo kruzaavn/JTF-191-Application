@@ -86,7 +86,9 @@ const getters = {
           (x) => x.id === element.munition
         )
         element.munition_name = munition.name
-        element.munition_type = munition.munitionType
+        element.munition_type = munition.munition_type
+          .replaceAll('_', ' ')
+          .toUpperCase()
         element.squadron_name = state.squadronList.find(
           (x) => x.id === element.squadron
         ).name

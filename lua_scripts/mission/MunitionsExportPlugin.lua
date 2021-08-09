@@ -103,8 +103,10 @@ function EventHandler:onEvent(_event)
 
 		end
 
-		Export2Socket(event)
 
+		if event.callsign then
+			Export2Socket(event)
+		end
 	end
 
 	if contains({12}, _event.id) then
