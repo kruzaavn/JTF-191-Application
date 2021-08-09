@@ -14,7 +14,7 @@ def log(string):
 user = os.getenv('API_SERVER_USER')
 password = os.getenv('API_SERVER_PASSWORD')
 
-host = 'https://api-server:8000'
+host = 'http://api-server:8000'
 
 
 def get_url(path, host=host):
@@ -29,7 +29,9 @@ class APIRelay(TCPServer):
         log(f'connected to {source}')
 
         session = requests.session()
-        session.auth(user, password)
+
+        if user and password:
+            session.auth(user, password)
 
         while True:
             try:
@@ -44,9 +46,9 @@ class APIRelay(TCPServer):
                     log(f'{source} {data}')
 
                     if stores:
-                        r = session.post(get_url('/api/roster/stores/'), data=data)
+                        r = session.post(get_url('/api/roster/stores/'), json=data)
                     else:
-                        r = session.post(get_url('/api/roster/stats/'), data=data)
+                        r = session.post(get_url('/api/roster/stats/'), json=data)
 
             except StreamClosedError:
                 log(f'{source} disconnected')

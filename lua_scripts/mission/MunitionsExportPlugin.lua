@@ -83,6 +83,8 @@ function EventHandler:onEvent(_event)
 		event = {
 			['event'] = event_names[_event.id],
 			['callsign'] = _event.initiator:getPlayerName(),
+			['unit_name'] = _event.initiator:getCallsign(),
+			['name'] = _event.initiator:getName(),
 			['stores'] = {}
 		}
 
@@ -101,8 +103,10 @@ function EventHandler:onEvent(_event)
 
 		end
 
-		Export2Socket(event)
 
+		if event.callsign then
+			Export2Socket(event)
+		end
 	end
 
 	if contains({12}, _event.id) then

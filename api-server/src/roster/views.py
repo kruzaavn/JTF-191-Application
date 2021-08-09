@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView, \
     RetrieveUpdateDestroyAPIView, CreateAPIView
 from rest_framework import permissions, authentication
+from django.core.exceptions import ObjectDoesNotExist
 
 from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator, Event, Qualification, \
     QualificationModule, QualificationCheckoff, UserImage, Munition, Stores, Operation
@@ -184,28 +185,41 @@ class StatsView(APIView):
 
 class StoresView(APIView):
 
+    authentication_classes = list()
+
     def post(self, request, format=None):
 
         event = request.data
 
-        if event.callsign:
-            aviators = [x for x in Aviator.objects.all() if x.callsign.lower() in event.callsign.lower()]
-        else:
-            aviators = []
+        print(event, flush=True)
 
-        if aviators:
+        callsign = event.get('callsign')
 
-            squadron = aviators[0].squadron
+        tri_code = event.get('name')[:3].upper()
+        try:
+            squadron = Squadron.objects.get(tri_code=tri_code)
+
+        except ObjectDoesNotExist:
+            squadron = None
+
+        if squadron and callsign:
+
             operation = Operation.objects.last()
 
-            for store in event.stores:
+            for store in event.get('stores'):
 
-                munition = Munition.objects.get(name=store.name)
+                try:
+                    munition = Munition.objects.get(name=store['name'])
 
-                store = Stores(squadron=squadron,
-                               operation=operation,
-                               count=store.count * stores_case[event.event],
-                               munition=munition)
+                    new_store = Stores(squadron=squadron,
+                                       operation=operation,
+                                       count=store['count'] * stores_case[event['event']],
+                                       munition=munition)
+
+                    new_store.save()
+
+                except ObjectDoesNotExist:
+                    print(f'tried to match {store["name"]} but not found', flush=True)
 
             return Response(status=status.HTTP_202_ACCEPTED)
 
