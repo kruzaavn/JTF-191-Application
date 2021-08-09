@@ -83,6 +83,8 @@ function EventHandler:onEvent(_event)
 		event = {
 			['event'] = event_names[_event.id],
 			['callsign'] = _event.initiator:getPlayerName(),
+			['unit_name'] = _event.initiator:getCallsign(),
+			['name'] = _event.initiator:getName(),
 			['stores'] = {}
 		}
 
