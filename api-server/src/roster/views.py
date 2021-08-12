@@ -208,18 +208,14 @@ class StoresView(APIView):
 
             for store in event.get('stores'):
 
-                try:
-                    munition = Munition.objects.get(name=store['name'])
+                munition = Munition.objects.get_or_create(name=store.name)
 
-                    new_store = Stores(squadron=squadron,
-                                       operation=operation,
-                                       count=store['count'] * stores_case[event['event']],
-                                       munition=munition)
+                new_store = Stores(squadron=squadron,
+                                   operation=operation,
+                                   count=store['count'] * stores_case[event['event']],
+                                   munition=munition)
 
-                    new_store.save()
-
-                except ObjectDoesNotExist:
-                    print(f'tried to match {store["name"]} but not found', flush=True)
+                new_store.save()
 
             return Response(status=status.HTTP_202_ACCEPTED)
 
