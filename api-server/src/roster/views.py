@@ -196,30 +196,29 @@ class StoresView(APIView):
         callsign = event.get('callsign')
 
         tri_code = event.get('name')[:3].upper()
+
         try:
             squadron = Squadron.objects.get(tri_code=tri_code)
 
         except ObjectDoesNotExist:
             squadron = None
 
-        if squadron and callsign:
+        if squadron:
 
             operation = Operation.objects.last()
 
             for store in event.get('stores'):
 
-                try:
-                    munition = Munition.objects.get(name=store['name'])
+                munition, created = Munition.objects.get_or_create(name=store['name'])
 
-                    new_store = Stores(squadron=squadron,
-                                       operation=operation,
-                                       count=store['count'] * stores_case[event['event']],
-                                       munition=munition)
 
-                    new_store.save()
 
-                except ObjectDoesNotExist:
-                    print(f'tried to match {store["name"]} but not found', flush=True)
+                new_store = Stores(squadron=squadron,
+                                   operation=operation,
+                                   count=store['count'] * stores_case[event['event']],
+                                   munition=munition)
+
+                new_store.save()
 
             return Response(status=status.HTTP_202_ACCEPTED)
 

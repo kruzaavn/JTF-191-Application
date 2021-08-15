@@ -107,7 +107,7 @@ class Operation(models.Model):
 
 class Munition(models.Model):
 
-    types = ['rocket', 'bomb', 'aa_missile', 'as_missile', 'utility']
+    types = ['rocket', 'bomb', 'aa_missile', 'as_missile', 'utility', 'gun']
 
     name = models.CharField(max_length=1024)
     munition_type = models.CharField(max_length=1024, choices=[(x, x) for x in types], default=types[0])
