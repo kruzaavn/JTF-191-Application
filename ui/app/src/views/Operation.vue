@@ -40,11 +40,9 @@
             :items="munitionsTable"
             :group-by="groupby"
             item-key="name"
-            class="elevation-1"
             dense
-            calcluate-widths
+            multi-sort
             :search="search"
-            sort-by="munition_type"
             items-per-page="-1"
           >
           </v-data-table>
