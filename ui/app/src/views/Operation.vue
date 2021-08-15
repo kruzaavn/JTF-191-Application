@@ -15,14 +15,40 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-data-table
-          :headers="munitionsHeader"
-          :items="munitionsTable"
-          item-key="name"
-          group-by="squadron_name"
-          class="elevation-1"
-        >
-        </v-data-table>
+        <v-card>
+          <v-card-title>
+            <v-row>
+              <v-text-field
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Search"
+                hide-details
+              >
+              </v-text-field>
+              <v-spacer></v-spacer>
+              <v-select
+                :items="groups"
+                label="Group By"
+                clearable
+                v-model="groupby"
+              >
+              </v-select>
+            </v-row>
+          </v-card-title>
+          <v-data-table
+            :headers="munitionsHeader"
+            :items="munitionsTable"
+            :group-by="groupby"
+            item-key="name"
+            class="elevation-1"
+            dense
+            calcluate-widths
+            :search="search"
+            sort-by="munition_type"
+            items-per-page="-1"
+          >
+          </v-data-table>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -35,10 +61,17 @@ export default {
   name: 'Operation',
   props: ['operationName'],
   data: () => ({
+    search: '',
+    groupby: 'squadron_name',
+    groups: [
+      { text: 'Squadron', value: 'squadron_name' },
+      { text: 'Munition', value: 'munition_name' },
+      { text: 'Category', value: 'munition_type' },
+    ],
     munitionsHeader: [
       { text: 'Squadron', value: 'squadron_name' },
       { text: 'Munition', value: 'munition_name' },
-      { text: 'Count', value: 'count' },
+      { text: 'Count', value: 'count', filterable: false, groupable: false },
       { text: 'Category', value: 'munition_type' },
     ],
   }),

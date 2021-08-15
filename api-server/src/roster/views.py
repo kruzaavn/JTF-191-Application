@@ -196,19 +196,22 @@ class StoresView(APIView):
         callsign = event.get('callsign')
 
         tri_code = event.get('name')[:3].upper()
+
         try:
             squadron = Squadron.objects.get(tri_code=tri_code)
 
         except ObjectDoesNotExist:
             squadron = None
 
-        if squadron and callsign:
+        if squadron:
 
             operation = Operation.objects.last()
 
             for store in event.get('stores'):
 
-                munition = Munition.objects.get_or_create(name=store.name)
+                munition, created = Munition.objects.get_or_create(name=store['name'])
+
+
 
                 new_store = Stores(squadron=squadron,
                                    operation=operation,
