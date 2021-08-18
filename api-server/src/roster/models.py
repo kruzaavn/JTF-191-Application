@@ -96,10 +96,28 @@ class Operation(models.Model):
     operation table
     """
 
+    default_notes = """Use this space to disseminate essential information for the operation. 
+
+The following items can be added similar to how you would include them in a word document. 
+
+1. Plain text notes
+2. links to mission files like [.miz][miz] and [.liberation][lib] or [briefings][brief]
+3. Images
+4. Tables
+5. Lists and Task Checkoffs
+
+See markdown basic syntax [here](https://www.markdownguide.org/cheat-sheet/).
+
+[miz]: https://drive.google.com/file/d/1T99VR88fjwkEvNaWvzLIoY5uPVG9tzKY/view?usp=sharing
+[lib]: https://drive.google.com/file/d/1AgS7_KbdpgZRAyPEdVObkKnYcyiAByQX/view?usp=sharing
+[brief]: https://docs.google.com/presentation/d/1EmJxUxc5rK06voa4q9uANF9KX6SwvGBG-DHZTfD-HWM/edit?usp=sharing"""
+
+
     name = models.CharField(max_length=1024)
     img = models.ImageField(upload_to='operations')
     start = models.DateField()
     complete = models.DateField()
+    notes = models.TextField(default=default_notes)
 
     def __str__(self):
         return f'{self.name}'
