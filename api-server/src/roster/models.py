@@ -18,7 +18,7 @@ class HQ(models.Model):
         services[2]: {i - 4: x for i, x in enumerate(
             ["WO1", "CW2", "CW3", "CW4", "CW5", "2nd Lt", "1st Lt", "Capt", "Maj", "Lt Col", "Col"])},
         services[3]: {i - 4: x for i, x in enumerate(
-            ["WO1", "CW2", "CW3", "CW4", "CW5", "2nd Lt", "1st Lt", "Capt", "Maj", "Lt Col", "Col"])},
+            ["WO1", "CW2", "CW3", "CW4", "CW5", "2LT", "1LT", "CPT", "MAJ", "LTC", "COL"])},
     }
 
     position_table = {
