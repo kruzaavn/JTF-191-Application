@@ -31,7 +31,7 @@ class APIRelay(TCPServer):
         session = requests.session()
 
         if user and password:
-            session.auth(user, password)
+            session.auth = (user, password)
 
         while True:
             try:
