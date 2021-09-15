@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+        <div class="row">
+            <div class="col">
+                <h1>Thank You!</h1>
+                <br>
+                <p>{{ prospective.first_name }} "{{ prospective.callsign }}" {{ prospective.last_name }}, Your
+                    application has been submitted to our system. Please join our discord server in order to speak to our
+                    recruiters while we process your application.</p>
+                <a href="https://discord.gg/fRKKHMpJnt" class="btn btn-secondary btn-lg" role="button" aria-disabled="true">JTF-191 Discord</a>
+            </div>
+        </div>
+{% endblock %}
