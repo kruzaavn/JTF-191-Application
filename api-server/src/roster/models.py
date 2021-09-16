@@ -327,16 +327,6 @@ class ProspectiveAviator(Pilot):
 
         return aviator
 
-    def recruitment_email(self):
-        return f"""Recruitment application submitted by {self.callsign} on {self.submitted.strftime("%m/%d/%y")}
-                        Email: {self.email}
-                        Airframe: {self.preferred_airframe.name}
-                        HOTAS: {self.hotas}
-                        Tracking: {self.head_tracking}
-                        Discord: {self.discord}
-                        About: {self.about}"""
-
-
 class Event(models.Model):
     """
     event table

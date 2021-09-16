@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.conf import settings
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from django.core.mail import send_mail
 from .models import *
 
@@ -31,17 +33,16 @@ def send_registration_email(aviator):
     if aviator.user is None and aviator.email:
 
         subject = f'{aviator.callsign} please register at JTF-191'
-        message = f"""{aviator.callsign}, please register your login at the following link 
-        https://jtf191.com/#/register/{aviator.id}. 
-        
-        If you have any issues contact Brony on discord."""
+        html = render_to_string("registration.html", {"aviator": aviator}).replace("\n", "")
+        message = strip_tags(html)
         recipient = [aviator.email]
 
         send_mail(
             subject,
             message,
             settings.EMAIL_HOST_USER,
-            recipient
+            recipient,
+            html_message=html
         )
 
 
