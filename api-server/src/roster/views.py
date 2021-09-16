@@ -1,4 +1,6 @@
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from django.conf import settings
 from django.contrib.auth.models import User
 from rest_framework.response import Response
@@ -90,27 +92,30 @@ class ProspectiveAviatorDetailView(CreateAPIView):
         if serializer.is_valid():
             prospective = serializer.save()
 
-            subject = f'{prospective.callsign} Thanks for submitting a request to join JTF-191'
-            message = f'{prospective.first_name} thanks for your submission a recruiter will be ' \
-                      f'in contact shortly'
+            subject = 'Thanks for submitting a request to join JTF-191'
+            html = render_to_string('recruitment.html', {'prospective': prospective}).replace("\n", "")
+            message = strip_tags(html)
             recipient = prospective.email
 
             send_mail(
                 subject,
                 message,
                 settings.EMAIL_HOST_USER,
-                [recipient]
+                [recipient],
+                html_message=html
             )
 
             subject = f'New Application from {prospective.callsign}'
-            message = f'{prospective.recruitment_email()}'
+            html = render_to_string('recruitment_notification.html', {'prospective': prospective}).replace("\n", "")
+            message = strip_tags(html)
             leaders = Aviator.objects.filter(position_code__lt=4)
             admins = User.objects.filter(is_superuser=True)
 
             send_mail(subject,
                       message,
                       settings.EMAIL_HOST_USER,
-                      [x.email for x in leaders if x.email] + [x.email for x in admins if x.email]
+                      [x.email for x in leaders if x.email] + [x.email for x in admins if x.email],
+                      html_message=html
                       )
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)

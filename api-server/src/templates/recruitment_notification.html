@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+        <div class="row">
+            <div class="col">
+                <h1>New Prospective Aviator</h1>
+                <dl class="row">
+                    <dt class="col-2">Submission Date</dt>
+                    <dd class="col-10">{{ prospective.submitted | date:"D d M Y" }}</dd>
+                    <dt class="col-2">First Name</dt>
+                    <dd class="col-10">{{ prospective.first_name | title }}</dd>
+                    <dt class="col-2">Last Name</dt>
+                    <dd class="col-10">{{ prospective.last_name | title }}</dd>
+                    <dt class="col-2">Callsign</dt>
+                    <dd class="col-10">{{ prospective.callsign | title }}</dd>
+                    <dt class="col-2">Discord</dt>
+                    <dd class="col-10">{{ prospective.discord}}</dd>
+                    <dt class="col-2">Preferred Platform</dt>
+                    <dd class="col-10">{{ prospective.preferred_airframe.name | upper}}</dd>
+                    <dt class="col-2">About</dt>
+                    <dd class="col-10">{{ prospective.about | linebreaks}}</dd>
+                </dl>
+            </div>
+        </div>
+{% endblock %}

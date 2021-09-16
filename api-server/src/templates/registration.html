@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <h1>Please Register Your Account</h1>
+            <p>Congratulations <strong>{{ aviator.callsign }}</strong> you have been accepted into JTF-191 and assigned to {{ aviator.squadron.name | title }} - {{ aviator.squadron.designation | upper }} for your training. Once complete you will be assigned to your operational squadron</p>
+            <p>Please click on the registration button below in order to create your username and password for our website. Once registered you will have access to the JTF Schedule, Training Material and Server Information. If you have any problems creating
+            your account please post a report in the <strong>#computer-setup-issues</strong> channel on discord.</p>
+            <a href="https://jtf191.com/#/register/{{ aviator.id }}" class="btn btn-secondary btn-lg" role="button" aria-disabled="true">Register My Account</a>
+        </div>
+    </div>
+
+{% endblock %}
