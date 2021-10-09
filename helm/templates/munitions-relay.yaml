@@ -3,16 +3,16 @@ kind: Service
 metadata:
   annotations:
     service.beta.kubernetes.io/azure-load-balancer-resource-group: jtf191.app.server_group
-  name: api-relay
+  name: munitions-relay
 spec:
   loadBalancerIP: {{.Values.relayIp}}
   type: LoadBalancer
   ports:
     - protocol: TCP
-      port: 7225
-      targetPort: 7225
+      port: 7226
+      targetPort: 7226
   selector:
-    app: api-relay
+    app: munitions-relay
 
 
 ---
@@ -21,21 +21,21 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api-relay-deployment
+  name: munitions-relay-deployment
   labels:
-    app: api-relay
+    app: munitions-relay
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: api-relay
+      app: munitions-relay
   template:
     metadata:
       labels:
-        app: api-relay
+        app: munitions-relay
     spec:
       containers:
-      - name: api-relay
+      - name: munitions-relay
         image: "{{ .Values.image.registryUrl }}/api-relay:{{ .Values.image.tag }}"
         imagePullPolicy: Always
         command: ["python"]
@@ -48,3 +48,5 @@ spec:
                 key: apiServerBotPassword
           - name: API_SERVER_USER
             value: jp5bot
+          - name: PORT
+            value: "7226"

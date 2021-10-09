@@ -92,6 +92,10 @@ function EventHandler:onEvent(_event)
 
 		-- compress stores_array
 
+		if not munitions then
+		    return
+		end
+
 		for i, munition in ipairs(munitions) do
 
 			event.stores[i] = {
