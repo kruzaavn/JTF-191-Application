@@ -67,7 +67,7 @@ function contains(list, x)
 end
 
 
-connect_socket()
+
 
 event_names = {
 	[3] = 'takeoff',
@@ -106,11 +106,13 @@ function EventHandler:onEvent(_event)
 			}
 
 		end
-
+		connect_socket()
 
 		if event.callsign then
 			Export2Socket(event)
 		end
+
+		disconnect_socket()
 	end
 
 	if contains({12}, _event.id) then
