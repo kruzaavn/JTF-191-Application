@@ -128,7 +128,7 @@ else:
     MEDIA_LOCATION = "media"
 
     AZURE_ACCOUNT_NAME = "jtf191blobstorage"
-    AZURE_CUSTOM_DOMAIN = f'jtf191blobstorage.blob.core.windows.net'
+    AZURE_CUSTOM_DOMAIN = f'{AZURE_ACCOUNT_NAME}.blob.core.windows.net'
     STATIC_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
     MEDIA_URL = f'https://{AZURE_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
 
