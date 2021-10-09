@@ -10,5 +10,6 @@ channels_redis
 redis
 daphne
 Pillow
+PyJWT==2.1.0
 djangorestframework_simplejwt
 django-storages[azure]
