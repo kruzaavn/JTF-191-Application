@@ -24,7 +24,7 @@ local c = nil
 local socket = require('socket')
 local JSON = loadfile("Scripts\\JSON.lua")()
 local host = 'relay.jtf191.com'  -- change to application dns name or ip
-local port = 7225  -- change to app port
+local port = 7226  -- change to app port
 
 
 function connect_socket()
@@ -91,6 +91,10 @@ function EventHandler:onEvent(_event)
 		munitions =  _event.initiator:getAmmo()
 
 		-- compress stores_array
+
+		if not munitions then
+		    return
+		end
 
 		for i, munition in ipairs(munitions) do
 
