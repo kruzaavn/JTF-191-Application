@@ -28,6 +28,11 @@
                     hint="24hr Format"
                     :rules="[rules.blank, rules.format24hrTime]"
                   ></v-text-field>
+                  <v-select
+                    label="Periodicity"
+                    :items="periodicityTypes"
+                    v-model="period.periodicity"
+                  ></v-select>
                 </v-col>
                 <v-col>
                   <v-text-field
@@ -36,16 +41,10 @@
                     hint="(H)H:MM"
                     :rules="[rules.blank, rules.formatTime]"
                   ></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col>
-                  <v-select
-                    label="Type"
-                    v-model="newEvent.eventType"
-                    :items="eventTypes"
-                  >
-                  </v-select>
+                  <v-text-field
+                    label="Additional Repetitions"
+                    v-model="period.number"
+                  ></v-text-field>
                 </v-col>
               </v-row>
             </v-col>
@@ -55,6 +54,12 @@
                 label="Event Name"
                 :rules="[rules.blank]"
               ></v-text-field>
+              <v-select
+                label="Type"
+                v-model="newEvent.eventType"
+                :items="eventTypes"
+              >
+              </v-select>
               <v-select
                 label="Required squadrons"
                 v-model="newEvent.squadrons"
@@ -88,6 +93,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import dayjs from 'dayjs'
 
 function DefaultNewEvent() {
   this.date = new Date().toLocaleDateString('en-CA')
@@ -96,6 +102,11 @@ function DefaultNewEvent() {
   this.squadrons = []
   this.eventType = 'admin'
   this.name = ''
+}
+
+function Period() {
+  this.periodicity = null
+  this.number = 0
 }
 
 export default {
@@ -107,10 +118,37 @@ export default {
     ...mapActions(['addToSchedule']),
     clearNewEvent: function () {
       this.newEvent = new DefaultNewEvent()
+      this.period = new Period()
     },
     submitNewEvent: function () {
       if (this.$refs.newEventForm.validate()) {
-        this.addToSchedule(this.formatEvent()).then(() => {
+        let formattedEvent = this.formatEvent()
+
+        if (this.period.periodicity && this.period.number) {
+          for (let i = 1; i < parseInt(this.period.number) + 1; i++) {
+            let periodUpdatedEvent = { ...formattedEvent }
+
+            if (this.period.periodicity === 'bw') {
+              periodUpdatedEvent['start'] = dayjs(periodUpdatedEvent['start'])
+                .add(i * 2, 'w')
+                .toJSON()
+              periodUpdatedEvent['end'] = dayjs(periodUpdatedEvent['end'])
+                .add(i * 2, this.period.periodicity)
+                .toJSON()
+            } else {
+              periodUpdatedEvent['start'] = dayjs(periodUpdatedEvent['start'])
+                .add(i, this.period.periodicity)
+                .toJSON()
+              periodUpdatedEvent['end'] = dayjs(periodUpdatedEvent['end'])
+                .add(i, this.period.periodicity)
+                .toJSON()
+            }
+
+            this.addToSchedule(periodUpdatedEvent)
+          }
+        }
+
+        this.addToSchedule(formattedEvent).then(() => {
           this.clearNewEvent()
           this.dialog = false
         })
@@ -118,14 +156,19 @@ export default {
     },
     formatEvent: function () {
       let yymmdd = this.newEvent.date.split('-').map((x) => parseInt(x))
+
       yymmdd[1]--
+
       let hhmm = this.newEvent.start.split(':').map((x) => parseInt(x))
 
       let start = new Date(...yymmdd, ...hhmm)
+
       let ohhmm = this.newEvent.duration
         .split(':')
         .map((x) => parseInt(x) * 1000)
+
       let offset = ohhmm[0] * 3600 + ohhmm[1] * 60
+
       let end = new Date(start.getTime() + offset)
 
       return {
@@ -142,7 +185,14 @@ export default {
     return {
       dialog: false,
       newEvent: new DefaultNewEvent(),
+      period: new Period(),
       eventTypes: ['admin', 'training', 'operation'],
+      periodicityTypes: [
+        { text: '---', value: null },
+        { text: 'Weekly', value: 'w' },
+        { text: 'Bi-Weekly', value: 'bw' },
+        { text: 'Monthly', value: 'M' },
+      ],
       rules: {
         blank: function (v) {
           return v.length > 0 || 'Must not be blank'
