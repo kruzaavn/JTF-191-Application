@@ -16,6 +16,7 @@
     "@vue/cli": "^4.5.9",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "dayjs": "^1.10.7",
     "iframe-resizer": "^4.2.11",
     "jwt-decode": "^3.1.2",
     "leaflet": "^1.6.0",

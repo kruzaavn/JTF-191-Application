@@ -6,7 +6,7 @@
           <v-img :src="squadron.img" contain height="500">
             <v-card-title>
               Name: {{ squadron.name }} <br />
-              Tricode: {{squadron.tri_code}} <br/>
+              Tricode: {{ squadron.tri_code }} <br />
               Designation: {{ squadron.designation }} <br />
               Aircraft: {{ squadron.air_frame.name }} <br />
               Callsign: {{ squadron.callsign.toUpperCase() }} <br />
