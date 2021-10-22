@@ -1,7 +1,6 @@
 import discord
 import os
 import aiohttp
-import pprint
 import emoji
 
 token = os.getenv('DISCORD_TOKEN')
