@@ -32,7 +32,7 @@ class Event:
 
     def discord_message(self):
 
-        return f"""Scheduled event - {self.type.upper()}: {self.name} @ {self.start.strftime('%H:%M')} {time_zone}"""
+        return f"""{self.type.upper()}: {self.name} @ {self.start.strftime('%H:%M')} {time_zone}"""
 
 
 class Client(discord.Client):
@@ -45,6 +45,10 @@ class Client(discord.Client):
         print('Scheduler is online', flush=True)
         print(f'{datetime.strftime(self.now, dt_format)}, TZ:{self.now.tzinfo}')
         events = await self.get_schedule()
+
+        if events:
+
+            await self.get_general_channel().send(f"Today's scheduled events, for more info see https://jtf191.com/#/schedule")
 
         for event in events:
 
@@ -85,9 +89,10 @@ class Client(discord.Client):
 
     async def send_event_to_general_channel(self, event):
 
-        general_channel = [x for x in self.get_all_channels() if x.name == 'general-chat'][0]
+        await self.get_general_channel().send(event.discord_message())
 
-        await general_channel.send(event.discord_message())
+    def get_general_channel(self):
+        return [x for x in self.get_all_channels() if x.name == 'general-chat'][0]
 
     @staticmethod
     def get_now_localized_datetime(tz=time_zone):
