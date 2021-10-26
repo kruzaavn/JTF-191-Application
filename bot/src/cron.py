@@ -22,6 +22,7 @@ class Event:
         self.end = datetime.strptime(kwargs.get('start'), dt_format).astimezone(time_zone)
         self.name = kwargs.get('name')
         self.type = kwargs.get('type')
+        self.description = kwargs.get('description')
         self.squadrons = kwargs.get('required_squadrons')
 
     def __repr__(self):
@@ -32,7 +33,12 @@ class Event:
 
     def discord_message(self):
 
-        return f"""{self.type.upper()}: {self.name} @ {self.start.strftime('%H:%M')} {time_zone}"""
+        description_text = ''
+
+        if self.description:
+            description_text = '| ' + self.description
+
+        return f"""{self.type.upper()}: {self.name} @ {self.start.strftime('%H:%M')} - {self.end.strftime('%H:%M')} {time_zone} {description_text}"""
 
 
 class Client(discord.Client):
