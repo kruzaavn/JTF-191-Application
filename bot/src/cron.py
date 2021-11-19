@@ -19,7 +19,7 @@ class Event:
     def __init__(self, **kwargs):
 
         self.start = datetime.strptime(kwargs.get('start'), dt_format).astimezone(time_zone)
-        self.end = datetime.strptime(kwargs.get('start'), dt_format).astimezone(time_zone)
+        self.end = datetime.strptime(kwargs.get('end'), dt_format).astimezone(time_zone)
         self.name = kwargs.get('name')
         self.type = kwargs.get('type')
         self.description = kwargs.get('description')
