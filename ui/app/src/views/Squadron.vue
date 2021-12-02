@@ -51,8 +51,8 @@
                 </v-col>
                 <v-col cols="4">
                   <v-row align="center" justify="center">
-                    <v-col cols="4" v-for="award in sortAwards(member.awards)" :key="award.id" class="pa-0">
-                      <v-img :src="award.ribbon_image_url" :alt="award.name"/>
+                    <v-col cols="4" v-for="(award, index) in sortAwards(member.awards)" :key="award.id" class="pa-0" :class="(index == 0) ? offsetFirstAward(member.awards) : ''">
+                      <v-img :src="award.ribbon_image" :alt="award.name"/>
                     </v-col>
                   </v-row>                  
                 </v-col>
@@ -189,6 +189,13 @@ export default {
     },
     sortAwards(awards) {
       return awards.slice().sort((a, b) => { return a.priority - b.priority})
+    },
+    offsetFirstAward(awards) {
+      const offset = (awards.length % 3)
+      if (offset == 0) {
+        return ''
+      }
+      return ((offset == 2) ? "ml-1" : "mx-16")
     },
   },
 }
