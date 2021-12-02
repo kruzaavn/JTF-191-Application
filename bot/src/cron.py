@@ -1,7 +1,7 @@
 import discord
 import aiohttp
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from pytz import timezone
 
 token = os.getenv('DISCORD_TOKEN')
@@ -12,7 +12,7 @@ time_zone = timezone(os.getenv('TIMEZONE', 'US/Eastern'))
 auth = aiohttp.BasicAuth(login=user, password=password)
 
 dt_format = '%Y-%m-%dT%H:%M:%S%z'
-
+date_format = '%Y-%m-%d'
 
 class Event:
 
@@ -71,7 +71,10 @@ class Client(discord.Client):
 
         async with aiohttp.ClientSession(auth=auth) as session:
 
-            async with session.get(f'http://api-server:8000/api/roster/event/list/') as r:
+            yesterday = datetime.strftime(self.now - timedelta(days=1), date_format)
+            tomorrow = datetime.strftime(self.now + timedelta(days=1), date_format)
+
+            async with session.get(f'http://api-server:8000/api/roster/event/list/{yesterday}/{tomorrow}') as r:
                 response_message = await r.json()
 
                 if r.ok:
