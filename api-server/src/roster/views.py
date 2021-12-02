@@ -241,7 +241,7 @@ class EventListView(ListCreateAPIView):
     def get_queryset(self):
         start = self.kwargs['start']
         end = self.kwargs['end']
-        return Event.objects.filter(start__gte = start, end__lte = end)
+        return Event.objects.filter(start__gte=start, end__lte=end)
 
 
     def create(self, request, *args, **kwargs):
