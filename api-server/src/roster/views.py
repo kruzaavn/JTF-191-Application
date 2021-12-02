@@ -1,3 +1,4 @@
+from datetime import date, datetime, time
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
@@ -234,9 +235,14 @@ class StoresView(APIView):
 
 class EventListView(ListCreateAPIView):
 
-    queryset = Event.objects.all()
     serializer_class = EventSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        start = self.kwargs['start']
+        end = self.kwargs['end']
+        return Event.objects.filter(start__gte=start, end__lte=end)
+
 
     def create(self, request, *args, **kwargs):
         serializer = EventCreateSerializer(data=request.data)

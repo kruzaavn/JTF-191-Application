@@ -121,8 +121,8 @@ const actions = {
     const response = await axios.get('/api/roster/modules/list/')
     commit('setDcsModules', response.data)
   },
-  async getSchedule({ commit }) {
-    const response = await axios.get('/api/roster/event/list/')
+  async getSchedule({ commit }, date) {
+    const response = await axios.get(`/api/roster/event/list/${date.start}/${date.end}/`)
     commit('setSchedule', response.data)
   },
   async addToSchedule({ commit }, event) {
