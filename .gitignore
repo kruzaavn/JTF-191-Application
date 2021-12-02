@@ -5,3 +5,5 @@ pw.txt
 
 local_*.sh
 secret.yaml
+
+.vscode/

@@ -26,6 +26,7 @@
             event-more
             :event-color="eventColor"
             @click:event="showEvent"
+            @change="updateRange"
             v-model="value"
           ></v-calendar>
           <v-menu
@@ -137,6 +138,16 @@ export default {
     next() {
       this.$refs.calendar.next()
     },
+    updateRange({ start, end }) {
+      // This is also called during calendar initialization
+      // so we don't need the mounted()
+      const viewStart = this.$refs.calendar.getStartOfWeek(start)
+      const viewEnd = this.$refs.calendar.getEndOfWeek(end)
+      this.getSchedule({
+        start: viewStart.date,
+        end: viewEnd.date
+      });
+    },
     formatDate: function (dateString) {
       let date = new Date(dateString)
 
@@ -178,9 +189,6 @@ export default {
     hideEvent() {
       this.selectedOpen = false
     },
-  },
-  mounted() {
-    this.getSchedule()
   },
 }
 </script>
