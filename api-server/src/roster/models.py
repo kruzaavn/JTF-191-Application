@@ -201,7 +201,19 @@ class Qualification(models.Model):
     def __str__(self):
         return self.name
 
+class Award(models.Model):
+    """
+    Model for the awards' ribbons
 
+    It is linked to each aviator
+    """
+    name = models.CharField(max_length=512, blank=False, null=True)
+    ribbon_image_url = models.URLField(blank=False, null=False, unique=True)
+    priority = models.IntegerField(blank=False, null=False, unique=False, default=999)
+
+    def __str__(self):
+        return f'{self.name}'
+    
 class Aviator(Pilot):
     """
     aviator table inherits from abstract pilot table
@@ -242,6 +254,8 @@ class Aviator(Pilot):
                                                         MaxValueValidator(4)])
 
     qualifications = models.ManyToManyField(Qualification, blank=True)
+
+    awards = models.ManyToManyField(Award, blank=True)
 
     @property
     def rank(self):

@@ -35,7 +35,7 @@
                   >
                   </v-img>
                 </v-col>
-                <v-col>
+                <v-col cols="4">
                   <v-card-title>
                     {{ member.rank }} {{ member.callsign }}
                     {{ member.position }}
@@ -48,6 +48,13 @@
                     On board since {{ member.date_joined }} <br />
                     Status: {{ member.status }}
                   </v-card-subtitle>
+                </v-col>
+                <v-col cols="4">
+                  <v-row align="center" justify="center">
+                    <v-col cols="4" v-for="award in sortAwards(member.awards)" :key="award.id" class="pa-0">
+                      <v-img :src="award.ribbon_image_url" :alt="award.name"/>
+                    </v-col>
+                  </v-row>                  
                 </v-col>
               </v-row>
               <v-card-text>
@@ -179,6 +186,9 @@ export default {
         data.push(obj[key])
       }
       return data.reduce((a, b) => a + b, 0)
+    },
+    sortAwards(awards) {
+      return awards.slice().sort((a, b) => { return a.priority - b.priority})
     },
   },
 }
