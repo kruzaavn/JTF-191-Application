@@ -124,9 +124,17 @@ class QualificationCheckoffAdmin(admin.ModelAdmin):
 
     list_filter = ('module__name', 'aviator__callsign')
 
+
 @admin.register(Award)
 class AwardAdmin(admin.ModelAdmin):
     list_display = ['name']
+
+
+@admin.register(Citation)
+class CitationAdmin(admin.ModelAdmin):
+    list_display = ('aviator', 'operation', 'award')
+    list_filter = ('aviator__callsign', 'operation__name', 'award__name')
+
 
 @admin.register(Munition)
 class MunitionAdmin(admin.ModelAdmin):
