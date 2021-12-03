@@ -201,11 +201,11 @@ class Qualification(models.Model):
     def __str__(self):
         return self.name
 
+
 class Award(models.Model):
     """
     Model for the awards' ribbons
 
-    It is linked to each aviator
     """
     name = models.CharField(max_length=512, blank=False, null=True)
     ribbon_image = models.ImageField(upload_to='awards', blank=True, null=True, unique=True)
@@ -213,7 +213,8 @@ class Award(models.Model):
 
     def __str__(self):
         return f'{self.name}'
-    
+
+
 class Aviator(Pilot):
     """
     aviator table inherits from abstract pilot table
@@ -255,8 +256,6 @@ class Aviator(Pilot):
 
     qualifications = models.ManyToManyField(Qualification, blank=True)
 
-    awards = models.ManyToManyField(Award, blank=True)
-
     @property
     def rank(self):
         if self.squadron:
@@ -271,6 +270,18 @@ class Aviator(Pilot):
             return self.squadron.hq.service_position_table[self.position_code]
         else:
             return
+
+
+class Citation(models.Model):
+    """
+    model for tracking when awards are given out
+    """
+
+    aviator = models.ForeignKey('Aviator', on_delete=models.CASCADE)
+    operation = models.ForeignKey('Operation', on_delete=models.SET_NULL, blank=True, null=True)
+    award = models.ForeignKey('Award', on_delete=models.CASCADE)
+    text = models.TextField(blank=True, null=True)
+
 
 
 class QualificationCheckoff(models.Model):
@@ -341,6 +352,7 @@ class ProspectiveAviator(Pilot):
             aviator.save()
 
         return aviator
+
 
 class Event(models.Model):
     """
