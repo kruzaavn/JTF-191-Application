@@ -24,10 +24,26 @@ class OperationSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class AwardSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Award
+        fields = '__all__'
+
+
+class CitationSerializer(serializers.ModelSerializer):
+    award = AwardSerializer(read_only=True)
+    
+    class Meta:
+        model = Citation
+        fields = '__all__'
+
+
 class AviatorSerializer(serializers.ModelSerializer):
 
     rank = serializers.ReadOnlyField()
     position = serializers.ReadOnlyField()
+    citations = CitationSerializer(many=True, read_only=True)
 
     class Meta:
         model = Aviator

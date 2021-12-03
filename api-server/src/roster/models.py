@@ -277,11 +277,13 @@ class Citation(models.Model):
     model for tracking when awards are given out
     """
 
-    aviator = models.ForeignKey('Aviator', on_delete=models.CASCADE)
+    aviator = models.ForeignKey('Aviator', related_name='citations', on_delete=models.CASCADE)
     operation = models.ForeignKey('Operation', on_delete=models.SET_NULL, blank=True, null=True)
     award = models.ForeignKey('Award', on_delete=models.CASCADE)
     text = models.TextField(blank=True, null=True)
 
+    def __str__(self):
+        return '%s %s' % (self.award, self.operation)
 
 
 class QualificationCheckoff(models.Model):
