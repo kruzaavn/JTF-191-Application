@@ -126,7 +126,7 @@ class QualificationCheckoffAdmin(admin.ModelAdmin):
 
 @admin.register(Award)
 class AwardAdmin(admin.ModelAdmin):
-    list_display = ['name']
+    list_display = ('name', 'priority')
 
 
 @admin.register(Citation)
