@@ -202,6 +202,19 @@ class Qualification(models.Model):
         return self.name
 
 
+class Award(models.Model):
+    """
+    Model for the awards' ribbons
+
+    """
+    name = models.CharField(max_length=512, blank=False, null=True)
+    ribbon_image = models.FileField(upload_to='awards', blank=True, null=True, unique=True)
+    priority = models.IntegerField(blank=False, null=False, unique=False, default=999)
+
+    def __str__(self):
+        return f'{self.name}'
+
+
 class Aviator(Pilot):
     """
     aviator table inherits from abstract pilot table
@@ -257,6 +270,20 @@ class Aviator(Pilot):
             return self.squadron.hq.service_position_table[self.position_code]
         else:
             return
+
+
+class Citation(models.Model):
+    """
+    model for tracking when awards are given out
+    """
+
+    aviator = models.ForeignKey('Aviator', related_name='citations', on_delete=models.CASCADE)
+    operation = models.ForeignKey('Operation', on_delete=models.SET_NULL, blank=True, null=True)
+    award = models.ForeignKey('Award', on_delete=models.CASCADE)
+    text = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.award}, {self.operation}'
 
 
 class QualificationCheckoff(models.Model):
@@ -327,6 +354,7 @@ class ProspectiveAviator(Pilot):
             aviator.save()
 
         return aviator
+
 
 class Event(models.Model):
     """
