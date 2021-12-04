@@ -283,7 +283,7 @@ class Citation(models.Model):
     text = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return '%s %s' % (self.award, self.operation)
+        return f'{self.award}, {self.operation}'
 
 
 class QualificationCheckoff(models.Model):
