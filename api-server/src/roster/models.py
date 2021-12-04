@@ -208,7 +208,7 @@ class Award(models.Model):
 
     """
     name = models.CharField(max_length=512, blank=False, null=True)
-    ribbon_image = models.ImageField(upload_to='awards', blank=True, null=True, unique=True)
+    ribbon_image = models.FileField(upload_to='awards', blank=True, null=True, unique=True)
     priority = models.IntegerField(blank=False, null=False, unique=False, default=999)
 
     def __str__(self):

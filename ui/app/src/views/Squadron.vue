@@ -50,8 +50,8 @@
                   </v-card-subtitle>
                 </v-col>
                 <v-col cols="4">
-                  <v-row align="center" justify="center">
-                    <v-col cols="4" v-for="(award, index) in sortAwards(member.awards)" :key="award.id" class="pa-0" :class="(index == 0) ? offsetFirstAward(member.awards) : ''">
+                  <v-row id="ribbon-rack" align="center" justify="center">
+                    <v-col cols="4" align="center" v-for="award in sortCitations(member.citations)" :key="award.id" class="pa-0">
                       <v-img :src="award.ribbon_image" :alt="award.name"/>
                     </v-col>
                   </v-row>                  
@@ -187,16 +187,17 @@ export default {
       }
       return data.reduce((a, b) => a + b, 0)
     },
-    sortAwards(awards) {
-      return awards.slice().sort((a, b) => { return a.priority - b.priority})
-    },
-    offsetFirstAward(awards) {
-      const offset = (awards.length % 3)
-      if (offset == 0) {
-        return ''
-      }
-      return ((offset == 2) ? "ml-1" : "mx-16")
-    },
+    sortCitations(citations) {
+      var groupByAward = cits =>
+        cits.reduce(function(acc, x) {
+          acc[x.award.id] = x.award
+          return acc;
+        }, {})
+
+      citations = citations.slice().sort((a, b) => { return b.award.priority - a.award.priority})
+
+      return groupByAward(citations)
+    }
   },
 }
 </script>
