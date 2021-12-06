@@ -1,3 +1,11 @@
+@mixin vertical-flip {
+  -moz-transform: scale(1, -1);
+  -webkit-transform: scale(1, -1);
+  -o-transform: scale(1, -1);
+  -ms-transform: scale(1, -1);
+  transform: scale(1, -1);
+}
+
 a {
   color: white;
   text-decoration-line: none;
@@ -9,9 +17,8 @@ a {
 
 #ribbon-rack {
   // Flipping the ribbon 180 vertically to show the offset
-  -moz-transform: scale(1, -1);
-  -webkit-transform: scale(1, -1);
-  -o-transform: scale(1, -1);
-  -ms-transform: scale(1, -1);
-  transform: scale(1, -1);
+ &,.v-image {
+    // Double flipping the image so that is shows up in the original position
+    @include vertical-flip();
+  }
 }
