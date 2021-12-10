@@ -386,3 +386,27 @@ class UserImage(models.Model):
 
     def __str__(self):
         return f'{self.file.name or self.url}'
+
+
+class Kill(models.Model):
+
+    aviator = models.ForeignKey(Aviator, on_delete=models.CASCADE)
+    time = models.DateTimeField(auto_now_add=True)
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
+    altitude = models.FloatField(blank=True, null=True)
+    munition = models.ForeignKey(Munition, on_delete=models.SET_NULL, null=True, blank=True)
+    platform = models.ForeignKey(DCSModules, on_delete=models.SET_NULL, null=True, blank=True)
+    type = models.CharField(max_length=1024)
+
+
+class FlightLog(models.Model):
+
+    event_types = ['takeoff', 'landing', 'kill', 'disconnect']
+
+    aviator = models.ForeignKey(Aviator, on_delete=models.CASCADE)
+    time = models.DateTimeField(auto_now_add=True)
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
+    platform = models.ForeignKey(DCSModules, on_delete=models.SET_NULL, null=True, blank=True)
+    type = models.CharField(max_length=64, default=event_types[0], choices=[(x, x) for x in event_types])
