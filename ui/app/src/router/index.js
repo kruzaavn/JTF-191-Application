@@ -11,6 +11,7 @@ import SquadronList from '@/views/SquadronList'
 import Photos from '@/views/Photos'
 import Operation from '@/views/Operation'
 import OperationList from '@/views/OperationList'
+import Profile from '@/views/Profile'
 
 Vue.use(VueRouter)
 
@@ -35,6 +36,14 @@ const routes = [
     component: About,
     meta: {
       title: title(title_header, 'About Us'),
+    },
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile,
+    meta: {
+      title: title(title_header, 'Aviator Profile'),
     },
   },
   {

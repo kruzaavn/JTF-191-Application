@@ -1,24 +1,29 @@
 <template>
   <div class="text-center">
-    <v-dialog v-model="dialog" width="75vw">
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn v-if="$route.name === 'Register'"></v-btn>
+    <v-menu offset-y v-if="isLoggedIn">
+      <template v-slot:activator="{ on }">
         <v-btn
-          v-else-if="isLoggedIn"
           color="white"
           outlined
-          tile
-          depressed
-          @click="
-            logout()
-            redirect()
-          "
+          v-on="on"
         >
-          <v-icon left>mdi-logout</v-icon>
           {{ user.username }}
+          <v-icon right>fa-chevron-circle-down fa-xs</v-icon>
         </v-btn>
+      </template>
+      <v-list>
+        <v-list-item @click="redirect('/profile')">
+          <v-list-item-title>My Profile</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="logout();redirect('/')">
+          <v-list-item-title>LogOut</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+
+    <v-dialog v-model="dialog" width="75vw" v-if="!isLoggedIn">
+      <template v-slot:activator="{ on, attrs }">
         <v-btn
-          v-else
           color="white"
           outlined
           tile
@@ -76,7 +81,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
-import router from '@/router'
 
 export default {
   name: 'Login',
@@ -108,8 +112,8 @@ export default {
           })
       }
     },
-    redirect() {
-      router.push('/')
+    redirect(path) {
+      this.$router.push(path).catch(()=>{})
     },
   },
 

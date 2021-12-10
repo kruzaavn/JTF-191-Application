@@ -12,6 +12,7 @@ const state = {
   storesList: [],
   munitionList: [],
   operationList: [],
+  aviator: {},
 }
 
 const mutations = {
@@ -59,12 +60,16 @@ const mutations = {
   setOperations(state, operations) {
     state.operationList = operations
   },
+  setAviator(state, aviator) {
+    state.aviator = aviator
+  },
 }
 
 const getters = {
   roster: (state) => state.rosterList,
   squadrons: (state) => state.squadronList,
   hqs: (state) => state.hqs,
+  aviator: (state) => state.aviator,
   dcsModules: (state) => state.dcsModules,
   schedule: (state) => state.schedule,
   qualifications: (state) => state.qualificationList,
@@ -165,6 +170,18 @@ const actions = {
   async getOperations({ commit }) {
     const response = await axios.get('/api/roster/operation/list')
     commit('setOperations', response.data)
+  },
+  async getAviator({ commit }, userId) {
+    const token = localStorage.getItem('token')
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    }
+    const response = await axios.get(
+      `/api/roster/aviators/detail/${userId}/`,
+      {},
+      config
+    )
+    commit('setAviator', response.data)
   },
 }
 
