@@ -151,7 +151,7 @@ class Pilot(models.Model):
     first_name = models.CharField(max_length=1024, default='John')
     last_name = models.CharField(max_length=1024, default='Doe')
     dcs_modules = models.ManyToManyField(DCSModules, blank=True)
-    callsign = models.CharField(max_length=1024)
+    callsign = models.CharField(max_length=1024, unique=True)
     email = models.EmailField(max_length=1024, blank=True, null=True)
 
     class Meta:
@@ -402,7 +402,7 @@ class Kill(models.Model):
 
 class FlightLog(models.Model):
 
-    event_types = ['takeoff', 'landing', 'kill', 'disconnect']
+    event_types = ['takeoff', 'landing', 'pilot_death', 'eject', 'disconnect']
 
     aviator = models.ForeignKey(Aviator, on_delete=models.CASCADE)
     time = models.DateTimeField(auto_now_add=True)

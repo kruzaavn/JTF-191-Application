@@ -99,7 +99,6 @@ function callbacks.onGameEvent(eventName, arg1, arg2, arg3, arg4, arg5, arg6, ar
 
   	local event = {}
 	event.event = eventName
-	event.time = DCS.getRealTime()
 
 	if not contains({'mission_end'}, eventName) then
 
@@ -112,13 +111,16 @@ function callbacks.onGameEvent(eventName, arg1, arg2, arg3, arg4, arg5, arg6, ar
 	if contains({'takeoff', 'landing', 'pilot_death', 'eject'}, eventName) then
 
 		event.airframe = DCS.getUnitProperty(arg2, DCS.UNIT_TYPE)
-		event.stores = DCS.unit.getUnit(arg2).getAmmo()
+-- 		event.stores = DCS.unit.getUnit(arg2).getAmmo()
 
 	end
 
 	if contains({'kill'}, eventName) then
 
-		event.victim = arg5
+--		event.victim = arg5
+        event.victim = dcs.Unit[arg5]
+
+		event.airframe = arg2
 		event.weapon_name = arg7
 
 	end

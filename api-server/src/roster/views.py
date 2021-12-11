@@ -13,7 +13,7 @@ from rest_framework import permissions, authentication
 from django.core.exceptions import ObjectDoesNotExist
 
 from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator, Event, Qualification, \
-    QualificationModule, QualificationCheckoff, UserImage, Munition, Stores, Operation
+    QualificationModule, QualificationCheckoff, UserImage, Munition, Stores, Operation, FlightLog, Kill
 
 from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
     DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, QualificationSerializer, \
@@ -25,6 +25,7 @@ stores_case = {
     'takeoff': -1,
     'landing': 1
 }
+
 
 class AviatorListView(ListCreateAPIView):
 
@@ -135,16 +136,10 @@ class StatsView(APIView):
     def post(self, request, format=None):
         event_name = request.data.get('event')
         callsign = request.data.get('callsign')
-        time = float(request.data.get('time'))
 
-        if callsign:
-            aviators = [x for x in Aviator.objects.all() if x.callsign.lower() in callsign.lower()]
-        else:
-            aviators = []
+        aviator = Aviator.objects.get(callsign=callsign.split['|'][1])
 
-        if aviators:
-
-            aviator = aviators[0]
+        if aviator:
 
             if event_name == 'takeoff':
 
