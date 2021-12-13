@@ -386,3 +386,17 @@ class UserImage(models.Model):
 
     def __str__(self):
         return f'{self.file.name or self.url}'
+
+class LeaveOfAbsence(models.Model):
+    """
+    LOA
+
+    Model for the leave of absence
+    """
+    aviator = models.ForeignKey(Aviator, related_name='leavesOfAbsence', on_delete=models.CASCADE)
+    start = models.DateField()
+    end = models.DateField()
+    description = models.TextField(blank=True, null=True)
+
+    class Meta:
+        verbose_name_plural = "Leaves of absence"

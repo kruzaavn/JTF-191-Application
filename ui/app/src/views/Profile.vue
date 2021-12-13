@@ -11,17 +11,20 @@
         </v-col>
     </v-row>
     <AviatorSummary :aviator="aviator"/>
+    <LeaveOfAbsence :aviator="aviator"/>
   </v-container>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import AviatorSummary from '@/components/AviatorSummary'
+import LeaveOfAbsence from '@/components/LeaveOfAbsence'
 
 export default {
   name: 'Profile',
   components: {
       AviatorSummary,
+      LeaveOfAbsence,
   },
   data: () => ({
     tab: null,
@@ -38,7 +41,12 @@ export default {
     ...mapGetters(['aviator', 'user']),
   },
   mounted() {
-    this.getAviator(this.user.id)
+    let unsubscribe = this.$store.subscribe(({ type }) => {
+      if (type === 'setUser') {
+        this.getAviator(this.user.id)
+        unsubscribe() // So it only reacts once.
+      }
+    })
   },
 }
 </script>

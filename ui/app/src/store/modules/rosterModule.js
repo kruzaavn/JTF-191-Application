@@ -13,6 +13,7 @@ const state = {
   munitionList: [],
   operationList: [],
   aviator: {},
+  leavesOfAbsence: [],
 }
 
 const mutations = {
@@ -63,6 +64,12 @@ const mutations = {
   setAviator(state, aviator) {
     state.aviator = aviator
   },
+  setLeaveOfAbsence(state, leavesOfAbsence) {
+    state.leavesOfAbsence = leavesOfAbsence
+  },
+  addLeaveOfAbsence(state, event) {
+    state.leavesOfAbsence.push(event)
+  },
 }
 
 const getters = {
@@ -77,6 +84,7 @@ const getters = {
   photos: (state) => state.photos,
   munitions: (state) => state.munitionList,
   stores: (state) => state.storesList,
+  leavesOfAbsence: (state) => state.leavesOfAbsence,
   munitionsTable: (state) => {
     let table = state.storesList.reduce((acc, element) => {
       const previous = acc.find(
@@ -177,11 +185,43 @@ const actions = {
       headers: { Authorization: `Bearer ${token}` }
     }
     const response = await axios.get(
-      `/api/roster/aviators/detail/${userId}/`,
+      `/api/roster/aviators/${userId}/detail/`,
       {},
       config
     )
     commit('setAviator', response.data)
+  },
+  async getLeaveOfAbsence({ commit }, {aviatorId}) {
+    const token = localStorage.getItem('token')
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    }
+    const response = await axios.get(
+      `/api/roster/aviators/${aviatorId}/loa/`,
+      {},
+      config
+    )
+    commit('setLeaveOfAbsence', response.data)
+  },
+  async deleteLeaveOfAbsence(Null, {aviatorId, loaId}) {
+    const token = localStorage.getItem('token')
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    }
+    await axios.delete(
+      `/api/roster/aviators/${aviatorId}/loa/${loaId}/`,
+      {},
+      config
+    )
+  },
+  async createNewLeaveOfAbsence({ commit }, {aviatorId, startDate, endDate, description}) {
+    const response = await axios.post(`/api/roster/aviators/${aviatorId}/loa/`, {
+      start: startDate,
+      end: endDate,
+      description: description,
+      aviator: aviatorId
+    })
+    commit('addLeaveOfAbsence', response.data)
   },
 }
 

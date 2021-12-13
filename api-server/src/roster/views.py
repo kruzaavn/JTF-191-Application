@@ -12,10 +12,10 @@ from rest_framework.generics import ListCreateAPIView, \
 from rest_framework import permissions, authentication
 from django.core.exceptions import ObjectDoesNotExist
 
-from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator, Event, Qualification, \
+from .models import Aviator, LeaveOfAbsence, Squadron, HQ, DCSModules, ProspectiveAviator, Event, Qualification, \
     QualificationModule, QualificationCheckoff, UserImage, Munition, Stores, Operation
 
-from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
+from .serializers import AviatorSerializer, LeaveOfAbsenceSerializer, SquadronSerializer, HQSerializer, \
     DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, QualificationSerializer, \
     QualificationModuleSerializer, QualificationCheckoffSerializer, UserSerializer, UserRegisterSerializer, \
     EventCreateSerializer, MunitionSerializer, StoresSerializer, UserImageSerializer, OperationSerializer
@@ -335,3 +335,34 @@ class StoresListView(ListCreateAPIView):
 class OperationListView(ListCreateAPIView):
     queryset = Operation.objects.all().order_by('-start')
     serializer_class = OperationSerializer
+
+
+class AviatorLeaveOfAbsenceView(RetrieveUpdateDestroyAPIView, CreateAPIView):
+    serializer_class = LeaveOfAbsenceSerializer
+    lookup_field = "aviator_id"
+
+    def get_queryset(self):
+        """
+        This returns a list of all the LOAs or a specific one
+        depending on the passed parameters
+        """
+        aviator_id = self.kwargs['aviator_id']
+        loa_id = self.kwargs["loa_id"] if "loa_id" in self.kwargs else None
+        
+        if loa_id:
+            return LeaveOfAbsence.objects.filter(aviator__id=aviator_id).filter(id=loa_id)
+
+        return LeaveOfAbsence.objects.filter(aviator__id=aviator_id)
+
+    def retrieve(self, request, *args, **kwargs):
+        serializer = self.get_serializer(self.get_queryset(), many=True)
+        return Response(data=serializer.data)
+
+    def delete_queryset(self):
+        """
+        This deletes a specific loa for an aviator.
+        """
+        aviator_id = self.kwargs['aviator_id']
+        loa_id = self.kwargs["loa_id"]
+        
+        return LeaveOfAbsence.objects.filter(aviator__id=aviator_id).filter(id=loa_id)
