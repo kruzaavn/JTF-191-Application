@@ -32,13 +32,18 @@ export default {
     ]
   }),
   methods: {
-    ...mapActions(['getAviator']),
+    ...mapActions(['getAviator', 'getUser']),
   },
   computed: {
     ...mapGetters(['aviator', 'user']),
   },
   mounted() {
-    this.getAviator(this.user.id)
+    this.getUser().then(() => {
+      this.getAviator(this.user.id)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
   },
 }
 </script>

@@ -370,6 +370,7 @@ class Event(models.Model):
     name = models.CharField(max_length=1024)
     description = models.TextField(blank=True, null=True)
     required_squadrons = models.ManyToManyField(Squadron, blank=True)
+    aviator = models.ForeignKey('Aviator', blank=True, null=True, on_delete=models.CASCADE)
     type = models.CharField(default=types[0], max_length=1024,
                             choices=[(x, x) for x in types])
 

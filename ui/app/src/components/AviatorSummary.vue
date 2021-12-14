@@ -70,7 +70,7 @@
 
 <script>
 export default {
-  name: 'Squadron',
+  name: 'AviatorSummary',
 
   props: {
       aviator: {
