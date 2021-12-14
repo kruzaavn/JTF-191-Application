@@ -186,7 +186,7 @@ export default {
       dialog: false,
       newEvent: new DefaultNewEvent(),
       period: new Period(),
-      eventTypes: ['admin', 'training', 'operation'],
+      eventTypes: ['admin', 'training', 'operation', 'leave of absence'],
       periodicityTypes: [
         { text: '---', value: null },
         { text: 'Weekly', value: 'w' },

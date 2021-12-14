@@ -153,9 +153,3 @@ class StoresAdmin(admin.ModelAdmin):
 class UserImageAdmin(admin.ModelAdmin):
     pass
 
-
-@admin.register(LeaveOfAbsence)
-class LeaveOfAbsenceAdmin(admin.ModelAdmin):
-    list_display = ('aviator', 'start', 'end')
-
-    list_filter = ('aviator',)

@@ -23,8 +23,6 @@ urlpatterns = [
     path('users/create/<int:aviator_id>/', UserCreateView.as_view()),
     path('users/detail/<int:pk>/', UserDetailView.as_view()),
     path('aviators/<int:pk>/detail/', AviatorDetailView.as_view()),
-    path('aviators/<int:aviator_id>/loa/', AviatorLeaveOfAbsenceView.as_view()),
-    path('aviators/<int:aviator_id>/loa/<int:loa_id>/', AviatorLeaveOfAbsenceView.as_view()),
     path('prospective_aviators/detail/', ProspectiveAviatorDetailView.as_view()),
     path('stats/', StatsView.as_view()),
     path('squadrons/list/', SquadronListView.as_view()),

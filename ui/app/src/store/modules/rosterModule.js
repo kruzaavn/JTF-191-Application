@@ -64,12 +64,6 @@ const mutations = {
   setAviator(state, aviator) {
     state.aviator = aviator
   },
-  setLeaveOfAbsence(state, leavesOfAbsence) {
-    state.leavesOfAbsence = leavesOfAbsence
-  },
-  addLeaveOfAbsence(state, event) {
-    state.leavesOfAbsence.push(event)
-  },
 }
 
 const getters = {
@@ -190,38 +184,6 @@ const actions = {
       config
     )
     commit('setAviator', response.data)
-  },
-  async getLeaveOfAbsence({ commit }, {aviatorId}) {
-    const token = localStorage.getItem('token')
-    const config = {
-      headers: { Authorization: `Bearer ${token}` }
-    }
-    const response = await axios.get(
-      `/api/roster/aviators/${aviatorId}/loa/`,
-      {},
-      config
-    )
-    commit('setLeaveOfAbsence', response.data)
-  },
-  async deleteLeaveOfAbsence(Null, {aviatorId, loaId}) {
-    const token = localStorage.getItem('token')
-    const config = {
-      headers: { Authorization: `Bearer ${token}` }
-    }
-    await axios.delete(
-      `/api/roster/aviators/${aviatorId}/loa/${loaId}/`,
-      {},
-      config
-    )
-  },
-  async createNewLeaveOfAbsence({ commit }, {aviatorId, startDate, endDate, description}) {
-    const response = await axios.post(`/api/roster/aviators/${aviatorId}/loa/`, {
-      start: startDate,
-      end: endDate,
-      description: description,
-      aviator: aviatorId
-    })
-    commit('addLeaveOfAbsence', response.data)
   },
 }
 

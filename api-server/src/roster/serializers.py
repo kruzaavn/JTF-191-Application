@@ -39,19 +39,11 @@ class CitationSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class LeaveOfAbsenceSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = LeaveOfAbsence
-        fields = '__all__'
-
-
 class AviatorSerializer(serializers.ModelSerializer):
 
     rank = serializers.ReadOnlyField()
     position = serializers.ReadOnlyField()
     citations = CitationSerializer(many=True, read_only=True)
-    leavesOfAbsence = LeaveOfAbsenceSerializer(many=True)
 
     class Meta:
         model = Aviator
