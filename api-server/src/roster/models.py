@@ -60,7 +60,10 @@ class DCSModules(models.Model):
                                    choices=[(x, x) for x in module_types],
                                    default=module_types[0])
 
-    service = models.CharField(choices=[(x, x) for x in services], blank=True, null=True, max_length=64)
+    service = models.CharField(choices=[(x, x) for x in services],
+                               blank=True,
+                               null=True,
+                               max_length=64)
 
     def __str__(self):
         return self.name
@@ -234,6 +237,7 @@ class Aviator(Pilot):
     date_joined = models.DateField(default=datetime.now)
     status = models.CharField(choices=[(x, x) for x in statuses],
                               default=statuses[0], max_length=128)
+
     operations = models.ManyToManyField(Operation, blank=True)
     rank_code = models.IntegerField(default=1,
                                     validators=[MinValueValidator(-4),
@@ -244,9 +248,10 @@ class Aviator(Pilot):
                                         validators=[MinValueValidator(1),
                                                     MaxValueValidator(4)],
                                         help_text=f'{position_helper}')
+
     user = models.ForeignKey(User, blank=True, null=True,
                              on_delete=models.SET_NULL)
-    stats = models.JSONField(default=stats_default)
+
     division = models.IntegerField(default=4, validators=[MinValueValidator(1),
                                                           MaxValueValidator(
                                                               4)])
@@ -388,6 +393,17 @@ class UserImage(models.Model):
         return f'{self.file.name or self.url}'
 
 
+class Target(models.Model):
+
+    types = ['ground', 'sea', 'air']
+
+    name = models.CharField(max_length=1024)
+    type = models.CharField(max_length=64, default=types[0], choices=[(x, x) for x in types])
+
+    def __str__(self):
+        return f'{self.name}'
+
+
 class Kill(models.Model):
 
     aviator = models.ForeignKey(Aviator, on_delete=models.CASCADE)
@@ -397,16 +413,16 @@ class Kill(models.Model):
     altitude = models.FloatField(blank=True, null=True)
     munition = models.ForeignKey(Munition, on_delete=models.SET_NULL, null=True, blank=True)
     platform = models.ForeignKey(DCSModules, on_delete=models.SET_NULL, null=True, blank=True)
-    type = models.CharField(max_length=1024)
+    target = models.ForeignKey(Target, on_delete=models.CASCADE)
 
 
 class FlightLog(models.Model):
 
-    event_types = ['takeoff', 'landing', 'pilot_death', 'eject', 'disconnect']
+    types = ['takeoff', 'landing', 'pilot_death', 'eject', 'disconnect']
 
     aviator = models.ForeignKey(Aviator, on_delete=models.CASCADE)
     time = models.DateTimeField(auto_now_add=True)
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
     platform = models.ForeignKey(DCSModules, on_delete=models.SET_NULL, null=True, blank=True)
-    type = models.CharField(max_length=64, default=event_types[0], choices=[(x, x) for x in event_types])
+    type = models.CharField(max_length=64, default=types[0], choices=[(x, x) for x in types])

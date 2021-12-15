@@ -13,7 +13,7 @@ from rest_framework import permissions, authentication
 from django.core.exceptions import ObjectDoesNotExist
 
 from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator, Event, Qualification, \
-    QualificationModule, QualificationCheckoff, UserImage, Munition, Stores, Operation, FlightLog, Kill
+    QualificationModule, QualificationCheckoff, UserImage, Munition, Stores, Operation, FlightLog, Kill, Target
 
 from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
     DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, QualificationSerializer, \
@@ -126,59 +126,46 @@ class ProspectiveAviatorDetailView(CreateAPIView):
 
 class StatsView(APIView):
 
-
-    """
-        for tracking flight hours it is assumed that the departure key of the aviators.stats will have the correct
-        airframe and simtime in second from start
-    """
     authentication_classes = list()
 
     def post(self, request, format=None):
-        event_name = request.data.get('event')
+        event_type = request.data.get('event')
         callsign = request.data.get('callsign')
 
-        aviator = Aviator.objects.get(callsign=callsign.split['|'][1])
+        aviator = Aviator.objects.filter(callsign__iexact=callsign.split['|'][1])
+        latitude = request.data.get('latitude')
+        longitude = request.data.get('longitude')
 
-        if aviator:
+        platform, created = DCSModules.objects.get_or_create(name=request.data.get('platform'))
 
-            if event_name == 'takeoff':
+        if aviator and event_type in FlightLog.types:
 
-                aviator.stats['departure'] = {'airframe': request.data.get('airframe'),
-                                              'time': time}
+            FlightLog.objects.create(
+                aviator=aviator,
+                type=event_type,
+                platform=platform,
+                latitude=latitude,
+                longitude=longitude
+            )
 
-            elif event_name == 'connect' and aviator.stats.get('departure'):
+            return Response(status=status.HTTP_201_CREATED)
 
-                aviator.stats.pop('departure')
+        elif aviator and event_type == 'kill':
 
-            elif event_name in ['landing', 'pilot_death', 'eject', 'change_slot'] and aviator.stats.get('departure'):
+            munition, created = Munition.objects.get_or_create(name=request.data.get('munition'))
+            target, created = Target.objects.get_or_create(name=request.data.get('target'))
 
-                departure = aviator.stats.pop('departure')
+            Kill.objects.create(
+                aviator=aviator,
+                latitude=latitude,
+                longitude=longitude,
+                altitude=request.data.get('altitude'),
+                munition=munition,
+                platform=platform,
+                target=target
+            )
 
-                flight_time = (time - departure['time']) / 3600
-
-                if departure['airframe'] in aviator.stats['hours'].keys() and flight_time > 0:
-                    aviator.stats['hours'][departure['airframe']] = aviator.stats['hours'][departure['airframe']] + \
-                                                                    flight_time
-                elif flight_time > 0:
-                    aviator.stats['hours'][departure['airframe']] = flight_time
-
-            elif event_name in ['kill']:
-
-                victim = request.data.get('victim')
-
-                previous_kills = aviator.stats['kills'].get(victim, 0)
-
-                if previous_kills and victim:
-                    aviator.stats['kills'][victim] += 1
-
-                elif victim:
-                    aviator.stats['kills'][victim] = 1
-
-            aviator.save()
-
-            serializer = AviatorSerializer(aviator)
-
-            return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+            return Response(status=status.HTTP_201_CREATED)
 
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
