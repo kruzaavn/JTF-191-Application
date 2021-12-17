@@ -132,7 +132,7 @@ class StatsView(APIView):
         event_type = request.data.get('event')
         callsign = request.data.get('callsign')
 
-        aviator = Aviator.objects.filter(callsign__iexact=callsign.split['|'][1])
+        aviator = Aviator.objects.filter(callsign__iexact=callsign.split('|')[1])
         latitude = request.data.get('latitude')
         longitude = request.data.get('longitude')
 

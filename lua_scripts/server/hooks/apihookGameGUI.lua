@@ -20,13 +20,34 @@ dcs_log('Loading')
 package.path  = package.path..";"..lfs.currentdir().."LuaSocket\\?.lua" .. ';' ..lfs.currentdir().. 'Scripts\\?.lua'
 package.cpath = package.cpath..";"..lfs.currentdir().."LuaSocket\\?.dll"
 
+dofile(lfs.writedir() .. [[Config\serverSettings.lua]])
+
 local c = nil
 local socket = require('socket')
-JSON = require('JSON')
-local host = 'relay.jtf191.com'  -- change to application dns name or ip
+
+
+function set_host_name(api_server_hostname)
+
+	local host = nil
+
+	if DCS.isMultiplayer() then
+		host = api_server_hostname or 'relay.jtf191.com'
+		dcs_log('In multi player session')
+
+	else
+		host = 'localhost'
+		dcs_log('In single player session')
+
+	end
+
+	return host
+end
+
 local port = 7225  -- change to app port
 
 function connect_socket()
+
+	local host = set_host_name('localhost')
 
 	if not c then
 		dcs_log('connecting to ' .. host .. ' ' .. port)
@@ -47,7 +68,7 @@ end
 
 function Export2Socket(message)
 
-	local json = JSON:encode(message)
+	local json = net.lua2json(message)
 
 	if c then
 		socket.try(c:send(json .. '\n'))
@@ -100,34 +121,43 @@ function callbacks.onGameEvent(eventName, arg1, arg2, arg3, arg4, arg5, arg6, ar
   	local event = {}
 	event.event = eventName
 
+	dcs_log(string.format('Event: %4s', eventName))
+
 	if not contains({'mission_end'}, eventName) then
 
 		-- only mission end doesn't attach a player callsign
 
 		event.callsign = net.get_player_info(arg1, 'name')
+		event.mission_name = DCS.getMissionName()
+		event.server = cfg['name']
+
 
 	end
 
 	if contains({'takeoff', 'landing', 'pilot_death', 'eject'}, eventName) then
 
 		event.airframe = DCS.getUnitProperty(arg2, DCS.UNIT_TYPE)
--- 		event.stores = DCS.unit.getUnit(arg2).getAmmo()
+		event.platform = Export.LoGetObjectById(tonumber(DCS.getUnitProperty(arg2, DCS.UNIT_RUNTIME_ID)))
+
+	end
+
+	if contains({'takeoff', 'landing'}, eventName) then
+
+		event.airfield = arg3
 
 	end
 
 	if contains({'kill'}, eventName) then
 
---		event.victim = arg5
-        event.victim = dcs.Unit[arg5]
-
+		event.victim = arg5
+		event.killerID = arg1
+		event.victimID = arg4
 		event.airframe = arg2
 		event.weapon_name = arg7
 
 	end
 
 	Export2Socket(event)
-	dcs_log(string.format('Event: %4s', eventName))
-
 end
 
 
