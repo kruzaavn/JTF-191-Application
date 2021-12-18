@@ -12,18 +12,29 @@
 
 
 function dcs_log(message)
-    log.write('Server Management', log.INFO, message)
+    log.write('JTF 191 Server Manager', log.INFO, message)
 end
 
 dcs_log('Loading')
 
+callbacks = {}
 
 function callbacks.onMissionLoadEnd()
 
-    net.dostring_in('mission', 'local jutils = require("jtfutilities")')
-    dcs_log('loaded jtfutilities')
 
-    for file in lfs.dir()
+    response = net.dostring_in('server', 'local jutils = require("jtfutilities")')
+
+    dcs_log(response)
+
+    for file in lfs.dir(lfs.writedir() .. '/Scripts') do
+
+        dcs_log(file)
+
+    end
 
 end
 
+DCS.setUserCallbacks(callbacks)
+
+
+dcs_log('Loaded')

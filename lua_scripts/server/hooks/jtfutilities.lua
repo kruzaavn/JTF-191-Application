@@ -41,7 +41,7 @@ function utils.connect_socket(host, port)
     local c = utils.sockets[utils.concat_host_port(host, port)]
 
 	if not c then
-		utils.log(string.format('connecting to %s', utils.concat_host_port(host, port)
+		utils.log(string.format('connecting to %s', utils.concat_host_port(host, port)))
 		c = socket.try(socket.connect(host, port)) -- connect to the listener socket
 		c:setoption("tcp-nodelay", true) -- set immediate transmission mode
 		c:setoption("keepalive", true) -- set immediate transmission mode
@@ -76,5 +76,8 @@ function Export2Socket(host, port, message)
 	end
 
 end
+
+
+utils.log('JTF191 Utilities Loaded')
 
 return utils
