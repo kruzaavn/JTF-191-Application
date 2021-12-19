@@ -21,12 +21,15 @@ callbacks = {}
 
 function callbacks.onMissionLoadEnd()
 
+    command = string.format("dofile([[%s]])", lfs.writedir() .. "\\Scripts\\\Hooks\\ServerManagement\\Preload\\jtfutilities.lua")
 
-    response = net.dostring_in('server', 'local jutils = require("jtfutilities")')
+    dcs_log(command)
+
+    response = net.dostring_in('server', command)
 
     dcs_log(response)
 
-    for file in lfs.dir(lfs.writedir() .. '/Scripts') do
+    for file in lfs.dir() do
 
         dcs_log(file)
 
