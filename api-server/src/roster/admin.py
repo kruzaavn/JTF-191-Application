@@ -153,3 +153,25 @@ class StoresAdmin(admin.ModelAdmin):
 class UserImageAdmin(admin.ModelAdmin):
     pass
 
+
+@admin.register(Livery)
+class LiveryAdmin(admin.ModelAdmin):
+
+    def get_postition_from_code(self, obj):
+        if obj.position_code:
+            positions = ["CO", "XO", "OPSO", "BASE"]
+            return positions[obj.position_code - 1]
+    get_postition_from_code.short_description = 'Position'
+    list_display = ('squadron', 'get_postition_from_code')
+
+
+@admin.register(LiverySkin)
+class LiverySkinAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
+
+
+@admin.register(LiveryLuaSection)
+class LiveryLuaSectionAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+

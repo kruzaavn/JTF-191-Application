@@ -1,5 +1,6 @@
 from datetime import date, datetime, time
 from django.core.mail import send_mail
+from django.http.response import HttpResponse
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
@@ -11,15 +12,22 @@ from rest_framework.generics import ListCreateAPIView, \
     RetrieveUpdateDestroyAPIView, CreateAPIView
 from rest_framework import permissions, authentication
 from django.core.exceptions import ObjectDoesNotExist
+from wand.image import Image
+from wand.drawing import Drawing
+from urllib.request import urlopen
+from azure.storage.blob import BlockBlobService
+import zipfile
 
-from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator, Event, Qualification, \
+from .models import Aviator, Livery, Squadron, HQ, DCSModules, ProspectiveAviator, Event, Qualification, \
     QualificationModule, QualificationCheckoff, UserImage, Munition, Stores, Operation
 
 from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
     DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, QualificationSerializer, \
     QualificationModuleSerializer, QualificationCheckoffSerializer, UserSerializer, UserRegisterSerializer, \
     EventCreateSerializer, MunitionSerializer, StoresSerializer, UserImageSerializer, OperationSerializer
-
+import os
+import json
+from io import BytesIO
 
 stores_case = {
     'takeoff': -1,
@@ -346,3 +354,125 @@ class StoresListView(ListCreateAPIView):
 class OperationListView(ListCreateAPIView):
     queryset = Operation.objects.all().order_by('-start')
     serializer_class = OperationSerializer
+
+
+class AviatorLiveriesListView(ListCreateAPIView):
+    # The livery generation permissions will only be for admins
+    # Get calls will be for all logged in users and return the files from blob
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    azure_key = os.getenv('AZURE_STORAGE_KEY')
+    account_name = 'jtf191blobstorage'
+    azure_container = 'static'
+
+    block_blob_service = BlockBlobService(account_name=account_name, account_key=azure_key)
+
+    def get(self, request):
+        return Response({'detail': ['Download complete']},
+                        status=status.HTTP_201_CREATED)
+
+    def post(self, request):
+        """
+        Steps:
+        - Get all aviators
+        - Per aviator:
+            - Get Position
+            - Get Squadron
+            - Per Airframe
+                - Get liveries from Blob based on the above props
+                - Get Skin details from Django
+                - Create DDS and LUA files
+                - Upload those to Blob
+        """
+        if not request.user.is_staff:
+            return Response({'detail': ['Not allowed']},
+                            status=status.HTTP_403_FORBIDDEN)
+
+        aviators = Aviator.objects.all()
+        if not aviators:
+            return Response({'detail': ['No Aviators found']},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        for aviator in aviators:
+            squadron = aviator.squadron.designation
+
+            # This is needed as DCS needs a very specific name for each airframe
+            # If we want to avoid hardcoding the label/name we could add this to the
+            # DcsModule model we have and pull it down with the other objects.
+            airframe_label = aviator.squadron.air_frame.dcs_livery_label
+
+            # Get liveries from DB
+            squadron_livery = Livery.objects.filter(squadron__designation = squadron)\
+                    .filter(squadron__air_frame__name = aviator.squadron.air_frame.name)\
+                    .filter(position_code = aviator.position_code)
+            if not squadron_livery:
+                continue
+
+            squadron_livery = squadron_livery[0]
+            # Get all the livery's skins
+            skins = squadron_livery.skins.all()
+            
+            # Create custom DDS file for aviator and save in blob storage
+            for skin in skins:
+                file_name = os.path.basename(skin.dds_file.name)
+                dds_path = f"livery/{airframe_label}/{squadron} {aviator.callsign}/{file_name}"
+                self.create_aviator_dds(skin, aviator, dds_path)
+
+            lua_path = f"livery/{airframe_label}/{squadron} {aviator.callsign}/description.lua"
+            lua_sections = squadron_livery.lua_sections.all()
+            self.create_aviator_lua(aviator,lua_sections, lua_path)
+           
+        return Response({'detail': "Complete"}, status=status.HTTP_201_CREATED)
+
+    def create_aviator_lua(self, aviator, lua_sections, lua_path):
+
+        lua_text = "livery = {\n"        
+        for lua_section in lua_sections:
+            lua_text += f"\n{lua_section.text}\n"
+        lua_text += f"\n}}\nname = \"{aviator.squadron.designation} {aviator.callsign}\""
+
+        self.block_blob_service.create_blob_from_text(self.azure_container, lua_path, lua_text)
+            
+
+    def create_aviator_dds(self, skin, aviator, blob_path):
+
+        with Image(file=skin.dds_file.open(mode='rb')) as img:
+            for prop in skin.json_description:
+                with Image(width=prop["img_size"]["width"], height=prop["img_size"]["height"]) as tmp_image:
+                    draw = Drawing()
+
+                    if "font" in prop:
+                        draw.font = prop["font"]
+
+                    if "font_size" in prop:
+                        draw.font_size = prop["font_size"]
+
+                    if "font_opacity" in prop:
+                        draw.fill_opacity = prop["font_opacity"]
+
+                    if "font_alignment" in prop:
+                        draw.text_alignment = prop["font_alignment"]
+                    
+                    text_offset_x = prop["text_offset_x"] if "text_offset_x" in prop else 0
+                    text_offset_y = prop["text_offset_y"] if "text_offset_y" in prop else prop["font_size"]
+                    draw.text(text_offset_x, text_offset_y, aviator.__getattribute__(prop["prop"]))
+
+                    draw(tmp_image)
+                    
+                    if "angle" in prop:
+                        tmp_image.rotate(prop["angle"])
+
+                    if "flip" in prop and prop["flip"]:
+                        tmp_image.flip()
+
+                    if "flop" in prop and prop["flop"]:
+                        tmp_image.flop()
+
+                    img.composite(image=tmp_image, left=prop["x"], top=prop["y"])
+
+            # Result into a buffer
+            buf = BytesIO()
+            img.compression = 'dxt1'
+            img.save(file=buf)
+            
+            self.block_blob_service.create_blob_from_bytes(container_name=self.azure_container, blob_name=blob_path, blob=buf.getvalue())
+

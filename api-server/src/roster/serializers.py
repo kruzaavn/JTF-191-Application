@@ -142,3 +142,22 @@ class StoresSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class LiverySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Livery
+        fields = '__all__'
+
+
+class LiverySkinSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = LiverySkin
+        fields = '__all__'
+
+
+class LiveryLuaSectionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = LiveryLuaSection
+        fields = '__all__'

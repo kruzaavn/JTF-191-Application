@@ -11,17 +11,20 @@
         </v-col>
     </v-row>
     <AviatorSummary :aviator="aviator"/>
+    <DynamicLiveries />
   </v-container>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex'
 import AviatorSummary from '@/components/AviatorSummary'
+import DynamicLiveries from '@/components/DynamicLiveries'
 
 export default {
   name: 'Profile',
   components: {
       AviatorSummary,
+      DynamicLiveries,
   },
   data: () => ({
     tab: null,

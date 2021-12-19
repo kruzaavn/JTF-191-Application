@@ -1,8 +1,10 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, BaseValidator
 from django.contrib.auth.models import User
 from datetime import datetime, date
-
+from django.db.models.fields import TextField
+import jsonschema
+from django.core.exceptions import ValidationError
 
 class HQ(models.Model):
     """
@@ -61,6 +63,7 @@ class DCSModules(models.Model):
                                    default=module_types[0])
 
     service = models.CharField(choices=[(x, x) for x in services], blank=True, null=True, max_length=64)
+    dcs_livery_label = models.CharField(max_length=128)
 
     def __str__(self):
         return self.name
@@ -387,3 +390,126 @@ class UserImage(models.Model):
 
     def __str__(self):
         return f'{self.file.name or self.url}'
+
+
+class LiveryLuaSection (models.Model):
+    name = models.CharField(max_length=128)
+    text = TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class LiverySkinJsonValidator(BaseValidator):
+    def compare(self, value, schema):
+        try:
+            jsonschema.validate(value, schema)
+        except jsonschema.exceptions.ValidationError:
+            raise ValidationError('Failed JSON schema check, please fix your JSON and try again.')
+
+
+class LiverySkin(models.Model):
+    JSON_FIELD_SCHEMA = {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "type": "array",
+        "items": [
+            {
+                "type": "object",
+                "properties": {
+                    "x": {
+                        "type": "integer",
+                        "description": "X axis for the positioning of the text"
+                    },
+                    "y": {
+                        "type": "integer",
+                        "description": "Y axis for the positioning of the text"
+                    },
+                    "font": {
+                        "type": "string",
+                        "description": "The font of the text. Please ask the admin for a list of allowed fonts"
+                    },
+                    "prop": {
+                        "type": "string",
+                        "description": "The name of the property to display. This is linked to the Aviator model in DCS. The only exception is 'rankFullName', which is a custom allowed field."
+                    },
+                    "angle": {
+                        "type": "integer",
+                        "description": "this is the angle to which the text will be rotated. Default is 0"
+                    },
+                    "img_size": {
+                        "type": "object",
+                        "properties": {
+                            "width": {
+                                "type": "integer",
+                                "description": "Width of the image that will contain the text"
+                            },
+                            "height": {
+                                "type": "integer",
+                                "description": "Height of the image that will contain the text"
+                            }
+                        },
+                        "required": [
+                            "width",
+                            "height"
+                        ]
+                    },
+                    "font_size": {
+                        "type": "integer",
+                        "description": "Font size of the custom text"
+                    },
+                    "font_opacity": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "description": "Opacity of the custom text. Must be between 0 and 1"
+                    },
+                    "text_offset_x": {
+                        "type": "integer",
+                        "description": "Spacing of custom text within its image, X axis"
+                    },
+                    "text_offset_y": {
+                        "type": "integer",
+                        "description": "Spacing of custom text within its image, Y axis"
+                    },
+                    "font_alignment": {
+                        "type": "string",
+                        "description": "Alignment of custom text. I.e., center, left, right"
+                    }
+                },
+                "required": [
+                    "x",
+                    "y",
+                    "prop",
+                    "img_size",
+                    "text_offset_x",
+                    "text_offset_y"
+                ]
+            }
+        ]
+    }
+    name = models.CharField(max_length=128)
+    dds_file = models.FileField(upload_to='livery_dds', unique=True)
+    json_description = models.JSONField(
+        blank=True,
+        null=True,
+        validators=[LiverySkinJsonValidator(limit_value=JSON_FIELD_SCHEMA)]
+    )
+
+    def __str__(self):
+        return self.name
+
+
+class Livery(models.Model):
+
+    squadron = models.ForeignKey(Squadron, on_delete=models.CASCADE)
+    positions = ['co', 'xo', 'opso', '']
+    position_helper = {i + 1: x for i, x in enumerate(positions)}
+    position_code = models.IntegerField(default=4,
+                                        validators=[MinValueValidator(1),
+                                                    MaxValueValidator(4)],
+                                        help_text=f'{position_helper}')
+    skins = models.ManyToManyField(LiverySkin, blank=True)
+    lua_sections = models.ManyToManyField(LiveryLuaSection, blank=True)
+
+    def __str__(self):
+        return f"{self.squadron.name} {self.positions[self.position_code - 1]}"
