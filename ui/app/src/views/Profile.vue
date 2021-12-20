@@ -32,14 +32,14 @@ export default {
     ]
   }),
   methods: {
-    ...mapActions(['getAviator', 'getUser']),
+    ...mapActions(['getAviatorFromUser', 'getUser']),
   },
   computed: {
     ...mapGetters(['aviator', 'user']),
   },
   mounted() {
     this.getUser().then(() => {
-      this.getAviator(this.user.id)
+      this.getAviatorFromUser(this.user.id)
     })
     .catch((error) => {
       console.log(error)
