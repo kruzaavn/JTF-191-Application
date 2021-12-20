@@ -359,7 +359,7 @@ class OperationListView(ListCreateAPIView):
 class AviatorLiveriesListView(ListCreateAPIView):
     # The livery generation permissions will only be for admins
     # Get calls will be for all logged in users and return the files from blob
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
     azure_key = os.getenv('AZURE_STORAGE_KEY')
     account_name = 'jtf191blobstorage'
     azure_container = 'static'
@@ -367,8 +367,18 @@ class AviatorLiveriesListView(ListCreateAPIView):
     block_blob_service = BlockBlobService(account_name=account_name, account_key=azure_key)
 
     def get(self, request):
-        return Response({'detail': ['Download complete']},
-                        status=status.HTTP_201_CREATED)
+        blobs = self.block_blob_service.list_blobs(container_name=self.azure_container, prefix="livery/")
+        archive = BytesIO()
+        with zipfile.ZipFile(archive, 'w') as zip_file:
+            for blob in blobs:
+                file = self.block_blob_service.get_blob_to_bytes(
+                        container_name=self.azure_container,
+                        blob_name=blob.name)
+                zip_file.writestr(blob.name, file.content)
+
+        response = HttpResponse(archive.getvalue(), content_type='application/force-download')
+        response['Content-Disposition'] = 'attachment; filename="%s"' % 'liveries.zip'
+        return response
 
     def post(self, request):
         """
