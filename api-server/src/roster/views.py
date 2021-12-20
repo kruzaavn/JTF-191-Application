@@ -239,9 +239,11 @@ class EventListView(ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        start = self.kwargs['start']
-        end = self.kwargs['end']
-        return Event.objects.filter(start__gte=start, end__lte=end)
+        if 'start' in self.kwargs and 'end' in self.kwargs:
+            start = self.kwargs['start']
+            end = self.kwargs['end']
+            return Event.objects.filter(start__gte=start, end__lte=end)
+        return Event.objects.all()
 
 
     def create(self, request, *args, **kwargs):

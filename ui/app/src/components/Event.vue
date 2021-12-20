@@ -50,6 +50,7 @@
             </v-col>
             <v-col cols="7">
               <v-text-field
+                v-if="newEvent.eventType!='leave of absence'"
                 v-model="newEvent.name"
                 label="Event Name"
                 :rules="[rules.blank]"
@@ -61,6 +62,7 @@
               >
               </v-select>
               <v-select
+                v-if="newEvent.eventType!='leave of absence'"
                 label="Required squadrons"
                 v-model="newEvent.squadrons"
                 :items="squadrons"
@@ -112,10 +114,18 @@ function Period() {
 export default {
   name: 'UpdateEvent',
   computed: {
-    ...mapGetters(['squadrons']),
+    ...mapGetters(['squadrons', 'aviator', 'user']),
+  },
+  mounted() {
+    this.getUser().then(() => {
+      this.getAviator(this.user.id)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
   },
   methods: {
-    ...mapActions(['addToSchedule']),
+    ...mapActions(['addToSchedule', 'getAviator', 'getUser']),
     clearNewEvent: function () {
       this.newEvent = new DefaultNewEvent()
       this.period = new Period()
@@ -146,6 +156,16 @@ export default {
 
             this.addToSchedule(periodUpdatedEvent)
           }
+        }
+
+        // If the user is creating a new LOA we append
+        // the aviator ID and the squadron automatically
+        // We also default the name of the event to a standard
+        // LOA - <CALLSIGN>
+        if (this.newEvent.eventType == 'leave of absence') {
+          formattedEvent['name'] = `LOA - ${this.aviator.callsign}`
+          formattedEvent['aviator'] = this.aviator.id
+          formattedEvent['required_squadrons'] = [this.aviator.squadron.id]
         }
 
         this.addToSchedule(formattedEvent).then(() => {
@@ -186,7 +206,7 @@ export default {
       dialog: false,
       newEvent: new DefaultNewEvent(),
       period: new Period(),
-      eventTypes: ['admin', 'training', 'operation'],
+      eventTypes: ['admin', 'training', 'operation', 'leave of absence'],
       periodicityTypes: [
         { text: '---', value: null },
         { text: 'Weekly', value: 'w' },

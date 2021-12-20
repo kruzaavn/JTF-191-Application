@@ -22,7 +22,7 @@ urlpatterns = [
     path('aviators/list/', AviatorListView.as_view()),
     path('users/create/<int:aviator_id>/', UserCreateView.as_view()),
     path('users/detail/<int:pk>/', UserDetailView.as_view()),
-    path('aviators/detail/<int:pk>/', AviatorDetailView.as_view()),
+    path('aviators/<int:pk>/detail/', AviatorDetailView.as_view()),
     path('prospective_aviators/detail/', ProspectiveAviatorDetailView.as_view()),
     path('stats/', StatsView.as_view()),
     path('squadrons/list/', SquadronListView.as_view()),
