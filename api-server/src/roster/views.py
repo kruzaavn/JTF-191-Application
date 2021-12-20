@@ -28,15 +28,24 @@ stores_case = {
 
 class AviatorListView(ListCreateAPIView):
 
-    queryset = Aviator.objects.all().order_by('-rank_code', 'position_code')
     serializer_class = AviatorSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Aviator.objects.all().order_by('-rank_code', 'position_code')
+
+
+class AviatorFromUserListView(RetrieveUpdateDestroyAPIView):
+
+    serializer_class = AviatorSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get_queryset(self):
+        return Aviator.objects.get(user__id=self.kwargs["pk"])
 
 
 class AviatorDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Aviator.objects.all()
     serializer_class = AviatorSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class UserCreateView(CreateAPIView):

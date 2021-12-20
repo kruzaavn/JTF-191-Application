@@ -173,13 +173,13 @@ const actions = {
     const response = await axios.get('/api/roster/operation/list')
     commit('setOperations', response.data)
   },
-  async getAviator({ commit }, userId) {
+  async getAviatorFromUser({ commit }, userId) {
     const token = localStorage.getItem('token')
     const config = {
       headers: { Authorization: `Bearer ${token}` }
     }
     const response = await axios.get(
-      `/api/roster/aviators/${userId}/detail/`,
+      `/api/roster/aviators/fromuser/${userId}/`,
       {},
       config
     )
