@@ -37,9 +37,9 @@ class AviatorFromUserListView(RetrieveUpdateDestroyAPIView):
 
     serializer_class = AviatorSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
+    lookup_field = 'user_id'
     def get_queryset(self):
-        return Aviator.objects.filter(user__id=self.kwargs["pk"])
+        return Aviator.objects.filter(user__id=self.kwargs["user_id"])
 
 
 class AviatorDetailView(RetrieveUpdateDestroyAPIView):
