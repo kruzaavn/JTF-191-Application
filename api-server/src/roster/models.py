@@ -502,8 +502,8 @@ class LiverySkin(models.Model):
 class Livery(models.Model):
 
     squadron = models.ForeignKey(Squadron, on_delete=models.CASCADE)
-    positions = ['co', 'xo', 'opso', '']
-    position_helper = {i + 1: x for i, x in enumerate(positions)}
+    positions = Aviator.positions
+    position_helper = Aviator.position_helper
     position_code = models.IntegerField(default=4,
                                         validators=[MinValueValidator(1),
                                                     MaxValueValidator(4)],
