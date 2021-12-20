@@ -30,12 +30,16 @@ class AviatorListView(ListCreateAPIView):
 
     serializer_class = AviatorSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Aviator.objects.all().order_by('-rank_code', 'position_code')
+
+
+class AviatorFromUserListView(RetrieveUpdateDestroyAPIView):
+
+    serializer_class = AviatorSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        if 'pk' in self.kwargs:
-            return Aviator.objects.filter(user__id=self.kwargs["pk"])
-        else:
-            return Aviator.objects.all().order_by('-rank_code', 'position_code')
+        return Aviator.objects.filter(user__id=self.kwargs["pk"])
 
 
 class AviatorDetailView(RetrieveUpdateDestroyAPIView):
