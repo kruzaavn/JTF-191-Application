@@ -4,7 +4,7 @@
         <v-col>
             <v-img
                 contain
-                src="http://localhost:8000/media/squadrons/blackknights.png"
+                :src="aviator.squadron.img"
                 height="30vh"
                 class="my-1"
             ></v-img>
