@@ -39,7 +39,7 @@ class AviatorFromUserListView(RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        return Aviator.objects.filter(user__id=self.kwargs["pk"])
+        return Aviator.objects.get(user__id=self.kwargs["pk"])
 
 
 class AviatorDetailView(RetrieveUpdateDestroyAPIView):
