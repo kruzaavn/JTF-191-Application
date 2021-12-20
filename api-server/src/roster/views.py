@@ -406,8 +406,6 @@ class AviatorLiveriesListView(ListCreateAPIView):
             squadron = aviator.squadron.designation
 
             # This is needed as DCS needs a very specific name for each airframe
-            # If we want to avoid hardcoding the label/name we could add this to the
-            # DcsModule model we have and pull it down with the other objects.
             airframe_label = aviator.squadron.air_frame.dcs_livery_label
 
             # Get liveries from DB
