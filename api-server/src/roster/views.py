@@ -410,7 +410,6 @@ class AviatorLiveriesListView(ListCreateAPIView):
 
             # Get liveries from DB
             squadron_livery = Livery.objects.filter(squadron__designation = squadron)\
-                    .filter(squadron__air_frame__name = aviator.squadron.air_frame.name)\
                     .filter(position_code = aviator.position_code)
             if not squadron_livery:
                 continue

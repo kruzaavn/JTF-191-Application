@@ -2,7 +2,6 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator, BaseValidator
 from django.contrib.auth.models import User
 from datetime import datetime, date
-from django.db.models.fields import TextField
 import jsonschema
 from django.core.exceptions import ValidationError
 
@@ -394,7 +393,7 @@ class UserImage(models.Model):
 
 class LiveryLuaSection (models.Model):
     name = models.CharField(max_length=128)
-    text = TextField(blank=True, null=True)
+    text = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -404,8 +403,8 @@ class LiverySkinJsonValidator(BaseValidator):
     def compare(self, value, schema):
         try:
             jsonschema.validate(value, schema)
-        except jsonschema.exceptions.ValidationError:
-            raise ValidationError('Failed JSON schema check, please fix your JSON and try again.')
+        except jsonschema.exceptions.ValidationError as error:
+            raise ValidationError(error)
 
 
 class LiverySkin(models.Model):
