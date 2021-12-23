@@ -1,4 +1,4 @@
-local jtfutils = {}
+jtfutils = {}
 jtfutils.sockets = {}
 
 package.path = package.path .. ";.\\LuaSocket\\?.lua"
@@ -65,7 +65,33 @@ function jtfutils.disconnect_socket(host, port)
 	jtfutils.log(string.format('disconnected from %s', jtfutils.concat_host_port(host, port)))
 end
 
-function Export2Socket(host, port, message)
+
+function jtfutils.sec2HHMM(seconds)
+
+    -- this function will take in number in seconds and convert to HH:MM string format and a datum set to start of the day
+    local hour = math.floor(seconds / 3600)
+    local minutes = math.floor( (seconds % 3600) / 60)
+
+    if hour < 24 then
+        return string.format('%02d:%02d', hour, minutes)
+    else
+        return string.format('%02d:%02d+1', hour % 24, minutes)
+    end
+end
+
+
+function jtfutils.HHMM2sec(time)
+    -- this function will take in a HH:MM string formatted time and return time in seconds, this format doesn't have a datum
+    local hour = tonumber(string.sub(time, 1,2))
+    local minutes = tonumber(string.sub(time, 4,5))
+
+    return hour * 3600 + minutes * 60
+end
+
+
+
+
+function jtfutils.Export2Socket(host, port, message)
 
 	local json = JSON:encode(message)
 

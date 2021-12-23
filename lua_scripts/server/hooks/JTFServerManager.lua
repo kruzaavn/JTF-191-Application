@@ -36,14 +36,20 @@ function load_file(filepath)
 
     -- this function will take a file_path and attempt to run it in dofile() in the dcs mission environment.
 
-    command = string.format("dofile([[%s]])", filepath)
+    command = string.format([[
+
+    a_do_script([=[
+            dofile([==[%s]==])
+        ]=]
+    )
+    ]], filepath)
 
     dcs_log(string.format("loading %s", filepath))
 
-    response = net.dostring_in('server', command)
+    response = net.dostring_in('mission', command)
 
 
-    if response then
+    if response ~= "" then
 
         dcs_log(string.format("%s | %s", filepath, response))
 
