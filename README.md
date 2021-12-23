@@ -31,6 +31,3 @@ Listed below are the underlying technologies used to build the app
    - [Kubernetes](https://kubernetes.io/)
    - [helm](https://helm.sh/)
 
-## DCS Server Export Logging
-
-Hours & Kills export logging script can be found here [apihookGameGUI.lua](/lua_scripts/server/hooks/)

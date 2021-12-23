@@ -77,6 +77,21 @@ function load_directory(directory_path)
 end
 
 
+function get_env_values()
+
+      net.dostring_in("mission", [[
+
+        a_do_script([=[
+
+            for n in pairs(_G) do jtfutils.log(n) end
+
+        ]=])
+
+        ]])
+
+end
+
+
 callbacks = {}
 
 function callbacks.onMissionLoadEnd()
@@ -90,7 +105,10 @@ function callbacks.onMissionLoadEnd()
         load_directory(preload_directory_path)
         load_directory(load_directory_path)
 
+        get_env_values()
+
     end
+
 end
 
 DCS.setUserCallbacks(callbacks)

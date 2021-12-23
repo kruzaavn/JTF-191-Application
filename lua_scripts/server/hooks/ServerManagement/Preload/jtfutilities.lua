@@ -5,8 +5,8 @@ package.path = package.path .. ";.\\LuaSocket\\?.lua"
 package.cpath = package.cpath .. ";.\\LuaSocket\\?.dll"
 
 
-local socket = require('socket')
-local JSON = loadfile("Scripts\\JSON.lua")
+socket = require('socket')
+
 
 
 function jtfutils.log(message)
@@ -89,11 +89,20 @@ function jtfutils.HHMM2sec(time)
 end
 
 
+function jtfutils.get_keys(_table)
 
+	-- this function will return a list of keys from a table
+
+	local keys={}
+  	for key,_ in pairs(_table) do
+    	table.insert(keys, key)
+  	end
+  	return keys
+end
 
 function jtfutils.Export2Socket(host, port, message)
 
-	local json = JSON:encode(message)
+	local json = net.lua2json(message)
 
     local c = jtfutils.sockets[jtfutils.concat_host_port(host, port)]
 
