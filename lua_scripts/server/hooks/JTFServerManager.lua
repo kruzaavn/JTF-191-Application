@@ -10,6 +10,7 @@
     mission scripting environment
 ]]
 
+dofile(lfs.writedir() .. [[Config\serverSettings.lua]])
 
 function dcs_log(message)
 
@@ -77,17 +78,24 @@ function load_directory(directory_path)
 end
 
 
-function get_env_values()
+function set_env_values()
 
-      net.dostring_in("mission", [[
+    command = string.format([[
 
         a_do_script([=[
+
+            _server = {}
+            _server.mission = "%s"
+            _server.name = "%s"
+
 
             for n in pairs(_G) do jtfutils.log(n) end
 
         ]=])
 
-        ]])
+        ]],  DCS.getMissionName(), cfg.name)
+
+      net.dostring_in("mission", command)
 
 end
 
@@ -105,7 +113,7 @@ function callbacks.onMissionLoadEnd()
         load_directory(preload_directory_path)
         load_directory(load_directory_path)
 
-        get_env_values()
+        set_env_values()
 
     end
 

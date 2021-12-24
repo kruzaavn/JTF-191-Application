@@ -7,13 +7,24 @@ package.cpath = package.cpath .. ";.\\LuaSocket\\?.dll"
 
 socket = require('socket')
 
-
-
 function jtfutils.log(message)
     -- This function will log a message into the dcs.log file
     env.info(message)
 
 end
+
+
+function jtfutils.uuid()
+
+	local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+	local uuid =  string.gsub(template, '[xy]', function (c)
+    	local v = (c == 'x') and math.random(0, 0xf) or math.random(8, 0xb)
+		return string.format('%x', v)
+    end)
+
+    return string.sub(uuid, 1, string.len(uuid))
+end
+
 
 function jtfutils.list_contains(list, x)
     -- This function will check to see if x is a member of list if it is the function will return true else false

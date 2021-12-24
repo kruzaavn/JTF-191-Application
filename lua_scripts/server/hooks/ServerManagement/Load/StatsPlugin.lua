@@ -8,7 +8,7 @@
     Include this file for munitions tracking during cruise missions.
 ]]
 
-dofile(lfs.writedir() .. [[Config\serverSettings.lua]])
+
 
 jtfutils.log([[
 ===========================
@@ -27,35 +27,44 @@ StatsEventHandler.event_names = {
 	[4] = 'landing',
 	[9] = 'pilot_death',
 	[6] = 'ejection',
-	[29] = 'kill'
+	[28] = 'kill',
+	[2] = 'hit'
 }
 
+StatsEventHandler.flight_log = {}
 
 
 function StatsEventHandler:onEvent(_event)
 
 
-	jtfutils.log(string.format("Event ID: %d", _event.id))
+	jtfutils.log(string.format("Event: %s", net.lua2json(_event)))
 
 	if jtfutils.list_contains(jtfutils.get_keys(StatsEventHandler.event_names), _event.id) then
 
 		event = {}
 		event.event = StatsEventHandler.event_names[_event.id]
-		event.mission = MISSION:GetName()
-		event.server = cfg.name
+		event.mission = _server.mission
+		event.server = _server.name
 
 
-		if _event.initiator then
+		event.unit = _event.initiator:getDesc()
+		event.callsign =_event.initiator:getPlayerName()
 
-			event.unit = _event.initiator:getDesc()
-			event.callsign =_event.initiator:getPlayerName()
+		local lat, lon, alt = coord.LOtoLL(_event.initiator:getPoint())
 
-			local lat, lon, alt = coord.LOtoLL(_event.initiator:getPosition())
+		event.latitude = lat
+		event.longitude = lon
+		event.altitude = alt
 
-			event.latitude = lat
-			event.longitude = lon
-			event.altitude = alt
+		if event.event == 'takeoff' and event.callsign then
 
+			local flight_id = jtfutils.uuid()
+			StatsEventHandler.flight_log[event.callsign] = flight_id
+			event.flight_id = flight_id
+
+		elseif event.callsign then
+
+			event.flight_id = StatsEventHandler.flight_log[event.callsign]
 
 		end
 
@@ -65,16 +74,27 @@ function StatsEventHandler:onEvent(_event)
 
 		end
 
-		if jtfutils.list_contains({'kill'}, event.event) and _event.target and _event.weapon then
+		if jtfutils.list_contains({'kill', 'hit'}, event.event)  then
 
 			event.target = _event.target:getDesc()
+
+			lat, lon, alt = coord.LOtoLL(_event.target:getPoint())
+
+			event.target_latitude = lat
+			event.target_longitude = lon
+			event.target_alt = alt
+
+		end
+
+		if jtfutils.list_contains({'kill'}, event.event) then
+
+			event.munition = _event.weapon_name
+
+		end
+
+		if jtfutils.list_contains( {'hit'}, event.event) then
+
 			event.munition = _event.weapon:getDesc()
-
-			lat, lon, alt = coord.LOtoLL(_event.target:getPosition())
-
-			event.kill_latitude = lat
-			event.kill_longitude = lon
-			event.kill_alt = alt
 
 		end
 
