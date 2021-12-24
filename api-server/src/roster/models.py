@@ -415,43 +415,42 @@ class Target(models.Model):
         return f'{self.name}'
 
 
-class CombatLog(models.Model):
-
-    types = ['kill', 'hit']
+class StatsLog(models.Model):
 
     aviator = models.ForeignKey(Aviator, on_delete=models.CASCADE)
     time = models.DateTimeField(auto_now_add=True)
     latitude = models.FloatField()
     longitude = models.FloatField()
     altitude = models.FloatField()
-    target_latitude = models.FloatField()
-    target_longitude = models.FloatField()
-    target_altitude = models.FloatField()
-    munition = models.ForeignKey(Munition, on_delete=models.SET_NULL, null=True, blank=True)
     platform = models.ForeignKey(DCSModules, on_delete=models.SET_NULL, null=True, blank=True)
-    target = models.ForeignKey(Target, on_delete=models.CASCADE)
     server = models.ForeignKey(DCSServer, on_delete=models.SET_NULL, null=True, blank=True)
     flight_id = models.UUIDField(editable=False)
     mission = models.CharField(max_length=1024, blank=True, null=True)
-    type = models.CharField(max_length=64, default=types[0], choices=[(x, x) for x in types])
+
+    class Meta:
+        abstract = True
 
     def __str__(self):
         return f'{self.flight_id}'
 
 
-class FlightLog(models.Model):
+class CombatLog(StatsLog):
+
+    types = ['kill', 'hit']
+
+    target_latitude = models.FloatField()
+    target_longitude = models.FloatField()
+    target_altitude = models.FloatField()
+    munition = models.ForeignKey(Munition, on_delete=models.SET_NULL, null=True, blank=True)
+    target = models.ForeignKey(Target, on_delete=models.CASCADE)
+    type = models.CharField(max_length=64, default=types[0], choices=[(x, x) for x in types])
+
+
+class FlightLog(StatsLog):
 
     types = ['takeoff', 'landing', 'pilot_death', 'ejection', 'trap']
 
-    aviator = models.ForeignKey(Aviator, on_delete=models.CASCADE)
-    time = models.DateTimeField(auto_now_add=True)
-    latitude = models.FloatField()
-    longitude = models.FloatField()
-    server = models.ForeignKey(DCSServer, on_delete=models.SET_NULL, null=True, blank=True)
-    platform = models.ForeignKey(DCSModules, on_delete=models.SET_NULL, null=True, blank=True)
     base = models.CharField(max_length=64, blank=True, null=True)
-    flight_id = models.UUIDField(editable=False)
-    mission = models.CharField(max_length=1024, blank=True, null=True)
     grade = models.CharField(max_length=1024, blank=True, null=True)
     type = models.CharField(max_length=64, default=types[0], choices=[(x, x) for x in types])
 
