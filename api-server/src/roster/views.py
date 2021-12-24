@@ -7,24 +7,22 @@ from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from rest_framework.generics import ListCreateAPIView, \
-    RetrieveUpdateDestroyAPIView, CreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView, ListAPIView
 from rest_framework import permissions, authentication
 from django.core.exceptions import ObjectDoesNotExist
 
 from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator, Event, Qualification, \
-    QualificationModule, QualificationCheckoff, UserImage, Munition, Stores, Operation, FlightLog, CombatLog, Target
+    QualificationModule, QualificationCheckoff, UserImage, Munition, Stores, Operation, FlightLog, CombatLog, \
+    Target
 
 from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
     DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, QualificationSerializer, \
     QualificationModuleSerializer, QualificationCheckoffSerializer, UserSerializer, UserRegisterSerializer, \
-    EventCreateSerializer, MunitionSerializer, StoresSerializer, UserImageSerializer, OperationSerializer
+    EventCreateSerializer, MunitionSerializer, StoresSerializer, UserImageSerializer, OperationSerializer, \
+    TargetSerializer, FlightLogSerializer, CombatLogSerializer
 
 
-stores_case = {
-    'takeoff': -1,
-    'landing': 1
-}
+
 
 
 class AviatorListView(ListCreateAPIView):
@@ -177,6 +175,11 @@ class StoresView(APIView):
 
     def post(self, request, format=None):
 
+        stores_case = {
+            'takeoff': -1,
+            'landing': 1
+        }
+
         event = request.data
 
         print(event, flush=True)
@@ -198,8 +201,6 @@ class StoresView(APIView):
             for store in event.get('stores'):
 
                 munition, created = Munition.objects.get_or_create(name=store['name'])
-
-
 
                 new_store = Stores(squadron=squadron,
                                    operation=operation,
@@ -224,7 +225,6 @@ class EventListView(ListCreateAPIView):
         start = self.kwargs['start']
         end = self.kwargs['end']
         return Event.objects.filter(start__gte=start, end__lte=end)
-
 
     def create(self, request, *args, **kwargs):
         serializer = EventCreateSerializer(data=request.data)
@@ -317,3 +317,31 @@ class StoresListView(ListCreateAPIView):
 class OperationListView(ListCreateAPIView):
     queryset = Operation.objects.all().order_by('-start')
     serializer_class = OperationSerializer
+
+
+class TargetListView(ListAPIView):
+
+    queryset = Target.objects.all()
+    serializer_class = TargetSerializer
+
+
+class FlightLogListView(ListAPIView):
+
+    serializer_class = FlightLogSerializer
+
+    def get_queryset(self):
+
+        aviator = Aviator.objects.get(id=self.kwargs['aviator_pk'])
+
+        return FlightLog.objects.filter(aviator=aviator)
+
+
+class CombatLogListView(ListAPIView):
+
+    serializer_class = CombatLogSerializer
+
+    def get_queryset(self):
+
+        aviator = Aviator.objects.get(id=self.kwargs['aviator_pk'])
+
+        return CombatLog.objects.filter(aviator=aviator)

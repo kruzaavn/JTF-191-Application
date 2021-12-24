@@ -142,3 +142,22 @@ class StoresSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class TargetSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Target
+        fields = '__all__'
+
+
+class FlightLogSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = FlightLog
+        fields = '__all__'
+
+
+class CombatLogSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = FlightLog
+        fields = '__all__'

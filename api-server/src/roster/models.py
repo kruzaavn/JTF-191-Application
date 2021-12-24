@@ -2,7 +2,6 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 from datetime import datetime, date
-from ..gci.models import DCSServer
 
 
 class HQ(models.Model):
@@ -423,7 +422,7 @@ class StatsLog(models.Model):
     longitude = models.FloatField()
     altitude = models.FloatField()
     platform = models.ForeignKey(DCSModules, on_delete=models.SET_NULL, null=True, blank=True)
-    server = models.ForeignKey(DCSServer, on_delete=models.SET_NULL, null=True, blank=True)
+    server = models.CharField(max_length=1024, null=True, blank=True)
     flight_id = models.UUIDField(editable=False)
     mission = models.CharField(max_length=1024, blank=True, null=True)
 
