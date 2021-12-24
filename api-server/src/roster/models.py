@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 from datetime import datetime, date
+from ..gci.models import DCSServer
 
 
 class HQ(models.Model):
@@ -56,6 +57,7 @@ class DCSModules(models.Model):
     services = ['navy', 'air force', 'army']
 
     name = models.CharField(max_length=64)
+    display_name = models.CharField(max_length=1024, blank=True, null=True)
     module_type = models.CharField(max_length=64,
                                    choices=[(x, x) for x in module_types],
                                    default=module_types[0])
@@ -162,10 +164,6 @@ class Pilot(models.Model):
 
     def __str__(self):
         return f'{self.callsign}'
-
-
-def stats_default():
-    return {"hours": {}, "kills": {}}
 
 
 class QualificationModule(models.Model):
@@ -395,34 +393,67 @@ class UserImage(models.Model):
 
 class Target(models.Model):
 
-    types = ['ground', 'sea', 'air']
-
     name = models.CharField(max_length=1024)
-    type = models.CharField(max_length=64, default=types[0], choices=[(x, x) for x in types])
+    category = models.IntegerField(default=0)
+
+    @property
+    def type(self):
+
+        if self.category in [0, 1]:
+
+            return 'air'
+
+        elif self.category in [2, 4]:
+
+            return 'ground'
+
+        elif self.category == 3:
+
+            return 'sea'
 
     def __str__(self):
         return f'{self.name}'
 
 
-class Kill(models.Model):
+class CombatLog(models.Model):
+
+    types = ['kill', 'hit']
 
     aviator = models.ForeignKey(Aviator, on_delete=models.CASCADE)
     time = models.DateTimeField(auto_now_add=True)
-    latitude = models.FloatField(blank=True, null=True)
-    longitude = models.FloatField(blank=True, null=True)
-    altitude = models.FloatField(blank=True, null=True)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    altitude = models.FloatField()
+    target_latitude = models.FloatField()
+    target_longitude = models.FloatField()
+    target_altitude = models.FloatField()
     munition = models.ForeignKey(Munition, on_delete=models.SET_NULL, null=True, blank=True)
     platform = models.ForeignKey(DCSModules, on_delete=models.SET_NULL, null=True, blank=True)
     target = models.ForeignKey(Target, on_delete=models.CASCADE)
+    server = models.ForeignKey(DCSServer, on_delete=models.SET_NULL, null=True, blank=True)
+    flight_id = models.UUIDField(editable=False)
+    mission = models.CharField(max_length=1024, blank=True, null=True)
+    type = models.CharField(max_length=64, default=types[0], choices=[(x, x) for x in types])
+
+    def __str__(self):
+        return f'{self.flight_id}'
 
 
 class FlightLog(models.Model):
 
-    types = ['takeoff', 'landing', 'pilot_death', 'eject', 'disconnect']
+    types = ['takeoff', 'landing', 'pilot_death', 'ejection', 'trap']
 
     aviator = models.ForeignKey(Aviator, on_delete=models.CASCADE)
     time = models.DateTimeField(auto_now_add=True)
-    latitude = models.FloatField(blank=True, null=True)
-    longitude = models.FloatField(blank=True, null=True)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    server = models.ForeignKey(DCSServer, on_delete=models.SET_NULL, null=True, blank=True)
     platform = models.ForeignKey(DCSModules, on_delete=models.SET_NULL, null=True, blank=True)
+    base = models.CharField(max_length=64, blank=True, null=True)
+    flight_id = models.UUIDField(editable=False)
+    mission = models.CharField(max_length=1024, blank=True, null=True)
+    grade = models.CharField(max_length=1024, blank=True, null=True)
     type = models.CharField(max_length=64, default=types[0], choices=[(x, x) for x in types])
+
+    def __str__(self):
+        return f'{self.flight_id}'

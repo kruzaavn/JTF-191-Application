@@ -13,7 +13,7 @@ from rest_framework import permissions, authentication
 from django.core.exceptions import ObjectDoesNotExist
 
 from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator, Event, Qualification, \
-    QualificationModule, QualificationCheckoff, UserImage, Munition, Stores, Operation, FlightLog, Kill, Target
+    QualificationModule, QualificationCheckoff, UserImage, Munition, Stores, Operation, FlightLog, CombatLog, Target
 
 from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
     DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, QualificationSerializer, \
@@ -150,12 +150,12 @@ class StatsView(APIView):
 
             return Response(status=status.HTTP_201_CREATED)
 
-        elif aviator and event_type == 'kill':
+        elif aviator and event_type in CombatLog.types:
 
             munition, created = Munition.objects.get_or_create(name=request.data.get('munition'))
             target, created = Target.objects.get_or_create(name=request.data.get('target'))
 
-            Kill.objects.create(
+            CombatLog.objects.create(
                 aviator=aviator,
                 latitude=latitude,
                 longitude=longitude,

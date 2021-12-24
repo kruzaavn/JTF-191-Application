@@ -28,7 +28,8 @@ StatsEventHandler.event_names = {
 	[9] = 'pilot_death',
 	[6] = 'ejection',
 	[28] = 'kill',
-	[2] = 'hit'
+	[2] = 'hit',
+	[36] = 'trap'
 }
 
 StatsEventHandler.flight_log = {}
@@ -68,9 +69,15 @@ function StatsEventHandler:onEvent(_event)
 
 		end
 
-		if jtfutils.list_contains({'takeoff', 'landing'}, event.event) and _event.place then
+		if jtfutils.list_contains({'takeoff', 'landing', 'trap'}, event.event) and _event.place then
 
 			event.place = _event.place:getDesc()
+
+		end
+
+		if jtfutils.list_contains({'kill'}, event.event) then
+
+		    event.comment = _event.comment
 
 		end
 
