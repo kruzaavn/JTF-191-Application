@@ -17,7 +17,7 @@ loading stats export plugin
 ]])
 
 
-local host = 'localhost'  -- change to application dns name or ip
+
 local port = 7225  -- change to app port
 
 
