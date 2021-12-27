@@ -12,6 +12,8 @@
 
 dofile(lfs.writedir() .. [[Config\serverSettings.lua]])
 
+host = 'localhost'
+
 function dcs_log(message)
 
     -- setup convenient logger to the dcs.log file
@@ -87,13 +89,13 @@ function set_env_values()
             _server = {}
             _server.mission = "%s"
             _server.name = "%s"
-
+	    host = "%s"
 
             for n in pairs(_G) do jtfutils.log(n) end
 
         ]=])
 
-        ]],  DCS.getMissionName(), cfg.name)
+        ]],  DCS.getMissionName(), cfg.name, host)
 
       net.dostring_in("mission", command)
 

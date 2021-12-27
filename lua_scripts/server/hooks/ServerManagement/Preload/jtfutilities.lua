@@ -16,6 +16,8 @@ end
 
 function jtfutils.uuid()
 
+	-- This function will return a UUID each time it is called
+
 	local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
 	local uuid =  string.gsub(template, '[xy]', function (c)
     	local v = (c == 'x') and math.random(0, 0xf) or math.random(8, 0xb)
@@ -35,6 +37,16 @@ function jtfutils.list_contains(list, x)
 		end
 	end
 	return false
+end
+
+function jtfutils.list_empty(list)
+
+	-- This function will check to see if a table is empty
+	for key, value in pairs(list) do
+		return false
+	end
+	return true
+
 end
 
 function jtfutils.concat_host_port(host, port)
