@@ -34,32 +34,79 @@ StatsEventHandler.event_names = {
 
 StatsEventHandler.flight_log = {}
 
+function StatsEventHandler:get_crew(unit)
+	local mission_id = unit:getID()
+	local players = net.get_player_list()
+
+	jtfutils.log(net.lua2json(mission_id))
+
+	local crew = {}
+
+	for key, player in pairs(players) do
+
+
+		local slot_id = net.get_player_info(player, 'slot')
+		local name = net.get_player_info(player, 'name')
+
+		jtfutils.log(net.lua2json(slot_id))
+
+		local start_string, end_string =  string.find(slot_id, '_')
+
+		if start_string then
+			slot_id = string.sub(slot_id, 1, start_string -1 )
+		end
+
+		if mission_id == slot_id then
+
+			table.insert(crew, name)
+		end
+
+	end
+
+	return crew
+end
+
+function StatsEventHandler:common(_event)
+
+	local event = {}
+
+	event.event = StatsEventHandler.event_names[_event.id]
+	event.mission = _server.mission
+	event.server = _server.name
+
+
+	event.unit = _event.initiator:getDesc()
+	event.crew = StatsEventHandler:get_crew(_event.initiator)
+
+	local lat, lon, alt = coord.LOtoLL(_event.initiator:getPoint())
+
+	event.latitude = lat
+	event.longitude = lon
+	event.altitude = alt
+
+	return event
+
+end
+
 
 function StatsEventHandler:onEvent(_event)
 
 	-- log event for debugging
-	jtfutils.log(string.format("Event: %s", net.lua2json(_event)))
+	jtfutils.log(string.format("Raw DCS Event: %s", net.lua2json(_event)))
 
-	if jtfutils.list_contains(jtfutils.get_keys(StatsEventHandler.event_names), _event.id) then
+	if jtfutils.list_contains({20, 21}, _event.id) then
+
+		event = StatsEventHandler:common(_event)
+		jtfutils.log(net.lua2json(event))
+
+
+	elseif jtfutils.list_contains(jtfutils.get_keys(StatsEventHandler.event_names), _event.id) then
 
 		-- create an event object and populate with data common to all events tracked
-		event = {}
-		event.event = StatsEventHandler.event_names[_event.id]
-		event.mission = _server.mission
-		event.server = _server.name
+		event = StatsEventHandler:common(_event)
 
-
-		event.unit = _event.initiator:getDesc()
-		event.callsign =_event.initiator:getPlayerName()
-
-		local lat, lon, alt = coord.LOtoLL(_event.initiator:getPoint())
-
-		event.latitude = lat
-		event.longitude = lon
-		event.altitude = alt
-
-		-- flight_log data
-		if event.event == 'takeoff' and event.callsign then
+		---- flight_log data
+		if event.event == 'takeoff' and event.crew then
 			--[[ a flight is defined by a single departure event "takeoff" and one of three termination events
 			"landing","pilot death" and "ejection".  On every takeoff a unique flight id will be generated and stored
 			in the mission runtime. If a pilot takes off, lands and takes off this is considered completing one flight
@@ -67,12 +114,12 @@ function StatsEventHandler:onEvent(_event)
 			or player leaving the flight is considered incomplete and wont be tracked for hours purposes]]
 
 			local flight_id = jtfutils.uuid()
-			StatsEventHandler.flight_log[event.callsign] = flight_id
+			StatsEventHandler.flight_log[_event.initiator:getID()] = flight_id
 			event.flight_id = flight_id
 
-		elseif event.callsign then
+		elseif event.crew then
 			-- for all other events the flight_id is retreived and appended to the event
-			event.flight_id = StatsEventHandler.flight_log[event.callsign]
+			event.flight_id = StatsEventHandler.flight_log[_event.initiator:getID()]
 
 		end
 
@@ -113,16 +160,16 @@ function StatsEventHandler:onEvent(_event)
 
 		end
 
-		if event.callsign then
+		if event.crew then
+			jtfutils.log(net.lua2json(event))
 			jtfutils.connect_socket(host, port)
 			jtfutils.Export2Socket(host, port, event)
 			jtfutils.disconnect_socket(host, port)
 		end
 
-	end
 
 	-- connection cleanup
-	if jtfutils.list_contains({12}, _event.id) then
+	elseif jtfutils.list_contains({12}, _event.id) then
 		
 		jtfutils.disconnect_socket(host, port)
 

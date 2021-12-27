@@ -4,6 +4,10 @@ from django.contrib.auth.models import User
 from datetime import datetime, date
 
 
+def stats_default():
+    return {"hours": {}, "kills": {}}
+
+
 class HQ(models.Model):
     """
     hq table
@@ -418,12 +422,12 @@ class StatsLog(models.Model):
 
     aviator = models.ForeignKey(Aviator, on_delete=models.CASCADE)
     time = models.DateTimeField(auto_now_add=True)
-    latitude = models.FloatField()
-    longitude = models.FloatField()
-    altitude = models.FloatField()
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
+    altitude = models.FloatField(blank=True, null=True)
     platform = models.ForeignKey(DCSModules, on_delete=models.SET_NULL, null=True, blank=True)
     server = models.CharField(max_length=1024, null=True, blank=True)
-    flight_id = models.UUIDField(editable=False)
+    flight_id = models.UUIDField(editable=False, blank=True, null=True)
     mission = models.CharField(max_length=1024, blank=True, null=True)
 
     class Meta:
@@ -437,9 +441,9 @@ class CombatLog(StatsLog):
 
     types = ['kill', 'hit']
 
-    target_latitude = models.FloatField()
-    target_longitude = models.FloatField()
-    target_altitude = models.FloatField()
+    target_latitude = models.FloatField(blank=True, null=True)
+    target_longitude = models.FloatField(blank=True, null=True)
+    target_altitude = models.FloatField(blank=True, null=True)
     munition = models.ForeignKey(Munition, on_delete=models.SET_NULL, null=True, blank=True)
     target = models.ForeignKey(Target, on_delete=models.CASCADE)
     type = models.CharField(max_length=64, default=types[0], choices=[(x, x) for x in types])
