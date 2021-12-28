@@ -59,7 +59,9 @@ class DCSModules(models.Model):
     module_types = ['aircraft', 'map']
     services = ['navy', 'air force', 'army']
 
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, blank=True, null=True)
+    dcs_type_name = models.CharField(max_length=1024, blank=True, null=True)
+    dcs_display_name = models.CharField(max_length=1024, blank=True, null=True)
     display_name = models.CharField(max_length=1024, blank=True, null=True)
     module_type = models.CharField(max_length=64,
                                    choices=[(x, x) for x in module_types],
@@ -79,7 +81,7 @@ class Squadron(models.Model):
     squadron table
     """
 
-    types = ['operational', 'replacement', 'training']
+    types = ['operational', 'training']
 
     # fields
     name = models.CharField(max_length=1024)
@@ -396,7 +398,9 @@ class UserImage(models.Model):
 
 class Target(models.Model):
 
-    name = models.CharField(max_length=1024)
+    name = models.CharField(max_length=1024, blank=True, null=True)
+    dcs_type_name = models.CharField(max_length=1024, blank=True, null=True)
+    dcs_display_name = models.CharField(max_length=1024, blank=True, null=True)
     category = models.IntegerField(default=0)
 
     @property
@@ -412,7 +416,7 @@ class Target(models.Model):
 
         elif self.category == 3:
 
-            return 'sea'
+            return 'maritime'
 
     def __str__(self):
         return f'{self.name}'
@@ -420,7 +424,10 @@ class Target(models.Model):
 
 class StatsLog(models.Model):
 
+    roles = ['pilot', 'flight crew']
+
     aviator = models.ForeignKey(Aviator, on_delete=models.CASCADE)
+    role = models.CharField(max_length=64, default=roles[0], choices=[(x, x) for x in roles])
     time = models.DateTimeField(auto_now_add=True)
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
@@ -439,7 +446,7 @@ class StatsLog(models.Model):
 
 class CombatLog(StatsLog):
 
-    types = ['kill', 'hit']
+    types = ['kill']
 
     target_latitude = models.FloatField(blank=True, null=True)
     target_longitude = models.FloatField(blank=True, null=True)
@@ -456,6 +463,11 @@ class FlightLog(StatsLog):
     base = models.CharField(max_length=64, blank=True, null=True)
     grade = models.CharField(max_length=1024, blank=True, null=True)
     type = models.CharField(max_length=64, default=types[0], choices=[(x, x) for x in types])
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['aviator', 'flight_id', 'type'], name='unique_log_by_id_type_aviator')
+        ]
 
     def __str__(self):
         return f'{self.flight_id}'

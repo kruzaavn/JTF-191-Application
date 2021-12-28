@@ -9,7 +9,8 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView, ListAPIView
 from rest_framework import permissions, authentication
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
+from django.db import IntegrityError
 
 from .models import Aviator, Squadron, HQ, DCSModules, ProspectiveAviator, Event, Qualification, \
     QualificationModule, QualificationCheckoff, UserImage, Munition, Stores, Operation, FlightLog, CombatLog, \
@@ -20,9 +21,6 @@ from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
     QualificationModuleSerializer, QualificationCheckoffSerializer, UserSerializer, UserRegisterSerializer, \
     EventCreateSerializer, MunitionSerializer, StoresSerializer, UserImageSerializer, OperationSerializer, \
     TargetSerializer, FlightLogSerializer, CombatLogSerializer
-
-
-
 
 
 class AviatorListView(ListCreateAPIView):
@@ -128,45 +126,148 @@ class StatsView(APIView):
 
     def post(self, request, format=None):
         event_type = request.data.get('event')
-        callsign = request.data.get('callsign')
 
-        aviator = Aviator.objects.filter(callsign__iexact=callsign.split('|')[1])
-        latitude = request.data.get('latitude')
-        longitude = request.data.get('longitude')
+        if event_type in FlightLog.types:
 
-        platform, created = DCSModules.objects.get_or_create(name=request.data.get('platform'))
+            try:
+                self.create_combat_log(request, event_type)
 
-        if aviator and event_type in FlightLog.types:
+                return Response(status=status.HTTP_201_CREATED)
 
-            FlightLog.objects.create(
-                aviator=aviator,
-                type=event_type,
-                platform=platform,
-                latitude=latitude,
-                longitude=longitude
-            )
+            except (IntegrityError, ValidationError) as e:
 
-            return Response(status=status.HTTP_201_CREATED)
+                return Response(status=status.HTTP_208_ALREADY_REPORTED)
 
-        elif aviator and event_type in CombatLog.types:
+        elif event_type in CombatLog.types:
 
-            munition, created = Munition.objects.get_or_create(name=request.data.get('munition'))
-            target, created = Target.objects.get_or_create(name=request.data.get('target'))
-
-            CombatLog.objects.create(
-                aviator=aviator,
-                latitude=latitude,
-                longitude=longitude,
-                altitude=request.data.get('altitude'),
-                munition=munition,
-                platform=platform,
-                target=target
-            )
+            self.create_combat_log(request, event_type)
 
             return Response(status=status.HTTP_201_CREATED)
 
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def create_flight_log(self, request, event_type):
+
+        pilot, flight_crew = self.get_pilot_and_crew(request.get('crew'))
+        platform = self.get_platform(request.get('unit'))
+
+        FlightLog.objects.create(
+            aviator=pilot,
+            role='pilot',
+            latitude=request.get('latitude'),
+            longitude=request.get('longitude'),
+            altitude=request.get('altitude'),
+            platform=platform,
+            server=request.get('server'),
+            flight_id=request.get('flight_id'),
+            mission=request.get('mission').get('displayName'),
+            base=request.get('place', dict()).get('displayName'),
+            grade=request.get('comment'),
+            type=event_type
+        )
+
+        for crew in flight_crew:
+
+            FlightLog.objects.create(
+                aviator=crew,
+                role='flight crew',
+                latitude=request.get('latitude'),
+                longitude=request.get('longitude'),
+                altitude=request.get('altitude'),
+                platform=platform,
+                server=request.get('server'),
+                flight_id=request.get('flight_id'),
+                mission=request.get('mission').get('displayName'),
+                base=request.get('place', dict()).get('displayName'),
+                grade=request.get('comment'),
+                type=event_type
+            )
+
+    def create_combat_log(self, request, event_type):
+
+        pilot, flight_crew = self.get_pilot_and_crew(request.get('crew'))
+        platform = self.get_platform(request.get('unit'))
+        target = self.get_target(request.get('target'))
+        munition = self.get_munition(request.get('weapon_name'))
+
+        CombatLog.objects.create(
+            aviator=pilot,
+            role='pilot',
+            latitude=request.get('latitude'),
+            longitude=request.get('longitude'),
+            altitude=request.get('altitude'),
+            platform=platform,
+            server=request.get('server'),
+            flight_id=request.get('flight_id'),
+            mission=request.get('mission').get('displayName'),
+            target_latitude=request.get('target_latitude'),
+            target_longitude=request.get('target_longitude'),
+            target_altitude=request.get('target_altitude'),
+            munition=munition,
+            target=target,
+            type=event_type
+        )
+
+        for crew in flight_crew:
+
+            CombatLog.objects.create(
+                aviator=crew,
+                role='flight crew',
+                latitude=request.get('latitude'),
+                longitude=request.get('longitude'),
+                altitude=request.get('altitude'),
+                platform=platform,
+                server=request.get('server'),
+                flight_id=request.get('flight_id'),
+                mission=request.get('mission').get('displayName'),
+                target_latitude=request.get('target_latitude'),
+                target_longitude=request.get('target_longitude'),
+                target_altitude=request.get('target_altitude'),
+                munition=munition,
+                target=target,
+                type=event_type
+            )
+
+    def get_platform(self, unit):
+
+        platform, created = DCSModules.objects.get_or_create(
+            dcs_type_name=unit.get('typeName'),
+            dcs_display_name=unit.get('displayName')
+        )
+
+        return platform
+
+    def get_munition(self, weapon):
+
+        if weapon:
+            munition, created = Munition.objects.get_or_create(
+                name=weapon
+            )
+
+            return munition
+        else:
+            return None
+
+    def get_target(self, unit):
+
+        target, created = Target.objects.get_or_create(
+            dcs_type_name=unit.get('typeName'),
+            dcs_display_name=unit.get('displayName'),
+            category=unit.get('category')
+        )
+
+        return target
+
+    def get_pilot_and_crew(self, crew):
+
+        pilot_callsign = crew['pilot'].split('|')[1]
+        flight_crew_callsigns = [x.split('|')[1] for x in crew['flight_crew']]
+
+        pilot = Aviator.objects.get(callsign=pilot_callsign)
+        flight_crew = Aviator.objects.filter(callsign__in=flight_crew_callsigns)
+
+        return pilot, flight_crew
 
 
 class StoresView(APIView):

@@ -160,6 +160,8 @@ class UserImageAdmin(admin.ModelAdmin):
 class FlightLogAdmin(admin.ModelAdmin):
     date_hierarchy = 'time'
 
+    list_display = ('flight_id', 'time', 'type', 'aviator')
+
     list_filter = ('aviator__squadron__designation', 'aviator__squadron__hq__name')
 
     search_fields = ('flight_id', 'aviator__callsign')
@@ -172,3 +174,12 @@ class CombatLogAdmin(admin.ModelAdmin):
     list_filter = ('aviator__squadron__designation', 'aviator__squadron__hq__name')
 
     search_fields = ('flight_id', 'aviator__callsign')
+
+
+@admin.register(Target)
+class TargetAdmin(admin.ModelAdmin):
+
+    list_display = ('name', 'type')
+
+    list_filter = ('name',)
+
