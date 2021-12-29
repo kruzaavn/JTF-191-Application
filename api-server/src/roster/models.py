@@ -62,7 +62,7 @@ class DCSModules(models.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
     dcs_type_name = models.CharField(max_length=1024, blank=True, null=True)
     dcs_display_name = models.CharField(max_length=1024, blank=True, null=True)
-    display_name = models.CharField(max_length=1024, blank=True, null=True)
+
     module_type = models.CharField(max_length=64,
                                    choices=[(x, x) for x in module_types],
                                    default=module_types[0])
@@ -423,7 +423,10 @@ class Target(models.Model):
             return 'maritime'
 
     def __str__(self):
-        return f'{self.name}'
+        if self.name:
+            return f'{self.name}'
+        else:
+            return f'DCS {self.dcs_type_name}'
 
 
 class StatsLog(models.Model):

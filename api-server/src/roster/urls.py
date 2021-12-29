@@ -42,6 +42,7 @@ urlpatterns = [
     path('user_images/list/', UserImageListView.as_view()),
     path('munition/list/', MunitionListView.as_view()),
     path('stores/', StoresView.as_view()),
+    path('target/list/', TargetListView.as_view()),
     path('stores/list/<str:name>/', StoresListView.as_view()),
     path('operation/list/', OperationListView.as_view())
 

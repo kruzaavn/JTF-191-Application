@@ -192,7 +192,7 @@ class StatsView(APIView):
         pilot, flight_crew = self.get_pilot_and_crew(request.data.get('crew'))
         platform = self.get_platform(request.data.get('unit'))
         target = self.get_target(request.data.get('target'))
-        munition = self.get_munition(request.data.get('weapon_name'))
+        munition = self.get_munition(request.data.get('munition'))
 
         CombatLog.objects.create(
             aviator=pilot,
@@ -203,10 +203,10 @@ class StatsView(APIView):
             platform=platform,
             server=request.data.get('server'),
             flight_id=request.data.get('flight_id'),
-            mission=request.data.get('mission').get('displayName'),
+            mission=request.data.get('mission'),
             target_latitude=request.data.get('target_latitude'),
             target_longitude=request.data.get('target_longitude'),
-            target_altitude=request.data.get('target_altitude'),
+            target_altitude=request.data.get('target_alt'),
             munition=munition,
             target=target,
             type=event_type
@@ -223,7 +223,7 @@ class StatsView(APIView):
                 platform=platform,
                 server=request.data.get('server'),
                 flight_id=request.data.get('flight_id'),
-                mission=request.data.get('mission').get('displayName'),
+                mission=request.data.get('mission'),
                 target_latitude=request.data.get('target_latitude'),
                 target_longitude=request.data.get('target_longitude'),
                 target_altitude=request.data.get('target_altitude'),
@@ -253,6 +253,8 @@ class StatsView(APIView):
             return None
 
     def get_target(self, unit):
+
+        print(pprint.pprint(unit), flush=True)
 
         target, created = Target.objects.get_or_create(
             dcs_type_name=unit.get('typeName'),

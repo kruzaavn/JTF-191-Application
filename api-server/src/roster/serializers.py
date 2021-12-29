@@ -144,6 +144,8 @@ class StoresSerializer(serializers.ModelSerializer):
 
 class TargetSerializer(serializers.ModelSerializer):
 
+    type = serializers.ReadOnlyField()
+
     class Meta:
         model = Target
         fields = '__all__'
@@ -159,5 +161,5 @@ class FlightLogSerializer(serializers.ModelSerializer):
 class CombatLogSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = FlightLog
+        model = CombatLog
         fields = '__all__'

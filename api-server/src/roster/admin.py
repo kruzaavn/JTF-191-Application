@@ -171,6 +171,8 @@ class FlightLogAdmin(admin.ModelAdmin):
 class CombatLogAdmin(admin.ModelAdmin):
     date_hierarchy = 'time'
 
+    list_display = ('flight_id', 'time', 'type', 'aviator', 'munition', 'target')
+
     list_filter = ('aviator__squadron__designation', 'aviator__squadron__hq__name')
 
     search_fields = ('flight_id', 'aviator__callsign')
