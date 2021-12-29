@@ -1,3 +1,4 @@
+import pprint
 from datetime import date, datetime, time
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -129,8 +130,9 @@ class StatsView(APIView):
 
         if event_type in FlightLog.types:
 
+
             try:
-                self.create_combat_log(request, event_type)
+                self.create_flight_log(request, event_type)
 
                 return Response(status=status.HTTP_201_CREATED)
 
@@ -139,6 +141,7 @@ class StatsView(APIView):
                 return Response(status=status.HTTP_208_ALREADY_REPORTED)
 
         elif event_type in CombatLog.types:
+
 
             self.create_combat_log(request, event_type)
 
@@ -149,21 +152,21 @@ class StatsView(APIView):
 
     def create_flight_log(self, request, event_type):
 
-        pilot, flight_crew = self.get_pilot_and_crew(request.get('crew'))
-        platform = self.get_platform(request.get('unit'))
+        pilot, flight_crew = self.get_pilot_and_crew(request.data.get('crew'))
+        platform = self.get_platform(request.data.get('unit'))
 
         FlightLog.objects.create(
             aviator=pilot,
             role='pilot',
-            latitude=request.get('latitude'),
-            longitude=request.get('longitude'),
-            altitude=request.get('altitude'),
+            latitude=request.data.get('latitude'),
+            longitude=request.data.get('longitude'),
+            altitude=request.data.get('altitude'),
             platform=platform,
-            server=request.get('server'),
-            flight_id=request.get('flight_id'),
-            mission=request.get('mission').get('displayName'),
-            base=request.get('place', dict()).get('displayName'),
-            grade=request.get('comment'),
+            server=request.data.get('server'),
+            flight_id=request.data.get('flight_id'),
+            mission=request.data.get('mission'),
+            base=request.data.get('place', dict()).get('displayName'),
+            grade=request.data.get('comment'),
             type=event_type
         )
 
@@ -172,38 +175,38 @@ class StatsView(APIView):
             FlightLog.objects.create(
                 aviator=crew,
                 role='flight crew',
-                latitude=request.get('latitude'),
-                longitude=request.get('longitude'),
-                altitude=request.get('altitude'),
+                latitude=request.data.get('latitude'),
+                longitude=request.data.get('longitude'),
+                altitude=request.data.get('altitude'),
                 platform=platform,
-                server=request.get('server'),
-                flight_id=request.get('flight_id'),
-                mission=request.get('mission').get('displayName'),
-                base=request.get('place', dict()).get('displayName'),
-                grade=request.get('comment'),
+                server=request.data.get('server'),
+                flight_id=request.data.get('flight_id'),
+                mission=request.data.get('mission'),
+                base=request.data.get('place', dict()).get('displayName'),
+                grade=request.data.get('comment'),
                 type=event_type
             )
 
     def create_combat_log(self, request, event_type):
 
-        pilot, flight_crew = self.get_pilot_and_crew(request.get('crew'))
-        platform = self.get_platform(request.get('unit'))
-        target = self.get_target(request.get('target'))
-        munition = self.get_munition(request.get('weapon_name'))
+        pilot, flight_crew = self.get_pilot_and_crew(request.data.get('crew'))
+        platform = self.get_platform(request.data.get('unit'))
+        target = self.get_target(request.data.get('target'))
+        munition = self.get_munition(request.data.get('weapon_name'))
 
         CombatLog.objects.create(
             aviator=pilot,
             role='pilot',
-            latitude=request.get('latitude'),
-            longitude=request.get('longitude'),
-            altitude=request.get('altitude'),
+            latitude=request.data.get('latitude'),
+            longitude=request.data.get('longitude'),
+            altitude=request.data.get('altitude'),
             platform=platform,
-            server=request.get('server'),
-            flight_id=request.get('flight_id'),
-            mission=request.get('mission').get('displayName'),
-            target_latitude=request.get('target_latitude'),
-            target_longitude=request.get('target_longitude'),
-            target_altitude=request.get('target_altitude'),
+            server=request.data.get('server'),
+            flight_id=request.data.get('flight_id'),
+            mission=request.data.get('mission').get('displayName'),
+            target_latitude=request.data.get('target_latitude'),
+            target_longitude=request.data.get('target_longitude'),
+            target_altitude=request.data.get('target_altitude'),
             munition=munition,
             target=target,
             type=event_type
@@ -214,16 +217,16 @@ class StatsView(APIView):
             CombatLog.objects.create(
                 aviator=crew,
                 role='flight crew',
-                latitude=request.get('latitude'),
-                longitude=request.get('longitude'),
-                altitude=request.get('altitude'),
+                latitude=request.data.get('latitude'),
+                longitude=request.data.get('longitude'),
+                altitude=request.data.get('altitude'),
                 platform=platform,
-                server=request.get('server'),
-                flight_id=request.get('flight_id'),
-                mission=request.get('mission').get('displayName'),
-                target_latitude=request.get('target_latitude'),
-                target_longitude=request.get('target_longitude'),
-                target_altitude=request.get('target_altitude'),
+                server=request.data.get('server'),
+                flight_id=request.data.get('flight_id'),
+                mission=request.data.get('mission').get('displayName'),
+                target_latitude=request.data.get('target_latitude'),
+                target_longitude=request.data.get('target_longitude'),
+                target_altitude=request.data.get('target_altitude'),
                 munition=munition,
                 target=target,
                 type=event_type
@@ -261,8 +264,8 @@ class StatsView(APIView):
 
     def get_pilot_and_crew(self, crew):
 
-        pilot_callsign = crew['pilot'].split('|')[1]
-        flight_crew_callsigns = [x.split('|')[1] for x in crew['flight_crew']]
+        pilot_callsign = crew['pilot'].split('|')[1].strip()
+        flight_crew_callsigns = [x.split('|')[1].strip() for x in crew['flight_crew']]
 
         pilot = Aviator.objects.get(callsign=pilot_callsign)
         flight_crew = Aviator.objects.filter(callsign__in=flight_crew_callsigns)

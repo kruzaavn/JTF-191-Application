@@ -73,7 +73,11 @@ class DCSModules(models.Model):
                                max_length=64)
 
     def __str__(self):
-        return self.name
+
+        if self.name:
+            return self.name
+        else:
+            return f'DCS {self.dcs_type_name}'
 
 
 class Squadron(models.Model):
