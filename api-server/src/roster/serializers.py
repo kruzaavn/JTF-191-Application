@@ -69,7 +69,7 @@ class EventSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Event
-        fields = '__all__'
+        exclude = ['aviator']
         depth = 1
 
 class EventCreateSerializer(serializers.ModelSerializer):

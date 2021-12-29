@@ -155,7 +155,6 @@ class StoresAdmin(admin.ModelAdmin):
 class UserImageAdmin(admin.ModelAdmin):
     pass
 
-
 @admin.register(FlightLog)
 class FlightLogAdmin(admin.ModelAdmin):
     date_hierarchy = 'time'
@@ -184,4 +183,3 @@ class TargetAdmin(admin.ModelAdmin):
     list_display = ('name', 'type')
 
     list_filter = ('name',)
-

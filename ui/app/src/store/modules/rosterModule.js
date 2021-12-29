@@ -12,6 +12,8 @@ const state = {
   storesList: [],
   munitionList: [],
   operationList: [],
+  aviator: {},
+  leavesOfAbsence: [],
 }
 
 const mutations = {
@@ -59,12 +61,16 @@ const mutations = {
   setOperations(state, operations) {
     state.operationList = operations
   },
+  setAviator(state, aviator) {
+    state.aviator = aviator
+  },
 }
 
 const getters = {
   roster: (state) => state.rosterList,
   squadrons: (state) => state.squadronList,
   hqs: (state) => state.hqs,
+  aviator: (state) => state.aviator,
   dcsModules: (state) => state.dcsModules,
   schedule: (state) => state.schedule,
   qualifications: (state) => state.qualificationList,
@@ -72,6 +78,7 @@ const getters = {
   photos: (state) => state.photos,
   munitions: (state) => state.munitionList,
   stores: (state) => state.storesList,
+  leavesOfAbsence: (state) => state.leavesOfAbsence,
   munitionsTable: (state) => {
     let table = state.storesList.reduce((acc, element) => {
       const previous = acc.find(
@@ -165,6 +172,18 @@ const actions = {
   async getOperations({ commit }) {
     const response = await axios.get('/api/roster/operation/list')
     commit('setOperations', response.data)
+  },
+  async getAviatorFromUser({ commit }, userId) {
+    const token = localStorage.getItem('token')
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    }
+    const response = await axios.get(
+      `/api/roster/aviators/fromuser/${userId}/`,
+      {},
+      config
+    )
+    commit('setAviator', response.data)
   },
 }
 

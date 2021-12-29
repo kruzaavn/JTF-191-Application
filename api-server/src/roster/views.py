@@ -26,15 +26,24 @@ from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
 
 class AviatorListView(ListCreateAPIView):
 
-    queryset = Aviator.objects.all().order_by('-rank_code', 'position_code')
     serializer_class = AviatorSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Aviator.objects.all().order_by('-rank_code', 'position_code')
+
+
+class AviatorFromUserListView(RetrieveUpdateDestroyAPIView):
+
+    serializer_class = AviatorSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    lookup_field = 'user_id'
+    def get_queryset(self):
+        return Aviator.objects.filter(user__id=self.kwargs["user_id"])
 
 
 class AviatorDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Aviator.objects.all()
     serializer_class = AviatorSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class UserCreateView(CreateAPIView):
@@ -328,9 +337,11 @@ class EventListView(ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        start = self.kwargs['start']
-        end = self.kwargs['end']
-        return Event.objects.filter(start__gte=start, end__lte=end)
+        if 'start' in self.kwargs and 'end' in self.kwargs:
+            start = self.kwargs['start']
+            end = self.kwargs['end']
+            return Event.objects.filter(start__gte=start, end__lte=end)
+        return Event.objects.all()
 
     def create(self, request, *args, **kwargs):
         serializer = EventCreateSerializer(data=request.data)
