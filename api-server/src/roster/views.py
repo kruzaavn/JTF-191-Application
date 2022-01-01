@@ -21,7 +21,7 @@ from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
     DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, QualificationSerializer, \
     QualificationModuleSerializer, QualificationCheckoffSerializer, UserSerializer, UserRegisterSerializer, \
     EventCreateSerializer, MunitionSerializer, StoresSerializer, UserImageSerializer, OperationSerializer, \
-    TargetSerializer, FlightLogSerializer, CombatLogSerializer
+    TargetSerializer, FlightLogSerializer, FlightLogAggregateSerializer, CombatLogSerializer, CombatLogAggregateView
 
 
 class AviatorListView(ListCreateAPIView):
@@ -462,3 +462,32 @@ class CombatLogListView(ListAPIView):
         aviator = Aviator.objects.get(id=self.kwargs['aviator_pk'])
 
         return CombatLog.objects.filter(aviator=aviator)
+
+
+class FlightLogAggregateView(ListAPIView):
+
+    serializer_class = FlightLogAggregateSerializer
+
+    def get_queryset(self):
+
+        sql_query = '''
+        with flights as (select MAX(time) - MIN(time) as flight_time, flight_id, platform_id, aviator_id from roster_flightlog where aviator_id=%s group by flight_id, platform_id, aviator_id)   select SUM(flight_time) as total_flight_time, 1 as id, platform_id from flights group by platform_id;
+        '''
+
+
+        logs = FlightLog.objects.raw(sql_query, [self.kwargs['aviator_pk']])
+        return logs
+
+
+class CombatLogAggregateView(ListAPIView):
+
+    serializer_class = CombatLogAggregateView
+
+
+    def get_queryset(self):
+
+        sql_query = """select COUNT(category)as kills, category as target_category, 1 as id from roster_combatlog inner join roster_target on roster_target.id = roster_combatlog.target_id where aviator_id=%s and type='kill' group by category; """
+
+        logs = CombatLog.objects.raw(sql_query, [self.kwargs['aviator_pk']])
+
+        return logs

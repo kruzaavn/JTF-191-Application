@@ -59,7 +59,7 @@ class DCSModules(models.Model):
     module_types = ['aircraft', 'map']
     services = ['navy', 'air force', 'army']
 
-    name = models.CharField(max_length=64, blank=True, null=True)
+    name = models.CharField(max_length=64, blank=True, null=True)  # human read able name
     dcs_type_name = models.CharField(max_length=1024, blank=True, null=True)
     dcs_display_name = models.CharField(max_length=1024, blank=True, null=True)
 
@@ -142,7 +142,7 @@ class Munition(models.Model):
 
     types = ['rocket', 'bomb', 'aa_missile', 'as_missile', 'utility', 'gun']
 
-    name = models.CharField(max_length=1024)
+    name = models.CharField(max_length=1024)  # DCS Display name for now
     munition_type = models.CharField(max_length=1024, choices=[(x, x) for x in types], default=types[0])
 
     def __str__(self):

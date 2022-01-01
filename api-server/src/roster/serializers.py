@@ -158,8 +158,35 @@ class FlightLogSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class FlightLogAggregateSerializer(serializers.Serializer):
+
+    total_flight_time = serializers.DurationField()
+    platform_id = serializers.IntegerField()
+
+
 class CombatLogSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CombatLog
         fields = '__all__'
+
+
+class CombatLogAggregateView(serializers.Serializer):
+
+    kills = serializers.IntegerField()
+    target_category = serializers.IntegerField()
+    type = serializers.SerializerMethodField()
+
+    def get_type(self, obj):
+
+        if obj.target_category in [0, 1]:
+
+            return 'air'
+
+        elif obj.target_category in [2, 4]:
+
+            return 'ground'
+
+        elif obj.target_category == 3:
+
+            return 'maritime'

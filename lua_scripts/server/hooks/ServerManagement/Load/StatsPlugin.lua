@@ -28,9 +28,7 @@ StatsEventHandler.event_names = {
 	[world.event.S_EVENT_PILOT_DEAD] = 'pilot_death',
 	[world.event.S_EVENT_EJECTION] = 'ejection',
 	[world.event.S_EVENT_KILL] = 'kill',
-
 	[world.event.S_EVENT_LANDING_QUALITY_MARK] = 'trap',
-	[world.event.S_EVENT_BIRTH] = 'Birth'
 }
 
 StatsEventHandler.flight_log = {}
