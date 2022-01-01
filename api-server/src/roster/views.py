@@ -21,7 +21,8 @@ from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
     DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, QualificationSerializer, \
     QualificationModuleSerializer, QualificationCheckoffSerializer, UserSerializer, UserRegisterSerializer, \
     EventCreateSerializer, MunitionSerializer, StoresSerializer, UserImageSerializer, OperationSerializer, \
-    TargetSerializer, FlightLogSerializer, FlightLogAggregateSerializer, CombatLogSerializer, CombatLogAggregateView
+    TargetSerializer, FlightLogSerializer, FlightLogAggregateSerializer, FlightLogTimeSeriesSerializer, \
+    CombatLogSerializer, CombatLogAggregateView, CombatLogTimeSeriesSerializer
 
 
 class AviatorListView(ListCreateAPIView):
@@ -479,6 +480,18 @@ class FlightLogAggregateView(ListAPIView):
         return logs
 
 
+class FlightLogTimeSeriesView(ListAPIView):
+
+    serializer_class = FlightLogTimeSeriesSerializer
+
+    def get_queryset(self):
+
+        sql_query = """with flights as (select Max(time) - Min(time) as flight_time, Date(Min(time)) as date from roster_flightlog where aviator_id=%s group by flight_id) select SUM(flight_time) as total_flight_time, date, 1 as id from flights group by date;"""
+
+        logs = FlightLog.objects.raw(sql_query, [self.kwargs['aviator_pk']])
+
+        return logs
+
 class CombatLogAggregateView(ListAPIView):
 
     serializer_class = CombatLogAggregateView
@@ -487,6 +500,18 @@ class CombatLogAggregateView(ListAPIView):
     def get_queryset(self):
 
         sql_query = """select COUNT(category)as kills, category as target_category, 1 as id from roster_combatlog inner join roster_target on roster_target.id = roster_combatlog.target_id where aviator_id=%s and type='kill' group by category; """
+
+        logs = CombatLog.objects.raw(sql_query, [self.kwargs['aviator_pk']])
+
+        return logs
+
+
+class CombatLogTimeSeriesView(ListAPIView):
+
+    serializer_class = CombatLogTimeSeriesSerializer
+
+    def get_queryset(self):
+        sql_query = """select COUNT(type) as kills, Date(time) as date, 1 as id from roster_combatlog where aviator_id=%s group by date;"""
 
         logs = CombatLog.objects.raw(sql_query, [self.kwargs['aviator_pk']])
 

@@ -163,6 +163,11 @@ class FlightLogAggregateSerializer(serializers.Serializer):
     total_flight_time = serializers.DurationField()
     platform_id = serializers.IntegerField()
 
+class FlightLogTimeSeriesSerializer(serializers.Serializer):
+
+    total_flight_time = serializers.DurationField()
+    date = serializers.DateField()
+
 
 class CombatLogSerializer(serializers.ModelSerializer):
 
@@ -190,3 +195,9 @@ class CombatLogAggregateView(serializers.Serializer):
         elif obj.target_category == 3:
 
             return 'maritime'
+
+
+class CombatLogTimeSeriesSerializer(serializers.Serializer):
+
+    kills = serializers.IntegerField()
+    date = serializers.DateField()
