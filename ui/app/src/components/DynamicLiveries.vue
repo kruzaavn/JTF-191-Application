@@ -83,14 +83,14 @@ export default {
   },
   mounted() {
     this.getUser().then(() => {
-      this.getAviator(this.user.id)
+      this.getAviatorFromUser(this.user.id)
     })
     .catch((error) => {
       console.log(error)
     })
   },
   methods: {
-    ...mapActions(['getAviator', 'getUser']),
+    ...mapActions(['getAviatorFromUser', 'getUser']),
     downloadLiveryPackage() {
       this.processing = true
       axios({

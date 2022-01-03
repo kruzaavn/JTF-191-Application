@@ -18,6 +18,7 @@ from rest_framework import permissions, authentication
 from django.core.exceptions import ObjectDoesNotExist
 from wand.image import Image
 from wand.drawing import Drawing
+from cairosvg import svg2svg, svg2png
 from urllib.request import urlopen
 from azure.storage.blob import BlockBlobService
 
@@ -458,6 +459,7 @@ class AviatorLiveriesListView(ListCreateAPIView):
 
     block_blob_service = BlockBlobService(account_name=account_name, account_key=azure_key)
 
+
     def get(self, request):
         blobs = self.block_blob_service.list_blobs(container_name=self.azure_container, prefix="livery/")
         archive = BytesIO()
@@ -471,6 +473,7 @@ class AviatorLiveriesListView(ListCreateAPIView):
         response = HttpResponse(archive.getvalue(), content_type='application/force-download')
         response['Content-Disposition'] = 'attachment; filename="%s"' % 'liveries.zip'
         return response
+
 
     def post(self, request):
         """
@@ -498,29 +501,39 @@ class AviatorLiveriesListView(ListCreateAPIView):
             squadron = aviator.squadron.designation
 
             # This is needed as DCS needs a very specific name for each airframe
-            airframe_label = aviator.squadron.air_frame.dcs_livery_label
+            airframe_dcs_name = aviator.squadron.air_frame.dcs_type_name
+            if not airframe_dcs_name:
+                # we skip this airframe as it doesn't have the type name set
+                continue
 
             # Get liveries from DB
             squadron_livery = Livery.objects.filter(squadron__designation = squadron)\
-                    .filter(position_code = aviator.position_code)
+                    .filter(position_code = aviator.position_code).first()
             if not squadron_livery:
-                continue
+                # No livery for current position
+                # If position is not base, try defaulting to base (4) if present
+                squadron_livery = Livery.objects.filter(squadron__designation = squadron)\
+                    .filter(position_code = 4).first()
 
-            squadron_livery = squadron_livery[0]
+                if not squadron_livery:
+                    # not base livery set for this airframe, skipping
+                    continue
+
             # Get all the livery's skins
             skins = squadron_livery.skins.all()
             
             # Create custom DDS file for aviator and save in blob storage
             for skin in skins:
                 file_name = os.path.basename(skin.dds_file.name)
-                dds_path = f"livery/{airframe_label}/{squadron} {aviator.callsign}/{file_name}"
+                dds_path = f"livery/{airframe_dcs_name}/{squadron} {aviator.callsign}/{file_name}"
                 self.create_aviator_dds(skin, aviator, dds_path)
 
-            lua_path = f"livery/{airframe_label}/{squadron} {aviator.callsign}/description.lua"
+            lua_path = f"livery/{airframe_dcs_name}/{squadron} {aviator.callsign}/description.lua"
             lua_sections = squadron_livery.lua_sections.all()
             self.create_aviator_lua(aviator,lua_sections, lua_path)
            
         return Response({'detail': "Complete"}, status=status.HTTP_201_CREATED)
+
 
     def create_aviator_lua(self, aviator, lua_sections, lua_path):
 
@@ -530,43 +543,82 @@ class AviatorLiveriesListView(ListCreateAPIView):
         lua_text += f"\n}}\nname = \"{aviator.squadron.designation} {aviator.callsign}\""
 
         self.block_blob_service.create_blob_from_text(self.azure_container, lua_path, lua_text)
+
+    def get_callsign_image(self, aviator, prop):
+        tmp_image = Image(width=prop["img_size"]["width"], height=prop["img_size"]["height"])
+        draw = Drawing()
+
+        if "font" in prop:
+            draw.font = prop["font"]
+
+        if "font_size" in prop:
+            draw.font_size = prop["font_size"]
+
+        if "font_opacity" in prop:
+            draw.fill_opacity = prop["font_opacity"]
+
+        if "font_alignment" in prop:
+            draw.text_alignment = prop["font_alignment"]
+
+        text_offset_x = prop["text_offset_x"]
+        text_offset_y = prop["text_offset_y"]
+
+        draw.text(text_offset_x, text_offset_y, f"{aviator.rank} {aviator.first_name} {aviator.last_name}")
+        draw.text(text_offset_x, text_offset_y + int(draw.font_size), f"{aviator.callsign}")
+
+        draw(tmp_image)
+        
+        if "angle" in prop:
+            tmp_image.rotate(prop["angle"])
+
+        if "flip" in prop and prop["flip"]:
+            tmp_image.flip()
+
+        if "flop" in prop and prop["flop"]:
+            tmp_image.flop()
+
+        return tmp_image
+   
+    def get_ribbonrack_image(self, citations, prop):
+        if citations:
+            img_width = 100
+            img_height = 28
+            tmp_image = Image(width=len(citations)*img_width, height=img_height)
+            draw = Drawing()
+            for (idx, citation) in enumerate(citations):
+                with Image(blob=svg2png(bytestring=citation.award.ribbon_image.read())) as cit_img:
+                    cit_img.resize(img_width)
+                    tmp_image.composite(image=cit_img, left=int(idx * (cit_img.width)), top=0)
+
+            draw(tmp_image)
             
+            if "angle" in prop:
+                tmp_image.rotate(prop["angle"])
+
+            if "flip" in prop and prop["flip"]:
+                tmp_image.flip()
+
+            if "flop" in prop and prop["flop"]:
+                tmp_image.flop()
+            
+            if "scale" in prop and prop["scale"]:
+                tmp_image.transform(resize=prop["scale"])
+
+            return tmp_image
+
+    def kill_board(self):
+        pass
 
     def create_aviator_dds(self, skin, aviator, blob_path):
 
         with Image(file=skin.dds_file.open(mode='rb')) as img:
             for prop in skin.json_description:
-                with Image(width=prop["img_size"]["width"], height=prop["img_size"]["height"]) as tmp_image:
-                    draw = Drawing()
+                if prop["prop"] == "callsign":
+                    img.composite(image=self.get_callsign_image(aviator, prop), left=prop["x"], top=prop["y"])
 
-                    if "font" in prop:
-                        draw.font = prop["font"]
-
-                    if "font_size" in prop:
-                        draw.font_size = prop["font_size"]
-
-                    if "font_opacity" in prop:
-                        draw.fill_opacity = prop["font_opacity"]
-
-                    if "font_alignment" in prop:
-                        draw.text_alignment = prop["font_alignment"]
-                    
-                    text_offset_x = prop["text_offset_x"] if "text_offset_x" in prop else 0
-                    text_offset_y = prop["text_offset_y"] if "text_offset_y" in prop else prop["font_size"]
-                    draw.text(text_offset_x, text_offset_y, aviator.__getattribute__(prop["prop"]))
-
-                    draw(tmp_image)
-                    
-                    if "angle" in prop:
-                        tmp_image.rotate(prop["angle"])
-
-                    if "flip" in prop and prop["flip"]:
-                        tmp_image.flip()
-
-                    if "flop" in prop and prop["flop"]:
-                        tmp_image.flop()
-
-                    img.composite(image=tmp_image, left=prop["x"], top=prop["y"])
+                citations = aviator.citations.all()[0:3] # only showing max 3 ribbons
+                if prop["prop"] == "award" and citations:
+                    img.composite(image=self.get_ribbonrack_image(citations, prop), left=prop["x"], top=prop["y"])
 
             # Result into a buffer
             buf = BytesIO()

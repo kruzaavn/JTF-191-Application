@@ -43,13 +43,16 @@ class AviatorSerializer(serializers.ModelSerializer):
 
     rank = serializers.ReadOnlyField()
     position = serializers.ReadOnlyField()
-    citations = CitationSerializer(many=True, read_only=True)
+    citations = serializers.SerializerMethodField()
 
     class Meta:
         model = Aviator
-        exclude = ['first_name', 'last_name', 'user', 'email']
+        exclude = ['user', 'email']
         depth = 2
 
+    def get_citations(self, instance):
+        citations = instance.citations.all().order_by('award__priority')
+        return CitationSerializer(citations, many=True, read_only=True).data
 
 class ProspectiveAviatorSerializer(serializers.ModelSerializer):
 

@@ -1,4 +1,4 @@
-<template>
+andrea<template>
   <v-card class="mx-4 my-5 py-2" v-if="aviator.status !== 'reserve'" tile>
     <v-row>
       <v-col cols="2">
@@ -28,16 +28,16 @@
           <v-col
             cols="4"
             align="center"
-            v-for="award in sortCitations(aviator.citations)"
-            :key="award.id"
+            v-for="citations in aviator.citations"
+            :key="citations.id"
             class="pa-0"
           >
-            <v-img :src="award.ribbon_image" :alt="award.name" />
+            <v-img :src="citations.award.ribbon_image" />
           </v-col>
         </v-row>
       </v-col>
     </v-row>
-    <v-card-text>
+    <!-- <v-card-text>
       <v-row>
         <v-col>
           <h4>
@@ -64,7 +64,7 @@
           </v-data-table>
         </v-col>
       </v-row>
-    </v-card-text>
+    </v-card-text> -->
   </v-card>
 </template>
 
@@ -149,10 +149,6 @@ export default {
           acc[x.award.id] = x.award
           return acc
         }, {})
-
-      citations = citations.slice().sort((a, b) => {
-        return b.award.priority - a.award.priority
-      })
 
       return groupByAward(citations)
     },

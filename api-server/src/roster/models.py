@@ -523,6 +523,8 @@ class Livery(models.Model):
 
     def __str__(self):
         return f"{self.squadron.name} {self.positions[self.position_code - 1]}"
+
+
 class Target(models.Model):
 
     name = models.CharField(max_length=1024, blank=True, null=True)
