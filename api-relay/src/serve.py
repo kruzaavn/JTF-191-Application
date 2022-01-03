@@ -5,6 +5,7 @@ import json
 from tornado.tcpserver import TCPServer
 from tornado.iostream import StreamClosedError
 from tornado.ioloop import IOLoop
+from pprint import pprint
 
 
 def log(string):
@@ -13,6 +14,7 @@ def log(string):
 
 user = os.getenv('API_SERVER_USER')
 password = os.getenv('API_SERVER_PASSWORD')
+
 
 host = 'http://api-server:8000'
 
@@ -43,7 +45,7 @@ class APIRelay(TCPServer):
 
                 if event and event != 'keepalive':
 
-                    log(f'{source} {data}')
+                    log(f'{source} {pprint(data)}')
 
                     if stores:
                         r = session.post(get_url('/api/roster/stores/'), json=data)

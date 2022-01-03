@@ -3,46 +3,15 @@
     This Lua file is intended to act as a naval operations plugin to setup naval flight operations for blue forces
     according to the MOOSE AirBoss framework without additional user interface.
 
-    initial setup brony 2/1/2020
+    initial setup beeej 2/1/2020
 
 ]]
 
-env.info([[
+jtfutils.log([[
 =========================================================================================
 NavalOperations:      Setting up Naval Operations Plugin.
 =========================================================================================]]
 )
-
--- utility functions
-function contains(list, x)
-	for _, v in pairs(list) do
-		if v == x then
-			return true
-		end
-	end
-	return false
-end
-
-function sec2HHMM(seconds)
-
-    -- this function will take in number in seconds and convert to HH:MM string format and a datum set to start of the day
-    local hour = math.floor(seconds / 3600)
-    local minutes = math.floor( (seconds % 3600) / 60)
-
-    if hour < 24 then
-        return string.format('%02d:%02d', hour, minutes)
-    else
-        return string.format('%02d:%02d+1', hour % 24, minutes)
-    end
-end
-
-function HHMM2sec(time)
-    -- this function will take in a HH:MM string formatted time and return time in seconds, this format doesn't have a datum
-    local hour = tonumber(string.sub(time, 1,2))
-    local minutes = tonumber(string.sub(time, 4,5))
-
-    return hour * 3600 + minutes * 60
-end
 
 -- vars
 
@@ -72,17 +41,17 @@ function setup_airboss(unit)
     local TurnIntoWind = true
     local uTurn = true
     local MissionStart = timer.getTime0()
-    local MissionEnd = MissionStart + HHMM2sec(MissionLength)
+    local MissionEnd = MissionStart + jtfutils.HHMM2sec(MissionLength)
 
 
-    if (unit:IsShip() and unit:GetCoalition() == coalition.side.BLUE and contains({'CVN_71', 'CVN_72', 'CVN_73','CVN_74', 'CVN_75', 'LHA_Tarawa'}, unit:GetTypeName())) then
+    if (unit:IsShip() and unit:GetCoalition() == coalition.side.BLUE and jtfutils.list_contains({'CVN_71', 'CVN_72', 'CVN_73','CVN_74', 'CVN_75', 'LHA_Tarawa'}, unit:GetTypeName())) then
 
         -- create airboss instance
         boss = AIRBOSS:New(unit:GetCallsign(), morse[unit:GetTypeName()])
         TACAN = nil
 
         -- determine tacan and icls from hull number and ship type
-        if contains({'CVN_71', 'CVN_72', 'CVN_73', 'CVN_74', 'CVN_75'}, unit:GetTypeName()) then
+        if jtfutils.list_contains({'CVN_71', 'CVN_72', 'CVN_73', 'CVN_74', 'CVN_75'}, unit:GetTypeName()) then
             TACAN = tonumber(string.sub(unit:GetTypeName(), -2))
             ICLS = 7
             DeckWind = 27
@@ -103,20 +72,20 @@ function setup_airboss(unit)
 
         -- setup recovery windows
 
-        local PlannedTime = 0 + HHMM2sec(StartDelay) --accumulates the time that has been planned for
+        local PlannedTime = 0 + jtfutils.HHMM2sec(StartDelay) --accumulates the time that has been planned for
         local RecoveryWindowStart = nil
         local RecoveryWindowEnd = nil
 
         repeat
 
-            RecoveryWindowStart = sec2HHMM( MissionStart + PlannedTime )
-            RecoveryWindowEnd = sec2HHMM( MissionStart + PlannedTime + HHMM2sec(RecoveryWindowLength) )
+            RecoveryWindowStart = jtfutils.sec2HHMM( MissionStart + PlannedTime )
+            RecoveryWindowEnd = jtfutils.sec2HHMM( MissionStart + PlannedTime + jtfutils.HHMM2sec(RecoveryWindowLength) )
 
             boss:AddRecoveryWindow(RecoveryWindowStart, RecoveryWindowEnd, 1, 0, TurnIntoWind, DeckWind, uTurn)
 
             msg = MESSAGE:New(string.format("Recovery Window from %s to %s for %s", RecoveryWindowStart, RecoveryWindowEnd, morse[unit:GetTypeName()] ), 10)
             msg:ToAll()
-            PlannedTime = PlannedTime + HHMM2sec(RecoveryWindowLength) + HHMM2sec(RecoveryWindowBreak)
+            PlannedTime = PlannedTime + jtfutils.HHMM2sec(RecoveryWindowLength) + jtfutils.HHMM2sec(RecoveryWindowBreak)
 
         until (PlannedTime > MissionEnd - MissionStart)
 
@@ -125,14 +94,16 @@ function setup_airboss(unit)
 
 
         -- send config message
-        msg = MESSAGE:New(string.format([[
+
+        setup_message = string.format([[
             Carrier AIRBOSS Active for %s
             TACAN %dX %s
             ]],
             morse[unit:GetTypeName()],
-            TACAN, morse[unit:GetTypeName()]
-            ) , 20
-        )
+            TACAN, morse[unit:GetTypeName()])
+
+        jtfutils.log(setup_message)
+        msg = MESSAGE:New(setup_message, 20)
 
         msg:ToAll()
     end
@@ -142,3 +113,7 @@ end
 
 _DATABASE:ForEachUnit(setup_airboss)
 
+jtfutils.log([[
+=========================================================================================
+NavalOperations:      Naval Operations Plugin Loaded
+=========================================================================================]])

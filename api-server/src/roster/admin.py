@@ -93,6 +93,8 @@ class ProspectiveAviatorAdmin(admin.ModelAdmin):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
+    date_hierarchy = 'start'
+
     list_display = ('name', 'start', 'end')
 
     search_fields = ('start',)
@@ -170,8 +172,36 @@ class LiverySkinAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
 
-
 @admin.register(LiveryLuaSection)
 class LiveryLuaSectionAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
+
+@admin.register(FlightLog)
+class FlightLogAdmin(admin.ModelAdmin):
+    date_hierarchy = 'time'
+
+    list_display = ('flight_id', 'time', 'type', 'aviator')
+
+    list_filter = ('aviator__squadron__designation', 'aviator__squadron__hq__name')
+
+    search_fields = ('flight_id', 'aviator__callsign')
+
+
+@admin.register(CombatLog)
+class CombatLogAdmin(admin.ModelAdmin):
+    date_hierarchy = 'time'
+
+    list_display = ('flight_id', 'time', 'type', 'aviator', 'munition', 'target')
+
+    list_filter = ('aviator__squadron__designation', 'aviator__squadron__hq__name')
+
+    search_fields = ('flight_id', 'aviator__callsign')
+
+
+@admin.register(Target)
+class TargetAdmin(admin.ModelAdmin):
+
+    list_display = ('name', 'type')
+
+    list_filter = ('name',)

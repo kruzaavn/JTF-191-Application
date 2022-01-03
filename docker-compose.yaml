@@ -27,6 +27,9 @@ services:
     ports:
       - "7224:7224"
     environment:
+      DEV: 1
+      API_SERVER_USER: test_bot
+      API_SERVER_PASSWORD: admin4root
       PORT: 7224
     depends_on:
       - api-server
@@ -38,6 +41,9 @@ services:
     ports:
       - "7225:7225"
     environment:
+      DEV: 1
+      API_SERVER_USER: test_bot
+      API_SERVER_PASSWORD: admin4root
       PORT: 7225
     depends_on:
       - api-server

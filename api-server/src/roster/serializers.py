@@ -161,3 +161,62 @@ class LiveryLuaSectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = LiveryLuaSection
         fields = '__all__'
+class TargetSerializer(serializers.ModelSerializer):
+
+    type = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Target
+        fields = '__all__'
+
+
+class FlightLogSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = FlightLog
+        fields = '__all__'
+
+
+class FlightLogAggregateSerializer(serializers.Serializer):
+
+    total_flight_time = serializers.DurationField()
+    platform_id = serializers.IntegerField()
+
+class FlightLogTimeSeriesSerializer(serializers.Serializer):
+
+    total_flight_time = serializers.DurationField()
+    date = serializers.DateField()
+
+
+class CombatLogSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CombatLog
+        fields = '__all__'
+
+
+class CombatLogAggregateView(serializers.Serializer):
+
+    kills = serializers.IntegerField()
+    target_category = serializers.IntegerField()
+    type = serializers.SerializerMethodField()
+
+    def get_type(self, obj):
+
+        if obj.target_category in [0, 1]:
+
+            return 'air'
+
+        elif obj.target_category in [2, 4]:
+
+            return 'ground'
+
+        elif obj.target_category == 3:
+
+            return 'maritime'
+
+
+class CombatLogTimeSeriesSerializer(serializers.Serializer):
+
+    kills = serializers.IntegerField()
+    date = serializers.DateField()
