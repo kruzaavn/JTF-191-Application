@@ -683,6 +683,20 @@ class FlightLogTimeSeriesView(ListAPIView):
 
         return logs
 
+
+class FlightLogTimeSeries90DaysView(ListAPIView):
+
+    serializer_class = FlightLogTimeSeriesSerializer
+
+    def get_queryset(self):
+
+        sql_query = """with flights as (select Max(time) - Min(time) as flight_time, Date(Min(time)) as date from roster_flightlog where aviator_id=%s and time > current_date - interval '90' day group by flight_id) select SUM(flight_time) as total_flight_time, date, 1 as id from flights group by date;"""
+
+        logs = FlightLog.objects.raw(sql_query, [self.kwargs['aviator_pk']])
+
+        return logs
+
+
 class CombatLogAggregateView(ListAPIView):
 
     serializer_class = CombatLogAggregateView

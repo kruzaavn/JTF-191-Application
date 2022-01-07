@@ -184,6 +184,7 @@ class FlightLogAggregateSerializer(serializers.Serializer):
 
     total_flight_time = serializers.DurationField()
     platform_id = serializers.IntegerField()
+    platform = serializers.CharField()
 
 class FlightLogTimeSeriesSerializer(serializers.Serializer):
 

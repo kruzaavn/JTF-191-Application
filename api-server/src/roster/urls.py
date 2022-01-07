@@ -28,6 +28,7 @@ urlpatterns = [
     path('stats/flightlog/list/<aviator_pk>/', FlightLogListView.as_view()),
     path('stats/flightlog/aggregate/<aviator_pk>/', FlightLogAggregateView.as_view()),
     path('stats/flightlog/timeseries/<aviator_pk>/', FlightLogTimeSeriesView.as_view()),
+    path('stats/flightlog/timeseries/90days/<aviator_pk>/', FlightLogTimeSeries90DaysView.as_view()),
     path('stats/combatlog/list/<aviator_pk>/', CombatLogListView.as_view()),
     path('stats/combatlog/aggregate/<aviator_pk>/', CombatLogAggregateView.as_view()),
     path('stats/combatlog/timeseries/<aviator_pk>/', CombatLogTimeSeriesView.as_view()),
