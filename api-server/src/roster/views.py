@@ -459,7 +459,6 @@ class AviatorLiveriesListView(ListCreateAPIView):
 
     block_blob_service = BlockBlobService(account_name=account_name, account_key=azure_key)
 
-
     def get(self, request):
         blobs = self.block_blob_service.list_blobs(container_name=self.azure_container, prefix="livery/")
         archive = BytesIO()
@@ -473,7 +472,6 @@ class AviatorLiveriesListView(ListCreateAPIView):
         response = HttpResponse(archive.getvalue(), content_type='application/force-download')
         response['Content-Disposition'] = 'attachment; filename="%s"' % 'liveries.zip'
         return response
-
 
     def post(self, request):
         """
@@ -533,7 +531,6 @@ class AviatorLiveriesListView(ListCreateAPIView):
             self.create_aviator_lua(aviator,lua_sections, lua_path)
            
         return Response({'detail': "Complete"}, status=status.HTTP_201_CREATED)
-
 
     def create_aviator_lua(self, aviator, lua_sections, lua_path):
 
@@ -638,7 +635,20 @@ class AviatorLiveriesListView(ListCreateAPIView):
         min_ground_kills = 100
         min_maritime_kills = 1
 
-        sql_query = """select COUNT(category)as kills, category as target_category, 1 as id from roster_combatlog inner join roster_target on roster_target.id = roster_combatlog.target_id where aviator_id=%s and type='kill' group by category; """
+        sql_query = """
+                    select 
+                        COUNT(category) as kills, 
+                        category as target_category, 
+                        1 as id 
+                    from 
+                        roster_combatlog 
+                    inner join 
+                        roster_target on roster_target.id = roster_combatlog.target_id 
+                    where 
+                        aviator_id=%s and type='kill' 
+                    group by 
+                        category; """
+
         combat_logs = CombatLog.objects.raw(sql_query, [aviator_id])
 
         y_offset = 0
@@ -736,9 +746,28 @@ class FlightLogAggregateView(ListAPIView):
     def get_queryset(self):
 
         sql_query = '''
-        with flights as (select MAX(time) - MIN(time) as flight_time, flight_id, platform_id, aviator_id from roster_flightlog where aviator_id=%s group by flight_id, platform_id, aviator_id)   select SUM(flight_time) as total_flight_time, 1 as id, platform_id from flights group by platform_id;
-        '''
-
+                    with flights as (
+                        select 
+                            MAX(time) - MIN(time) as flight_time, 
+                            flight_id, 
+                            platform_id, 
+                            aviator_id 
+                        from 
+                            roster_flightlog 
+                        where 
+                            aviator_id=%s 
+                        group by 
+                            flight_id, 
+                            platform_id, 
+                            aviator_id
+                            )   select 
+                                    SUM(flight_time) as total_flight_time, 
+                                    1 as id, 
+                                    platform_id 
+                                from 
+                                    flights 
+                                group by 
+                                    platform_id;'''
 
         logs = FlightLog.objects.raw(sql_query, [self.kwargs['aviator_pk']])
         return logs
@@ -750,22 +779,55 @@ class FlightLogTimeSeriesView(ListAPIView):
 
     def get_queryset(self):
 
-        sql_query = """with flights as (select Max(time) - Min(time) as flight_time, Date(Min(time)) as date from roster_flightlog where aviator_id=%s group by flight_id) select SUM(flight_time) as total_flight_time, date, 1 as id from flights group by date;"""
+        if not self.kwargs['time_span']:
 
-        logs = FlightLog.objects.raw(sql_query, [self.kwargs['aviator_pk']])
+            sql_query = """
+                        with flights as (
+                            select 
+                                Max(time) - Min(time) as flight_time, 
+                                Date(Min(time)) as date 
+                            from 
+                                roster_flightlog 
+                            where 
+                                aviator_id=%s 
+                            group by 
+                                flight_id
+                            )   select 
+                                    SUM(flight_time) as total_flight_time, 
+                                    date, 
+                                    1 as id 
+                                from 
+                                    flights 
+                                group by 
+                                    date; """
 
-        return logs
+            logs = FlightLog.objects.raw(sql_query, [self.kwargs['aviator_pk']])
 
+        else:
 
-class FlightLogTimeSeries90DaysView(ListAPIView):
+            sql_query = """
+                        with flights as (
+                            select 
+                                Max(time) - Min(time) as flight_time, 
+                                Date(Min(time)) as date 
+                            from 
+                                roster_flightlog 
+                            where 
+                                aviator_id=%s 
+                            group by 
+                                flight_id
+                            )   select 
+                                    SUM(flight_time) as total_flight_time, 
+                                    date, 
+                                    1 as id 
+                                from 
+                                    flights 
+                                where 
+                                    date >= current_date - %s
+                                group by 
+                                    date; """
 
-    serializer_class = FlightLogTimeSeriesSerializer
-
-    def get_queryset(self):
-
-        sql_query = """with flights as (select Max(time) - Min(time) as flight_time, Date(Min(time)) as date from roster_flightlog where aviator_id=%s and time > current_date - interval '90' day group by flight_id) select SUM(flight_time) as total_flight_time, date, 1 as id from flights group by date;"""
-
-        logs = FlightLog.objects.raw(sql_query, [self.kwargs['aviator_pk']])
+            logs = FlightLog.objects.raw(sql_query, [self.kwargs['aviator_pk'], self.kwargs['time_span']])
 
         return logs
 
@@ -774,10 +836,21 @@ class CombatLogAggregateView(ListAPIView):
 
     serializer_class = CombatLogAggregateSerializer
 
-
     def get_queryset(self, *args, **kwargs):
 
-        sql_query = """select COUNT(category)as kills, category as target_category, 1 as id from roster_combatlog inner join roster_target on roster_target.id = roster_combatlog.target_id where aviator_id=%s and type='kill' group by category; """
+        sql_query = """
+                    select 
+                        COUNT(category) as kills, 
+                        category as target_category, 
+                        1 as id 
+                    from 
+                        roster_combatlog 
+                    inner join 
+                        roster_target on roster_target.id = roster_combatlog.target_id 
+                    where 
+                        aviator_id=%s and type='kill' 
+                    group by 
+                        category; """
 
         logs = CombatLog.objects.raw(sql_query, [self.kwargs['aviator_pk']])
 
@@ -789,8 +862,37 @@ class CombatLogTimeSeriesView(ListAPIView):
     serializer_class = CombatLogTimeSeriesSerializer
 
     def get_queryset(self):
-        sql_query = """select COUNT(type) as kills, Date(time) as date, 1 as id from roster_combatlog where aviator_id=%s group by date;"""
 
-        logs = CombatLog.objects.raw(sql_query, [self.kwargs['aviator_pk']])
+        if not self.kwargs['time_span']:
+
+            sql_query = """
+                            select 
+                                COUNT(type) as kills, 
+                                Date(time) as date, 
+                                1 as id 
+                            from 
+                                roster_combatlog 
+                            where 
+                                aviator_id=%s 
+                            group by
+                                date; """
+
+            logs = CombatLog.objects.raw(sql_query, [self.kwargs['aviator_pk']])
+
+        else:
+
+            sql_query = """
+                            select 
+                                COUNT(type) as kills, 
+                                Date(time) as date, 
+                                1 as id 
+                            from 
+                                roster_combatlog 
+                            where 
+                                aviator_id=%s and date >= current_date - %s
+                            group by
+                                date; """
+
+            logs = CombatLog.objects.raw(sql_query, [self.kwargs['aviator_pk'], self.kwargs['time_span']])
 
         return logs
