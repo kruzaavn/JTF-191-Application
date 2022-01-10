@@ -199,7 +199,7 @@ class CombatLogSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class CombatLogAggregateView(serializers.Serializer):
+class CombatLogAggregateSerializer(serializers.Serializer):
 
     kills = serializers.IntegerField()
     target_category = serializers.IntegerField()

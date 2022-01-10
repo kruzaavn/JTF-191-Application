@@ -3,6 +3,7 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.core.mail import send_mail
+from django_json_widget.widgets import JSONEditorWidget
 from .models import *
 
 # Register your models here.
@@ -170,6 +171,9 @@ class LiveryAdmin(admin.ModelAdmin):
 @admin.register(LiverySkin)
 class LiverySkinAdmin(admin.ModelAdmin):
     list_display = ('name',)
+    formfield_overrides = {
+        models.JSONField: {'widget': JSONEditorWidget},
+    }
 
 
 @admin.register(LiveryLuaSection)

@@ -29,12 +29,12 @@ from .models import Aviator, Livery, Squadron, HQ, DCSModules, ProspectiveAviato
     QualificationModule, QualificationCheckoff, UserImage, Munition, Stores, Operation, FlightLog, CombatLog, \
     Target
 
-from .serializers import AviatorSerializer, SquadronSerializer, HQSerializer, \
+from .serializers import AviatorSerializer, CombatLogAggregateSerializer, SquadronSerializer, HQSerializer, \
     DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, QualificationSerializer, \
     QualificationModuleSerializer, QualificationCheckoffSerializer, UserSerializer, UserRegisterSerializer, \
     EventCreateSerializer, MunitionSerializer, StoresSerializer, UserImageSerializer, OperationSerializer, \
     TargetSerializer, FlightLogSerializer, FlightLogAggregateSerializer, FlightLogTimeSeriesSerializer, \
-    CombatLogSerializer, CombatLogAggregateView, CombatLogTimeSeriesSerializer
+    CombatLogSerializer, CombatLogTimeSeriesSerializer
 
 
 class AviatorListView(ListCreateAPIView):
@@ -606,8 +606,78 @@ class AviatorLiveriesListView(ListCreateAPIView):
 
             return tmp_image
 
-    def kill_board(self):
-        pass
+    def get_killboard_subimage(self, icon_path, combat_log, min_kills):
+        max_icons = 30
+        y_offset = 0
+        tmp_image = Image(width=210, height=65)
+        with Image(filename=icon_path) as icon_img:
+            icon_img.transform(resize="x20")
+            to_show = min(int(combat_log.kills / min_kills), max_icons)
+            max_in_row = (tmp_image.width / icon_img.width) - 1
+            x_offset = 0
+            for _ in range(to_show):
+                if x_offset >= max_in_row:
+                    x_offset = 0
+                    y_offset += 1
+
+                tmp_image.composite(
+                    image=icon_img,
+                    left=int(x_offset * (icon_img.width)),
+                    top=int(y_offset * (icon_img.width))
+                )
+                x_offset += 1
+            y_offset += 1
+
+        return tmp_image
+
+    def get_killboard_image(self, aviator_id, prop):
+        tmp_image = Image(width=210, height=200)
+        draw = Drawing()
+
+        min_air_kills = 20
+        min_ground_kills = 100
+        min_maritime_kills = 1
+
+        sql_query = """select COUNT(category)as kills, category as target_category, 1 as id from roster_combatlog inner join roster_target on roster_target.id = roster_combatlog.target_id where aviator_id=%s and type='kill' group by category; """
+        combat_logs = CombatLog.objects.raw(sql_query, [aviator_id])
+
+        y_offset = 0
+        for combat_log in combat_logs:
+            if combat_log.target_category in [0, 1] and combat_log.kills >= min_air_kills:
+                icon = 'icons/jet.png'
+                min_kills = min_air_kills
+            elif combat_log.target_category in [2, 4] and combat_log.kills >= min_ground_kills:
+                icon = 'icons/tank.png'
+                min_kills = min_ground_kills
+            elif combat_log.target_category == 3 and combat_log.kills >= min_maritime_kills:
+                icon = 'icons/carrier.png'
+                min_kills = min_maritime_kills
+            else:
+                continue
+
+            sub_image = self.get_killboard_subimage(icon, combat_log, min_kills)
+            tmp_image.composite(
+                image=sub_image,
+                left=0,
+                top=int(y_offset * (sub_image.height))
+            )
+            y_offset += 1
+
+        draw(tmp_image)
+        
+        if "angle" in prop:
+            tmp_image.rotate(prop["angle"])
+
+        if "flip" in prop and prop["flip"]:
+            tmp_image.flip()
+
+        if "flop" in prop and prop["flop"]:
+            tmp_image.flop()
+        
+        if "scale" in prop and prop["scale"]:
+            tmp_image.transform(resize=prop["scale"])
+
+        return tmp_image
 
     def create_aviator_dds(self, skin, aviator, blob_path):
 
@@ -619,6 +689,9 @@ class AviatorLiveriesListView(ListCreateAPIView):
                 citations = aviator.citations.all()[0:3] # only showing max 3 ribbons
                 if prop["prop"] == "award" and citations:
                     img.composite(image=self.get_ribbonrack_image(citations, prop), left=prop["x"], top=prop["y"])
+
+                if prop["prop"] == "killboard" and citations:
+                    img.composite(image=self.get_killboard_image(aviator.id, prop), left=prop["x"], top=prop["y"])
 
             # Result into a buffer
             buf = BytesIO()
@@ -699,10 +772,10 @@ class FlightLogTimeSeries90DaysView(ListAPIView):
 
 class CombatLogAggregateView(ListAPIView):
 
-    serializer_class = CombatLogAggregateView
+    serializer_class = CombatLogAggregateSerializer
 
 
-    def get_queryset(self):
+    def get_queryset(self, *args, **kwargs):
 
         sql_query = """select COUNT(category)as kills, category as target_category, 1 as id from roster_combatlog inner join roster_target on roster_target.id = roster_combatlog.target_id where aviator_id=%s and type='kill' group by category; """
 

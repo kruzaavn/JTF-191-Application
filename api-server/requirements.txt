@@ -17,3 +17,4 @@ Wand
 azure-storage-blob
 jsonschema
 cairosvg
+django-json-widget
