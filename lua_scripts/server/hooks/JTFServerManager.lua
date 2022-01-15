@@ -3,16 +3,42 @@
 
     maintainers Beeej aleks.kruza@gmail.com
 
-    Initial config Beeej 6/15/2020
+    Initial config Beeej 12/20/2021
+
+    This file defines a Server Manager use to automate loading JTF 191 scripts into the mission scripting environment.
+
+    A prereq for the server manager is that the MissionScripting file is de-sanitized.
+
+    In order to use the server manager the following files and directories need to be installed in the hooks directory
+    of the DCS server install
+
+    ~/Saved Games/DCS.openbeta/Scripts/Hooks
+        |
+        |-JTFServerManager.lua
+        |-JTFServerConfig.lua
+        |-ServerManagement
+            |
+            |-Preload
+            |   |
+            |   |- Moose.lua
+            |   |- jtfutilities.lua
+            |
+            |-Load
+                |
+                |- NavalOpsPlugin.lua
+                |- StatsPlugin.lua
 
 
-    This file is meant to automate JTF 191 script management. This file will load the enumerated files below in the
-    mission scripting environment
+   When a dcs server loads a multiplayer environment it will then command the mission scripting environment to run all
+   scripts in the preload directory first. Files that are dependencies for other scripts, such as Moose and jtfutils,
+   should be saved here so that they are available scripts saved in load. Once all preload scripts have been run the
+   files in load will then be run in the mission scripting environment.
+
 ]]
 
 dofile(lfs.writedir() .. [[Config\serverSettings.lua]])
+dofile(lfs.writedir() .. [[Scripts\Hooks\JTFServerConfig.lua]])
 
-host = 'localhost'
 
 function dcs_log(message)
 
@@ -89,13 +115,13 @@ function set_env_values()
             _server = {}
             _server.mission = "%s"
             _server.name = "%s"
-	    host = "%s"
+    	    host = "%s"
 
             for n in pairs(_G) do jtfutils.log(n) end
 
         ]=])
 
-        ]],  DCS.getMissionName(), cfg.name, host)
+        ]],  DCS.getMissionName(), cfg.name, jtfServer.host)
 
       net.dostring_in("mission", command)
 
@@ -109,8 +135,6 @@ function callbacks.onMissionLoadEnd()
     if DCS.isMultiplayer() then
         preload_directory_path = lfs.writedir() .. "\\Scripts\\Hooks\\ServerManagement\\Preload\\"
         load_directory_path = lfs.writedir() .. "\\Scripts\\Hooks\\ServerManagement\\Load\\"
-
-
 
         load_directory(preload_directory_path)
         load_directory(load_directory_path)
