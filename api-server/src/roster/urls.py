@@ -25,6 +25,12 @@ urlpatterns = [
     path('aviators/fromuser/<int:user_id>/', AviatorFromUserListView.as_view()),
     path('prospective_aviators/detail/', ProspectiveAviatorDetailView.as_view()),
     path('stats/', StatsView.as_view()),
+    path('stats/flightlog/list/<aviator_pk>/', FlightLogListView.as_view()),
+    path('stats/flightlog/aggregate/<int:aviator_pk>/', FlightLogAggregateView.as_view()),
+    path('stats/flightlog/timeseries/<int:aviator_pk>/<int:time_span>/', FlightLogTimeSeriesView.as_view()),
+    path('stats/combatlog/list/<int:aviator_pk>/', CombatLogListView.as_view()),
+    path('stats/combatlog/aggregate/<int:aviator_pk>/', CombatLogAggregateView.as_view()),
+    path('stats/combatlog/timeseries/<int:aviator_pk>/<int:time_span>/', CombatLogTimeSeriesView.as_view()),
     path('squadrons/list/', SquadronListView.as_view()),
     path('hqs/list/', HQListView.as_view()),
     path('modules/list/', DCSModuleListView.as_view()),
@@ -40,7 +46,9 @@ urlpatterns = [
     path('user_images/list/', UserImageListView.as_view()),
     path('munition/list/', MunitionListView.as_view()),
     path('stores/', StoresView.as_view()),
+    path('target/list/', TargetListView.as_view()),
     path('stores/list/<str:name>/', StoresListView.as_view()),
-    path('operation/list/', OperationListView.as_view())
+    path('operation/list/', OperationListView.as_view()),
+    path('liveries/update/', AviatorLiveriesListView.as_view())
 
 ]

@@ -1,7 +1,12 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, BaseValidator
 from django.contrib.auth.models import User
 from datetime import datetime, date
+import jsonschema
+from django.core.exceptions import ValidationError
+
+def stats_default():
+    return {"hours": {}, "kills": {}}
 
 
 class HQ(models.Model):
@@ -55,15 +60,25 @@ class DCSModules(models.Model):
     module_types = ['aircraft', 'map']
     services = ['navy', 'air force', 'army']
 
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, blank=True, null=True)  # human read able name
+    dcs_type_name = models.CharField(max_length=1024, blank=True, null=True)
+    dcs_display_name = models.CharField(max_length=1024, blank=True, null=True)
+
     module_type = models.CharField(max_length=64,
                                    choices=[(x, x) for x in module_types],
                                    default=module_types[0])
 
-    service = models.CharField(choices=[(x, x) for x in services], blank=True, null=True, max_length=64)
+    service = models.CharField(choices=[(x, x) for x in services],
+                               blank=True,
+                               null=True,
+                               max_length=64)
 
     def __str__(self):
-        return self.name
+
+        if self.name:
+            return self.name
+        else:
+            return f'DCS {self.dcs_type_name}'
 
 
 class Squadron(models.Model):
@@ -71,7 +86,7 @@ class Squadron(models.Model):
     squadron table
     """
 
-    types = ['operational', 'replacement', 'training']
+    types = ['operational', 'training']
 
     # fields
     name = models.CharField(max_length=1024)
@@ -128,7 +143,7 @@ class Munition(models.Model):
 
     types = ['rocket', 'bomb', 'aa_missile', 'as_missile', 'utility', 'gun']
 
-    name = models.CharField(max_length=1024)
+    name = models.CharField(max_length=1024)  # DCS Display name for now
     munition_type = models.CharField(max_length=1024, choices=[(x, x) for x in types], default=types[0])
 
     def __str__(self):
@@ -151,7 +166,7 @@ class Pilot(models.Model):
     first_name = models.CharField(max_length=1024, default='John')
     last_name = models.CharField(max_length=1024, default='Doe')
     dcs_modules = models.ManyToManyField(DCSModules, blank=True)
-    callsign = models.CharField(max_length=1024)
+    callsign = models.CharField(max_length=1024, unique=True)
     email = models.EmailField(max_length=1024, blank=True, null=True)
 
     class Meta:
@@ -159,10 +174,6 @@ class Pilot(models.Model):
 
     def __str__(self):
         return f'{self.callsign}'
-
-
-def stats_default():
-    return {"hours": {}, "kills": {}}
 
 
 class QualificationModule(models.Model):
@@ -234,6 +245,7 @@ class Aviator(Pilot):
     date_joined = models.DateField(default=datetime.now)
     status = models.CharField(choices=[(x, x) for x in statuses],
                               default=statuses[0], max_length=128)
+
     operations = models.ManyToManyField(Operation, blank=True)
     rank_code = models.IntegerField(default=1,
                                     validators=[MinValueValidator(-4),
@@ -244,9 +256,10 @@ class Aviator(Pilot):
                                         validators=[MinValueValidator(1),
                                                     MaxValueValidator(4)],
                                         help_text=f'{position_helper}')
+
     user = models.ForeignKey(User, blank=True, null=True,
                              on_delete=models.SET_NULL)
-    stats = models.JSONField(default=stats_default)
+
     division = models.IntegerField(default=4, validators=[MinValueValidator(1),
                                                           MaxValueValidator(
                                                               4)])
@@ -387,3 +400,206 @@ class UserImage(models.Model):
 
     def __str__(self):
         return f'{self.file.name or self.url}'
+
+
+class LiveryLuaSection (models.Model):
+    name = models.CharField(max_length=128)
+    text = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class LiverySkinJsonValidator(BaseValidator):
+    def compare(self, value, schema):
+        try:
+            jsonschema.validate(value, schema)
+        except jsonschema.exceptions.ValidationError as error:
+            raise ValidationError(error)
+
+
+class LiverySkin(models.Model):
+    JSON_FIELD_SCHEMA = {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "type": "array",
+        "items": [
+            {
+                "type": "object",
+                "properties": {
+                    "x": {
+                        "type": "integer",
+                        "description": "X axis for the positioning of the text"
+                    },
+                    "y": {
+                        "type": "integer",
+                        "description": "Y axis for the positioning of the text"
+                    },
+                    "font": {
+                        "type": "string",
+                        "description": "The font of the text. Please ask the admin for a list of allowed fonts"
+                    },
+                    "prop": {
+                        "type": "string",
+                        "description": "The name of the property to display. This is linked to the Aviator model in DCS. The only exception is 'rankFullName', which is a custom allowed field."
+                    },
+                    "angle": {
+                        "type": "integer",
+                        "description": "this is the angle to which the text will be rotated. Default is 0"
+                    },
+                    "img_size": {
+                        "type": "object",
+                        "properties": {
+                            "width": {
+                                "type": "integer",
+                                "description": "Width of the image that will contain the text"
+                            },
+                            "height": {
+                                "type": "integer",
+                                "description": "Height of the image that will contain the text"
+                            }
+                        },
+                        "required": [
+                            "width",
+                            "height"
+                        ]
+                    },
+                    "font_size": {
+                        "type": "integer",
+                        "description": "Font size of the custom text"
+                    },
+                    "font_opacity": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1,
+                        "description": "Opacity of the custom text. Must be between 0 and 1"
+                    },
+                    "text_offset_x": {
+                        "type": "integer",
+                        "description": "Spacing of custom text within its image, X axis"
+                    },
+                    "text_offset_y": {
+                        "type": "integer",
+                        "description": "Spacing of custom text within its image, Y axis"
+                    },
+                    "font_alignment": {
+                        "type": "string",
+                        "description": "Alignment of custom text. I.e., center, left, right"
+                    }
+                },
+                "required": [
+                    "x",
+                    "y",
+                    "prop",
+                    "img_size",
+                    "text_offset_x",
+                    "text_offset_y"
+                ]
+            }
+        ]
+    }
+    name = models.CharField(max_length=128)
+    dds_file = models.FileField(upload_to='livery_dds', unique=True)
+    json_description = models.JSONField(
+        blank=True,
+        null=True,
+        validators=[LiverySkinJsonValidator(limit_value=JSON_FIELD_SCHEMA)]
+    )
+
+    def __str__(self):
+        return self.name
+
+
+class Livery(models.Model):
+
+    squadron = models.ForeignKey(Squadron, on_delete=models.CASCADE)
+    positions = Aviator.positions
+    position_helper = Aviator.position_helper
+    position_code = models.IntegerField(default=4,
+                                        validators=[MinValueValidator(1),
+                                                    MaxValueValidator(4)],
+                                        help_text=f'{position_helper}')
+    skins = models.ManyToManyField(LiverySkin, blank=True)
+    lua_sections = models.ManyToManyField(LiveryLuaSection, blank=True)
+
+    def __str__(self):
+        return f"{self.squadron.name} {self.positions[self.position_code - 1]}"
+
+
+class Target(models.Model):
+
+    name = models.CharField(max_length=1024, blank=True, null=True)
+    dcs_type_name = models.CharField(max_length=1024, blank=True, null=True)
+    dcs_display_name = models.CharField(max_length=1024, blank=True, null=True)
+    category = models.IntegerField(default=0)
+
+    @property
+    def type(self):
+
+        if self.category in [0, 1]:
+
+            return 'air'
+
+        elif self.category in [2, 4]:
+
+            return 'ground'
+
+        elif self.category == 3:
+
+            return 'maritime'
+
+    def __str__(self):
+        if self.name:
+            return f'{self.name}'
+        else:
+            return f'DCS {self.dcs_type_name}'
+
+
+class StatsLog(models.Model):
+
+    roles = ['pilot', 'flight crew']
+
+    aviator = models.ForeignKey(Aviator, on_delete=models.CASCADE)
+    role = models.CharField(max_length=64, default=roles[0], choices=[(x, x) for x in roles])
+    time = models.DateTimeField(auto_now_add=True)
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
+    altitude = models.FloatField(blank=True, null=True)
+    platform = models.ForeignKey(DCSModules, on_delete=models.SET_NULL, null=True, blank=True)
+    server = models.CharField(max_length=1024, null=True, blank=True)
+    flight_id = models.UUIDField(editable=False, blank=True, null=True)
+    mission = models.CharField(max_length=1024, blank=True, null=True)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return f'{self.flight_id}'
+
+
+class CombatLog(StatsLog):
+
+    types = ['kill']
+
+    target_latitude = models.FloatField(blank=True, null=True)
+    target_longitude = models.FloatField(blank=True, null=True)
+    target_altitude = models.FloatField(blank=True, null=True)
+    munition = models.ForeignKey(Munition, on_delete=models.SET_NULL, null=True, blank=True)
+    target = models.ForeignKey(Target, on_delete=models.CASCADE)
+    type = models.CharField(max_length=64, default=types[0], choices=[(x, x) for x in types])
+
+
+class FlightLog(StatsLog):
+
+    types = ['takeoff', 'landing', 'pilot_death', 'ejection', 'trap']
+
+    base = models.CharField(max_length=64, blank=True, null=True)
+    grade = models.CharField(max_length=1024, blank=True, null=True)
+    type = models.CharField(max_length=64, default=types[0], choices=[(x, x) for x in types])
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['aviator', 'flight_id', 'type'], name='unique_log_by_id_type_aviator')
+        ]
+
+    def __str__(self):
+        return f'{self.flight_id}'

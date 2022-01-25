@@ -1,4 +1,4 @@
-<template>
+andrea<template>
   <v-card class="mx-4 my-5 py-2" v-if="aviator.status !== 'reserve'" tile>
     <v-row>
       <v-col cols="2">
@@ -24,44 +24,59 @@
         </v-card-subtitle>
       </v-col>
       <v-col cols="4">
-        <v-row id="ribbon-rack" align="center" justify="center">
-          <v-col
-            cols="4"
-            align="center"
-            v-for="award in sortCitations(aviator.citations)"
-            :key="award.id"
-            class="pa-0"
-          >
-            <v-img :src="award.ribbon_image" :alt="award.name" />
-          </v-col>
-        </v-row>
+        <v-container>
+          <v-row id="ribbon-rack" align="center" justify="center">
+            <v-col
+              cols="4"
+              align="center"
+              v-for="citations in aviator.citations"
+              :key="citations.id"
+              class="pa-0"
+            >
+              <v-img :src="citations.award.ribbon_image" />
+            </v-col>
+          </v-row>
+        </v-container>
       </v-col>
     </v-row>
     <v-card-text>
       <v-row>
         <v-col>
           <h4>
-            Total Flight Hours
-            {{ sumTable(aviator.stats.hours).toFixed(2) }}
+            Total Flight Hours {{totalFlightHours}}
           </h4>
           <v-data-table
             dense
             :headers="hoursHeaders"
-            :items="toHoursTable(aviator.stats.hours)"
+            :items="toHoursTable(aviatorAggregatedFlightStats)"
           >
           </v-data-table>
         </v-col>
         <v-col>
           <h4>
-            Total kills
-            {{ sumTable(aviator.stats.kills).toFixed(0) }}
+            Total kills {{totalKills}}
           </h4>
           <v-data-table
             dense
+            :hide-default-footer="true"
             :headers="killsHeaders"
-            :items="toKillsTable(aviator.stats.kills)"
+            :items="toKillsTable(aviatorAggregatedCombatStats)"
           >
+            <template v-slot:item.target="{ item }">
+              <v-icon v-if="item.target === 'air'">fa-fighter-jet fa-xs</v-icon>
+              <v-icon v-if="item.target === 'maritime'">fa-ship fa-xs</v-icon>
+              <v-icon v-if="item.target === 'ground'">mdi-tank</v-icon>
+            </template>
           </v-data-table>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="6">
+          <h4>Flight frequency last 90 days</h4>
+          <GChart
+            type="LineChart"
+            @ready="getAviatorTimeSeriesStats"
+          />
         </v-col>
       </v-row>
     </v-card-text>
@@ -69,6 +84,10 @@
 </template>
 
 <script>
+import moment from 'moment'
+import axios from 'axios'
+import { GChart } from 'vue-google-charts'
+
 export default {
   name: 'AviatorSummary',
 
@@ -77,6 +96,9 @@ export default {
           type: Object,
           required: true
       }
+  },
+  components: {
+    GChart
   },
   data: () => ({
     ranks: {
@@ -103,15 +125,22 @@ export default {
     ],
     killsHeaders: [
       {
-        text: 'Victim',
+        text: 'Target',
         align: 'start',
         sortable: true,
-        value: 'victim',
+        value: 'target',
       },
       { text: 'Number', sortable: true, align: 'start', value: 'number' },
     ],
+    aviatorAggregatedFlightStats: [],
+    aviatorAggregatedCombatStats: [],
+    aviatorTimeSeriesStats: [],
+    totalFlightHours: 0,
+    totalKills: 0,
   }),
-  computed: {
+  mounted() {
+    this.getAviatorAggregatedFlightStats(this.aviator.id)
+    this.getAviatorAggregatedCombatStats(this.aviator.id)
   },
   filters: {
     upper: function (value) {
@@ -119,45 +148,92 @@ export default {
     },
   },
   methods: {
-    toHoursTable(hours) {
+    updateTotalFlightHours(stats) {
+      let totalDurations = moment.duration('0')
+      for (const stat in stats) {
+        totalDurations.add(moment.duration(stats[stat].total_flight_time))
+      }
+
+      this.totalFlightHours = totalDurations.asHours().toFixed(2)
+    },
+    updateTotalKills(stats) {
+      this.totalKills = stats.reduce((cur, prev) => {
+        return {kills: prev.kills + cur.kills};
+      }, {kills: 0}).kills;
+    },
+    toHoursTable(stats) {
       let data = []
 
-      for (const airframe in hours) {
-        data.push({ airframe: airframe, hours: hours[airframe].toFixed(2) })
+      for (const stat in stats) {
+        const hours = moment.duration(stats[stat].total_flight_time).asHours().toFixed(2)
+        data.push({ airframe: stats[stat].platform, hours: hours })
       }
       return data
     },
     toKillsTable(kills) {
       let data = []
 
-      for (const victim in kills) {
-        data.push({ victim: victim, number: kills[victim] })
+      for (const target in kills) {
+        data.push({ target: kills[target].type, number: kills[target].kills })
       }
       return data
     },
-    sumTable(obj) {
-      let data = []
-
-      for (const key in obj) {
-        data.push(obj[key])
+    getAviatorAggregatedFlightStats(aviatorId) {
+      const token = localStorage.getItem('token')
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
       }
-      return data.reduce((a, b) => a + b, 0)
-    },
-    sortCitations(citations) {
-      var groupByAward = (cits) =>
-        cits.reduce(function (acc, x) {
-          acc[x.award.id] = x.award
-          return acc
-        }, {})
-
-      citations = citations.slice().sort((a, b) => {
-        return b.award.priority - a.award.priority
+      axios.get(
+        `/api/roster/stats/flightlog/aggregate/${aviatorId}/`,
+        {},
+        config
+      ).then((response) => {
+        this.aviatorAggregatedFlightStats = response.data
+        this.updateTotalFlightHours(response.data)
       })
-
-      return groupByAward(citations)
+    },
+    getAviatorAggregatedCombatStats(aviatorId) {
+      const token = localStorage.getItem('token')
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+      axios.get(
+        `/api/roster/stats/combatlog/aggregate/${aviatorId}/`,
+        {},
+        config
+      ).then((response) => {
+        this.aviatorAggregatedCombatStats = response.data
+        this.updateTotalKills(response.data)
+      })
+    },
+    getAviatorTimeSeriesStats(chart, google) {
+      const token = localStorage.getItem('token')
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+      axios.get(
+        `/api/roster/stats/flightlog/timeseries/90days/${this.aviator.id}/`,
+        {},
+        config
+      ).then((response) => {
+        this.aviatorTimeSeriesStats.push(['Date', 'Hours'])
+        if(response.data.length > 0) {
+          for (const stat in response.data) {
+            const hours = moment.duration(response.data[stat].total_flight_time).asHours().toFixed(2)
+            this.aviatorTimeSeriesStats.push([response.data[stat].date, parseFloat(hours) ])
+          }
+        } else {
+          this.aviatorTimeSeriesStats.push(['', 0])
+        }
+        const chartOptions = {
+          curveType: 'function',
+          legend: {position: 'none'},
+          chartArea: {'width': '90%', 'height': '80%'},
+          titlePosition: 'none',
+        }
+        chart.draw(google.visualization.arrayToDataTable(this.aviatorTimeSeriesStats), chartOptions)
+      })
     },
   },
 }
 </script>
-
-<style></style>

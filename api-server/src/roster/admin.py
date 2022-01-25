@@ -3,6 +3,7 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.core.mail import send_mail
+from django_json_widget.widgets import JSONEditorWidget
 from .models import *
 
 # Register your models here.
@@ -93,6 +94,8 @@ class ProspectiveAviatorAdmin(admin.ModelAdmin):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
+    date_hierarchy = 'start'
+
     list_display = ('name', 'start', 'end')
 
     search_fields = ('start',)
@@ -153,3 +156,56 @@ class StoresAdmin(admin.ModelAdmin):
 class UserImageAdmin(admin.ModelAdmin):
     pass
 
+
+@admin.register(Livery)
+class LiveryAdmin(admin.ModelAdmin):
+
+    def get_postition_from_code(self, obj):
+        if obj.position_code:
+            positions = ["CO", "XO", "OPSO", "BASE"]
+            return positions[obj.position_code - 1]
+    get_postition_from_code.short_description = 'Position'
+    list_display = ('squadron', 'get_postition_from_code')
+
+
+@admin.register(LiverySkin)
+class LiverySkinAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    formfield_overrides = {
+        models.JSONField: {'widget': JSONEditorWidget},
+    }
+
+
+@admin.register(LiveryLuaSection)
+class LiveryLuaSectionAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+
+
+@admin.register(FlightLog)
+class FlightLogAdmin(admin.ModelAdmin):
+    date_hierarchy = 'time'
+
+    list_display = ('flight_id', 'time', 'type', 'aviator')
+
+    list_filter = ('aviator__squadron__designation', 'aviator__squadron__hq__name')
+
+    search_fields = ('flight_id', 'aviator__callsign')
+
+
+@admin.register(CombatLog)
+class CombatLogAdmin(admin.ModelAdmin):
+    date_hierarchy = 'time'
+
+    list_display = ('flight_id', 'time', 'type', 'aviator', 'munition', 'target')
+
+    list_filter = ('aviator__squadron__designation', 'aviator__squadron__hq__name')
+
+    search_fields = ('flight_id', 'aviator__callsign')
+
+
+@admin.register(Target)
+class TargetAdmin(admin.ModelAdmin):
+
+    list_display = ('name', 'type')
+
+    list_filter = ('name',)
