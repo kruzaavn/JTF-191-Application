@@ -5,7 +5,6 @@
 
     Initial config Brony 7/31/2021
 
-    Include this file for munitions tracking during cruise missions.
 ]]
 
 
