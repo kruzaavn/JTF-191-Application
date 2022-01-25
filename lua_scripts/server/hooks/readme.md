@@ -49,7 +49,7 @@ end
 this file after every update. [OVGME](https://wiki.hoggitworld.com/view/OVGME) is a decent resource to manage this 
 requirement.  
 
-2. Install the Server Manager by copying the following files and directories in the Hooks directory of the DCS server 
+2. [Download](https://downgit.github.io/#/home?url=https://github.com/kruzaavn/JTF-191-Application/tree/master/lua_scripts/server/hooks) and Install the Server Manager by copying the following files and directories in the Hooks directory of the DCS server 
 install.
 
     ```
