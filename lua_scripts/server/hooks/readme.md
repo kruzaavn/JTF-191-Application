@@ -35,7 +35,6 @@ blue carrier operations setting the following items by default
 
 1. Verify that `MissionScripting.lua` file is de-sanitized by commenting our the following block.
 ```lua
-
 do
     --[[ 
     sanitizeModule('os')
@@ -45,7 +44,6 @@ do
     loadlib = nil
     ]]
 end
-
 ```
 **Note** This file is restored to its default state everytime DCS is updated Server managers will have to de-sanitize 
 this file after every update. [OVGME](https://wiki.hoggitworld.com/view/OVGME) is a decent resource to manage this 
@@ -54,7 +52,8 @@ requirement.
 2. Install the Server Manager by copying the following files and directories in the Hooks directory of the DCS server 
 install.
 
-    ```~/Saved Games/DCS.openbeta/Scripts/Hooks
+    ```
+   ~/Saved Games/DCS.openbeta/Scripts/Hooks
         |
         |-gciExportGameGUI.lua
         |-JTFServerManager.lua
