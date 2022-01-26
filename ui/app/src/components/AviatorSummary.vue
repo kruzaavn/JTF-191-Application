@@ -212,7 +212,7 @@ export default {
         headers: { Authorization: `Bearer ${token}` }
       }
       axios.get(
-        `/api/roster/stats/flightlog/timeseries/90days/${this.aviator.id}/`,
+        `/api/roster/stats/flightlog/timeseries/${this.aviator.id}/90/`,
         {},
         config
       ).then((response) => {
