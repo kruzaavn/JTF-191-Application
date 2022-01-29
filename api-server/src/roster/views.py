@@ -533,7 +533,7 @@ class AviatorLiveriesListView(ListCreateAPIView):
         draw = Drawing()
 
         if "font" in prop:
-            draw.font = prop["font"]
+            draw.font = "fonts/" + prop["font"]
 
         if "font_size" in prop:
             draw.font_size = prop["font_size"]
@@ -547,8 +547,11 @@ class AviatorLiveriesListView(ListCreateAPIView):
         text_offset_x = prop["text_offset_x"]
         text_offset_y = prop["text_offset_y"]
 
-        draw.text(text_offset_x, text_offset_y, f"{aviator.rank} {aviator.first_name} {aviator.last_name}")
-        draw.text(text_offset_x, text_offset_y + int(draw.font_size), f"{aviator.callsign}")
+        if "type" in prop and prop["type"] == 2:
+            draw.text(text_offset_x, text_offset_y, f"{aviator.rank} {aviator.first_name} \"{aviator.callsign}\" {aviator.last_name}")
+        else:
+            draw.text(text_offset_x, text_offset_y, f"{aviator.rank} {aviator.first_name} {aviator.last_name}")
+            draw.text(text_offset_x, text_offset_y + int(draw.font_size), f"{aviator.callsign}")
 
         draw(tmp_image)
         

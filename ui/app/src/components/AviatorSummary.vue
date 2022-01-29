@@ -1,4 +1,4 @@
-andrea<template>
+<template>
   <v-card class="mx-4 my-5 py-2" v-if="aviator.status !== 'reserve'" tile>
     <v-row>
       <v-col cols="2">
