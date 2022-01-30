@@ -381,14 +381,7 @@ class EventDetailView(RetrieveUpdateDestroyAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class QualificationListView(ListCreateAPIView):
-
-    queryset = Documentation.objects.all()
-    serializer_class = DocumentationSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-
-class QualificationDetailView(RetrieveUpdateDestroyAPIView):
+class DocumentationListView(ListCreateAPIView):
 
     queryset = Documentation.objects.all()
     serializer_class = DocumentationSerializer
@@ -396,13 +389,6 @@ class QualificationDetailView(RetrieveUpdateDestroyAPIView):
 
 
 class DocumentationModuleListView(ListCreateAPIView):
-
-    queryset = DocumentationModule.objects.all()
-    serializer_class = DocumentationModuleSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-
-class DocumentationModuleDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = DocumentationModule.objects.all()
     serializer_class = DocumentationModuleSerializer
