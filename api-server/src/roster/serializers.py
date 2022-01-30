@@ -82,26 +82,17 @@ class EventCreateSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class QualificationSerializer(serializers.ModelSerializer):
+class DocumentationSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Qualification
+        model = Documentation
         fields = '__all__'
 
 
-class QualificationModuleSerializer(serializers.ModelSerializer):
+class DocumentationModuleSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = QualificationModule
-        fields = '__all__'
-
-
-class QualificationCheckoffSerializer(serializers.ModelSerializer):
-
-    current = serializers.ReadOnlyField()
-
-    class Meta:
-        model = QualificationCheckoff
+        model = DocumentationModule
         fields = '__all__'
 
 
