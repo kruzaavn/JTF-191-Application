@@ -395,14 +395,14 @@ class QualificationDetailView(RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
-class QualificationModuleListView(ListCreateAPIView):
+class DocumentationModuleListView(ListCreateAPIView):
 
     queryset = DocumentationModule.objects.all()
     serializer_class = DocumentationModuleSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
-class QualificationModuleDetailView(RetrieveUpdateDestroyAPIView):
+class DocumentationModuleDetailView(RetrieveUpdateDestroyAPIView):
 
     queryset = DocumentationModule.objects.all()
     serializer_class = DocumentationModuleSerializer

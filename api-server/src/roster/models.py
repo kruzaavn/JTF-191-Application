@@ -181,7 +181,7 @@ class Pilot(models.Model):
 
 class DocumentationModule(models.Model):
     """
-    qualification modules table
+    documentation modules table
 
 
     this table tracks qualification modules tracking module documentation and checkoff periodicity
@@ -195,7 +195,6 @@ class DocumentationModule(models.Model):
                                           default=documentation_types[0],
                                           max_length=1024
                                           )
-    recertification_time = models.DurationField(blank=True, null=True, help_text='DD HH:MM:SS')
 
     def __str__(self):
         return self.name
@@ -203,10 +202,12 @@ class DocumentationModule(models.Model):
 
 class Documentation(models.Model):
     """
-    qualifications table
+    documentation table
 
     This table tracks all modules that make up any particular qualification.
     """
+
+    types = ['training', 'admin']
 
     class Meta:
         verbose_name_plural = 'Documentation'
@@ -214,6 +215,11 @@ class Documentation(models.Model):
     name = models.CharField(max_length=1024)
     modules = models.ManyToManyField(DocumentationModule, blank=True)
     description = models.TextField()
+
+    type = models.CharField(choices=[(x, x) for x in types],
+                            default=types[0],
+                            max_length=1024
+                            )
 
     def __str__(self):
         return self.name
