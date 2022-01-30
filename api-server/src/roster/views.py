@@ -799,7 +799,9 @@ class FlightLogTimeSeriesView(ListAPIView):
                                 from 
                                     flights 
                                 group by 
-                                    date; """
+                                    date
+                                order by
+                                    date ASC; """
 
             logs = FlightLog.objects.raw(sql_query, [self.kwargs['aviator_pk']])
 
@@ -825,7 +827,9 @@ class FlightLogTimeSeriesView(ListAPIView):
                                 where 
                                     date >= current_date - %s
                                 group by 
-                                    date; """
+                                    date
+                                order by
+                                    date ASC; """
 
             logs = FlightLog.objects.raw(sql_query, [self.kwargs['aviator_pk'], self.kwargs['time_span']])
 
@@ -875,7 +879,9 @@ class CombatLogTimeSeriesView(ListAPIView):
                             where 
                                 aviator_id=%s 
                             group by
-                                date; """
+                                date
+                            order by
+                                date ASC; """
 
             logs = CombatLog.objects.raw(sql_query, [self.kwargs['aviator_pk']])
 
@@ -891,7 +897,9 @@ class CombatLogTimeSeriesView(ListAPIView):
                             where 
                                 aviator_id=%s and date >= current_date - %s
                             group by
-                                date; """
+                                date
+                            order by
+                                date ASC; """
 
             logs = CombatLog.objects.raw(sql_query, [self.kwargs['aviator_pk'], self.kwargs['time_span']])
 
