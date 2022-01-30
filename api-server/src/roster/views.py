@@ -25,13 +25,13 @@ from azure.storage.blob import BlockBlobService
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import IntegrityError
 
-from .models import Aviator, Livery, Squadron, HQ, DCSModules, ProspectiveAviator, Event, Qualification, \
-    QualificationModule, QualificationCheckoff, UserImage, Munition, Stores, Operation, FlightLog, CombatLog, \
+from .models import Aviator, Livery, Squadron, HQ, DCSModules, ProspectiveAviator, Event, DocumentationModule, \
+    Documentation, UserImage, Munition, Stores, Operation, FlightLog, CombatLog, \
     Target
 
 from .serializers import AviatorSerializer, CombatLogAggregateSerializer, SquadronSerializer, HQSerializer, \
-    DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, QualificationSerializer, \
-    QualificationModuleSerializer, QualificationCheckoffSerializer, UserSerializer, UserRegisterSerializer, \
+    DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, DocumentationSerializer, \
+    DocumentationModuleSerializer, UserSerializer, UserRegisterSerializer, \
     EventCreateSerializer, MunitionSerializer, StoresSerializer, UserImageSerializer, OperationSerializer, \
     TargetSerializer, FlightLogSerializer, FlightLogAggregateSerializer, FlightLogTimeSeriesSerializer, \
     CombatLogSerializer, CombatLogTimeSeriesSerializer
@@ -383,42 +383,29 @@ class EventDetailView(RetrieveUpdateDestroyAPIView):
 
 class QualificationListView(ListCreateAPIView):
 
-    queryset = Qualification.objects.all()
-    serializer_class = QualificationSerializer
+    queryset = Documentation.objects.all()
+    serializer_class = DocumentationSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class QualificationDetailView(RetrieveUpdateDestroyAPIView):
 
-    queryset = Qualification.objects.all()
-    serializer_class = QualificationSerializer
+    queryset = Documentation.objects.all()
+    serializer_class = DocumentationSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class QualificationModuleListView(ListCreateAPIView):
 
-    queryset = QualificationModule.objects.all()
-    serializer_class = QualificationModuleSerializer
+    queryset = DocumentationModule.objects.all()
+    serializer_class = DocumentationModuleSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
 
 class QualificationModuleDetailView(RetrieveUpdateDestroyAPIView):
 
-    queryset = QualificationModule.objects.all()
-    serializer_class = QualificationModuleSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-
-class QualificationCheckoffListView(ListCreateAPIView):
-
-    queryset = QualificationCheckoff.objects.all()
-    serializer_class = QualificationCheckoffSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-
-class QualificationCheckoffDetailView(RetrieveUpdateDestroyAPIView):
-
-    queryset = QualificationCheckoff.objects.all()
-    serializer_class = QualificationCheckoffSerializer
+    queryset = DocumentationModule.objects.all()
+    serializer_class = DocumentationModuleSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 

@@ -101,30 +101,14 @@ class EventAdmin(admin.ModelAdmin):
     search_fields = ('start',)
 
 
-@admin.register(Qualification)
-class QualificationAdmin(admin.ModelAdmin):
+@admin.register(Documentation)
+class DocumentationAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(QualificationModule)
-class QualificationModuleAdmin(admin.ModelAdmin):
-    list_display = ('name', 'get_requal_days')
-
-    def get_requal_days(self, obj):
-        if obj.recertification_time:
-            return obj.recertification_time.days
-        else:
-            return None
-
-    get_requal_days.short_description = 'Re-qualification Time'
-
-
-@admin.register(QualificationCheckoff)
-class QualificationCheckoffAdmin(admin.ModelAdmin):
-
-    list_display = ('module', 'aviator', 'date', 'current')
-
-    list_filter = ('module__name', 'aviator__callsign')
+@admin.register(DocumentationModule)
+class DocumentationModuleAdmin(admin.ModelAdmin):
+    pass
 
 
 @admin.register(Award)
@@ -185,22 +169,22 @@ class LiveryLuaSectionAdmin(admin.ModelAdmin):
 class FlightLogAdmin(admin.ModelAdmin):
     date_hierarchy = 'time'
 
-    list_display = ('flight_id', 'time', 'type', 'aviator')
+    list_display = ('flight_id', 'time', 'type', 'aviator', 'server')
 
-    list_filter = ('aviator__squadron__designation', 'aviator__squadron__hq__name')
+    list_filter = ('aviator__squadron__designation', 'aviator__squadron__hq__name', 'server')
 
-    search_fields = ('flight_id', 'aviator__callsign')
+    search_fields = ('flight_id', 'aviator__callsign', 'server')
 
 
 @admin.register(CombatLog)
 class CombatLogAdmin(admin.ModelAdmin):
     date_hierarchy = 'time'
 
-    list_display = ('flight_id', 'time', 'type', 'aviator', 'munition', 'target')
+    list_display = ('flight_id', 'time', 'type', 'aviator', 'munition', 'target', 'server')
 
-    list_filter = ('aviator__squadron__designation', 'aviator__squadron__hq__name')
+    list_filter = ('aviator__squadron__designation', 'aviator__squadron__hq__name', 'server')
 
-    search_fields = ('flight_id', 'aviator__callsign')
+    search_fields = ('flight_id', 'aviator__callsign', 'server')
 
 
 @admin.register(Target)
