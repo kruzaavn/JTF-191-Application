@@ -63,6 +63,15 @@ services:
       - ./api-server/src:/server
     command: python manage.py runserver 0.0.0.0:8000
 
+  rqworker:
+    restart: always
+    build: ./api-server
+    command: python manage.py rqworker default
+    depends_on:
+      - redis
+    volumes:
+      - ./api-server/src:/server
+
 
 volumes:
   dbdata:
