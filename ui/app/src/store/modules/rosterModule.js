@@ -14,6 +14,7 @@ const state = {
   operationList: [],
   aviator: {},
   leavesOfAbsence: [],
+  rqToken: 'h58cMzqDikj4NqHKciNEmg0AQ2YKcCkB',
 }
 
 const mutations = {
@@ -64,6 +65,9 @@ const mutations = {
   setAviator(state, aviator) {
     state.aviator = aviator
   },
+  setRqToken(state, token) {
+    state.rqToken = token
+  }
 }
 
 const getters = {
@@ -109,6 +113,9 @@ const getters = {
   operations: (state) => {
     return state.operationList
   },
+  rqToken: (state) => {
+    return state.rqToken
+  }
 }
 
 const actions = {

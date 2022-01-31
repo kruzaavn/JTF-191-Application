@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'storages',
     'roster',
     'gci',
+    'django_rq',
 ]
 
 MIDDLEWARE = [
@@ -141,6 +142,19 @@ CHANNEL_LAYERS = {
             "expiry": 5,
             "group_expiry": 60 * 30
         },
+    },
+}
+
+# Django-RQ Configuration
+RQ_SHOW_ADMIN_LINK = True
+# Harcoding this. To call this API you already need to be logged in and using a token, this is not necessary
+RQ_API_TOKEN = os.getenv('RQ_API_TOKEN', 'h58cMzqDikj4NqHKciNEmg0AQ2YKcCkB')
+RQ_QUEUES = {
+    "default": {
+        "HOST": "redis",
+        "PORT": 6379,
+        "DB": 0,
+        "DEFAULT_TIMEOUT": 360,
     },
 }
 

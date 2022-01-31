@@ -76,10 +76,11 @@ export default {
       show_snackbar: false,
       snackbar_text: "",
       snackbar_timeout: 2000,
+      timer: null,
     }
   },
   computed: {
-    ...mapGetters(['aviator', 'user', 'isAdmin']),
+    ...mapGetters(['aviator', 'user', 'isAdmin', 'rqToken']),
   },
   mounted() {
     this.getUser().then(() => {
@@ -129,9 +130,11 @@ export default {
         url: `/api/roster/liveries/update/`,
         method: 'POST'
       }).then(() => {
-        this.processing = false
-        this.snackbar_text = "Livery package created!"
+        this.snackbar_text = "Process started..."
         this.show_snackbar = true
+        this.timer = setInterval(function () {
+          this.checkQueue()
+        }.bind(this), 10000);
       })
       .catch((error) => {
         console.log(error)
@@ -139,7 +142,40 @@ export default {
         this.snackbar_text = "Error while creating the livery package."
         this.show_snackbar = true
       })
+    },
+    checkQueue() {
+      axios({
+        url: `/django-rq/stats.json/${this.rqToken}`,
+        method: 'GET'
+      }).then((response) => {
+        if ("error" in response.data) {
+          this.processing = false
+          this.snackbar_text = response.data.description
+          this.show_snackbar = true
+          clearInterval(this.timer)
+        } else {
+          const remaining_jobs = response.data.queues[0].jobs
+          if (remaining_jobs > 0) {
+            this.snackbar_text = "Liveries still processing..."
+            this.show_snackbar = true
+          } else if (remaining_jobs == 0){
+            this.processing = false
+            this.snackbar_text = "Livery creation process complete!"
+            this.show_snackbar = true
+            clearInterval(this.timer)
+          }
+        }
+      })
+      .catch((error) => {
+        this.processing = false
+        this.snackbar_text = error
+        this.show_snackbar = true
+        clearInterval(this.timer)
+      })
     }
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
   }
 }
 </script>
