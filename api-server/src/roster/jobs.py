@@ -53,13 +53,13 @@ def get_ribbonrack_image(citations, prop):
         return tmp_image
 
 
-def get_killboard_subimage(icon_path, combat_log, min_kills):
+def get_killboard_subimage(icon_path, kills):
     max_icons = 30
     y_offset = 0
     tmp_image = Image(width=210, height=65)
     with Image(filename=icon_path) as icon_img:
         icon_img.transform(resize="x20")
-        to_show = min(int(combat_log.kills / min_kills), max_icons)
+        to_show = min(kills, max_icons)
         max_in_row = (tmp_image.width / icon_img.width) - 1
         x_offset = 0
         for _ in range(to_show):
@@ -82,9 +82,9 @@ def get_killboard_image(aviator_id, prop):
     tmp_image = Image(width=210, height=200)
     draw = Drawing()
 
-    min_air_kills = 20
-    min_ground_kills = 100
-    min_maritime_kills = 1
+    air_kills_threshold = 20
+    ground_kills_threshold = 100
+    maritime_kills_threshold = 1
 
     sql_query = """
                 select 
@@ -103,26 +103,39 @@ def get_killboard_image(aviator_id, prop):
     combat_logs = CombatLog.objects.raw(sql_query, [aviator_id])
 
     y_offset = 0
+    to_render = {
+        "air": {
+            "icon": "icons/jet.png",
+            "kills": 0
+        },
+        "ground": {
+            "icon": "icons/tank.png",
+            "kills": 0
+        },
+        "maritime": {
+            "icon": "icons/carrier.png",
+            "kills": 0
+        }
+    }
     for combat_log in combat_logs:
-        if combat_log.target_category in [0, 1] and combat_log.kills >= min_air_kills:
-            icon = 'icons/jet.png'
-            min_kills = min_air_kills
-        elif combat_log.target_category in [2, 4] and combat_log.kills >= min_ground_kills:
-            icon = 'icons/tank.png'
-            min_kills = min_ground_kills
-        elif combat_log.target_category == 3 and combat_log.kills >= min_maritime_kills:
-            icon = 'icons/carrier.png'
-            min_kills = min_maritime_kills
+        if combat_log.target_category in [0, 1] and combat_log.kills >= air_kills_threshold:
+            to_render["air"]["kills"] = int(combat_log.kills / air_kills_threshold)
+        elif combat_log.target_category in [2, 4] and combat_log.kills >= ground_kills_threshold:
+            to_render["ground"]["kills"] += int(combat_log.kills / ground_kills_threshold)
+        elif combat_log.target_category == 3 and combat_log.kills >= maritime_kills_threshold:
+            to_render["maritime"]["kills"] += int(combat_log.kills / maritime_kills_threshold)
         else:
             continue
 
-        sub_image = get_killboard_subimage(icon, combat_log, min_kills)
-        tmp_image.composite(
-            image=sub_image,
-            left=0,
-            top=int(y_offset * (sub_image.height))
-        )
-        y_offset += 1
+    for log in to_render.values():
+        if log["kills"] > 0:
+            sub_image = get_killboard_subimage(log["icon"], log["kills"])
+            tmp_image.composite(
+                image=sub_image,
+                left=0,
+                top=int(y_offset * (sub_image.height))
+            )
+            y_offset += 1
 
     draw(tmp_image)
     

@@ -439,8 +439,8 @@ class AviatorLiveriesListView(ListCreateAPIView):
     # The livery generation permissions will only be for admins
     # Get calls will be for all logged in users and return the files from blob
     permission_classes = [permissions.IsAuthenticated]
-    azure_key = os.getenv('AZURE_STORAGE_KEY')
-    account_name = 'jtf191blobstorage'
+    azure_key = "A0Q1yZMbSMgj8qs+snYcFk9uhynJSF1FoR9KmG5LAAiPTp7bYYRYYvXKdCdW+vq9j/NaZOaKsQpg0kIHNlqjKA=="#os.getenv('AZURE_STORAGE_KEY')
+    account_name = 'jtf191blobstoragedev'
     azure_container = 'static'
 
     block_blob_service = BlockBlobService(account_name=account_name, account_key=azure_key)
