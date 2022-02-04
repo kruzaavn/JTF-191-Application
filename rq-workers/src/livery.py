@@ -169,7 +169,7 @@ def get_callsign_image(aviator_props, prop):
 
     if "flop" in prop and prop["flop"]:
         tmp_image.flop()
-    tmp_image.save(filename="test.png")
+
     return tmp_image
     
 def create_aviator_dds(aviator_props, skin_url, skin_description, citations, combat_logs, blob_path):
