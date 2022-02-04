@@ -22,7 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/roster/', include('roster.urls')),
     path('api/gci/', include('gci.urls')),
-    path('api/token_auth/', include('token_auth.urls')),
-    path('django-rq/', include('django_rq.urls'))
+    path('api/token_auth/', include('token_auth.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

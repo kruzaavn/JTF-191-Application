@@ -1,0 +1,5 @@
+rq
+cairosvg
+Wand
+azure-storage-blob==2.1.0
+requests

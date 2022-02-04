@@ -1,22 +1,18 @@
+from fileinput import filename
 import os
-
-from django_rq import job
+from urllib.request import urlopen
 from wand.image import Image
 from wand.drawing import Drawing
 from cairosvg import svg2png
 from azure.storage.blob import BlockBlobService
 from io import BytesIO
 
-from .models import CombatLog
 
-@job
-def create_aviator_lua(aviator, lua_sections, lua_path):
-
+def create_aviator_lua(squadron_designation, aviator_callsign, lua_sections, lua_path):
     lua_text = "livery = {\n"        
     for lua_section in lua_sections:
-        lua_text += f"\n{lua_section.text}\n"
-    lua_text += f"\n}}\nname = \"{aviator.squadron.designation} {aviator.callsign}\""
-
+        lua_text += f"\n{lua_section}\n"
+    lua_text += f"\n}}\nname = \"{squadron_designation} {aviator_callsign}\""
     azure_key = os.getenv('AZURE_STORAGE_KEY')
     account_name = 'jtf191blobstorage'
     azure_container = 'static'
@@ -32,7 +28,7 @@ def get_ribbonrack_image(citations, prop):
         tmp_image = Image(width=len(citations)*img_width, height=img_height)
         draw = Drawing()
         for (idx, citation) in enumerate(citations):
-            with Image(blob=svg2png(bytestring=citation.award.ribbon_image.read())) as cit_img:
+            with Image(blob=svg2png(url=citation)) as cit_img:
                 cit_img.resize(img_width)
                 tmp_image.composite(image=cit_img, left=int(idx * (cit_img.width)), top=0)
 
@@ -78,7 +74,7 @@ def get_killboard_subimage(icon_path, kills):
     return tmp_image
 
 
-def get_killboard_image(aviator_id, prop):
+def get_killboard_image(combat_logs, prop):
     tmp_image = Image(width=210, height=200)
     draw = Drawing()
 
@@ -86,44 +82,28 @@ def get_killboard_image(aviator_id, prop):
     ground_kills_threshold = 100
     maritime_kills_threshold = 1
 
-    sql_query = """
-                select 
-                    COUNT(category) as kills, 
-                    category as target_category, 
-                    1 as id 
-                from 
-                    roster_combatlog 
-                inner join 
-                    roster_target on roster_target.id = roster_combatlog.target_id 
-                where 
-                    aviator_id=%s and type='kill' 
-                group by 
-                    category; """
-
-    combat_logs = CombatLog.objects.raw(sql_query, [aviator_id])
-
     y_offset = 0
     to_render = {
         "air": {
-            "icon": "icons/jet.png",
+            "icon": "/usr/src/workers/src/icons/jet.png",
             "kills": 0
         },
         "ground": {
-            "icon": "icons/tank.png",
+            "icon": "/usr/src/workers/src/icons/tank.png",
             "kills": 0
         },
         "maritime": {
-            "icon": "icons/carrier.png",
+            "icon": "/usr/src/workers/src/icons/carrier.png",
             "kills": 0
         }
     }
     for combat_log in combat_logs:
-        if combat_log.target_category in [0, 1] and combat_log.kills >= air_kills_threshold:
-            to_render["air"]["kills"] = int(combat_log.kills / air_kills_threshold)
-        elif combat_log.target_category in [2, 4] and combat_log.kills >= ground_kills_threshold:
-            to_render["ground"]["kills"] += int(combat_log.kills / ground_kills_threshold)
-        elif combat_log.target_category == 3 and combat_log.kills >= maritime_kills_threshold:
-            to_render["maritime"]["kills"] += int(combat_log.kills / maritime_kills_threshold)
+        if combat_log["target__category"] in [0, 1] and combat_log["kills"] >= air_kills_threshold:
+            to_render["air"]["kills"] = int(combat_log["kills"] / air_kills_threshold)
+        elif combat_log["target__category"] in [2, 4] and combat_log["kills"] >= ground_kills_threshold:
+            to_render["ground"]["kills"] += int(combat_log["kills"] / ground_kills_threshold)
+        elif combat_log["target__category"] == 3 and combat_log["kills"] >= maritime_kills_threshold:
+            to_render["maritime"]["kills"] += int(combat_log["kills"] / maritime_kills_threshold)
         else:
             continue
 
@@ -154,7 +134,7 @@ def get_killboard_image(aviator_id, prop):
     return tmp_image
 
 
-def get_callsign_image(aviator, prop):
+def get_callsign_image(aviator_props, prop):
     tmp_image = Image(width=prop["img_size"]["width"], height=prop["img_size"]["height"])
     draw = Drawing()
 
@@ -174,10 +154,10 @@ def get_callsign_image(aviator, prop):
     text_offset_y = prop["text_offset_y"]
 
     if "type" in prop and prop["type"] == 2:
-        draw.text(text_offset_x, text_offset_y, f"{aviator.rank} {aviator.first_name} \"{aviator.callsign}\" {aviator.last_name}")
+        draw.text(text_offset_x, text_offset_y, f'{aviator_props["rank"]} {aviator_props["first_name"]} "{aviator_props["callsign"]}" {aviator_props["last_name"]}')
     else:
-        draw.text(text_offset_x, text_offset_y, f"{aviator.rank} {aviator.first_name} {aviator.last_name}")
-        draw.text(text_offset_x, text_offset_y + int(draw.font_size), f"{aviator.callsign}")
+        draw.text(text_offset_x, text_offset_y, f'{aviator_props["rank"]} {aviator_props["first_name"]} {aviator_props["last_name"]}')
+        draw.text(text_offset_x, text_offset_y + int(draw.font_size), aviator_props["callsign"])
 
     draw(tmp_image)
     
@@ -189,22 +169,21 @@ def get_callsign_image(aviator, prop):
 
     if "flop" in prop and prop["flop"]:
         tmp_image.flop()
-
+    tmp_image.save(filename="test.png")
     return tmp_image
     
-@job
-def create_aviator_dds(skin, aviator, blob_path):
-    with Image(file=skin.dds_file.open(mode='rb')) as img:
-        for prop in skin.json_description:
+def create_aviator_dds(aviator_props, skin_url, skin_description, citations, combat_logs, blob_path):
+    response = urlopen(skin_url)
+    with Image(file=response) as img:
+        for prop in skin_description:
             if prop["prop"] == "callsign":
-                img.composite(image=get_callsign_image(aviator, prop), left=prop["x"], top=prop["y"])
+                img.composite(image=get_callsign_image(aviator_props, prop), left=prop["x"], top=prop["y"])
 
-            citations = aviator.citations.all()[0:3] # only showing max 3 ribbons
             if prop["prop"] == "award" and citations:
                 img.composite(image=get_ribbonrack_image(citations, prop), left=prop["x"], top=prop["y"])
 
             if prop["prop"] == "killboard" and citations:
-                img.composite(image=get_killboard_image(aviator.id, prop), left=prop["x"], top=prop["y"])
+                img.composite(image=get_killboard_image(combat_logs, prop), left=prop["x"], top=prop["y"])
 
         # Result into a buffer
         buf = BytesIO()

@@ -130,47 +130,15 @@ export default {
         url: `/api/roster/liveries/update/`,
         method: 'POST'
       }).then(() => {
-        this.snackbar_text = "Process started..."
+        this.snackbar_text = "Process started, please check progress here: https://jtf191.com:9181"
         this.show_snackbar = true
-        this.timer = setInterval(function () {
-          this.checkQueue()
-        }.bind(this), 10000);
+        this.processing = false
       })
       .catch((error) => {
         console.log(error)
         this.processing = false
         this.snackbar_text = "Error while creating the livery package."
         this.show_snackbar = true
-      })
-    },
-    checkQueue() {
-      axios({
-        url: `/django-rq/stats.json/${this.rqToken}`,
-        method: 'GET'
-      }).then((response) => {
-        if ("error" in response.data) {
-          this.processing = false
-          this.snackbar_text = response.data.description
-          this.show_snackbar = true
-          clearInterval(this.timer)
-        } else {
-          const remaining_jobs = response.data.queues[0].jobs
-          if (remaining_jobs > 0) {
-            this.snackbar_text = "Liveries still processing..."
-            this.show_snackbar = true
-          } else if (remaining_jobs == 0){
-            this.processing = false
-            this.snackbar_text = "Livery creation process complete!"
-            this.show_snackbar = true
-            clearInterval(this.timer)
-          }
-        }
-      })
-      .catch((error) => {
-        this.processing = false
-        this.snackbar_text = error
-        this.show_snackbar = true
-        clearInterval(this.timer)
       })
     }
   },

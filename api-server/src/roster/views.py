@@ -3,13 +3,17 @@ import zipfile
 import os
 
 from io import BytesIO
+from redis import Redis
+from rq import Queue
 from datetime import date, datetime, time
 from django.core.mail import send_mail
 from django.http.response import HttpResponse
+from django.db.models import Count
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core import serializers
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -32,8 +36,6 @@ from .serializers import AviatorSerializer, CombatLogAggregateSerializer, Squadr
     EventCreateSerializer, MunitionSerializer, StoresSerializer, UserImageSerializer, OperationSerializer, \
     TargetSerializer, FlightLogSerializer, FlightLogAggregateSerializer, FlightLogTimeSeriesSerializer, \
     CombatLogSerializer, CombatLogTimeSeriesSerializer
-
-from .jobs import create_aviator_dds, create_aviator_lua
 
 
 class AviatorListView(ListCreateAPIView):
@@ -472,6 +474,8 @@ class AviatorLiveriesListView(ListCreateAPIView):
                 - Create DDS and LUA files
                 - Upload those to Blob
         """
+        rq_low_queue = Queue("low_priority", connection=Redis("redis"))
+        base_url = "https://jtf191.com"
         if not request.user.is_staff:
             return Response({'detail': ['Not allowed']},
                             status=status.HTTP_403_FORBIDDEN)
@@ -505,17 +509,41 @@ class AviatorLiveriesListView(ListCreateAPIView):
 
             # Get all the livery's skins
             skins = squadron_livery.skins.all()
-            
+            combat_logs =  CombatLog.objects.select_related("target").filter(aviator__id=aviator.id).annotate(kills=Count("target__category")).values("target__category", "kills")
+            aviator_props = {
+                "rank": aviator.rank,
+                "first_name": aviator.first_name,
+                "last_name": aviator.last_name,
+                "callsign": aviator.callsign,
+            }
+
             # Create custom DDS file for aviator and save in blob storage
             for skin in skins:
                 file_name = os.path.basename(skin.dds_file.name)
                 dds_path = f"livery/{airframe_dcs_name}/{squadron} {aviator.callsign}/{file_name}"
-                create_aviator_dds.delay(skin, aviator, dds_path)
+
+                top_citations = aviator.citations.all()[0:3]
+                ribbon_images = [base_url + award.award.ribbon_image.url for award in top_citations]
+
+                rq_low_queue.enqueue(
+                    "livery.create_aviator_dds", 
+                    aviator_props,
+                    base_url + skin.dds_file.url,
+                    skin.json_description,
+                    ribbon_images,
+                    list(combat_logs),
+                    dds_path
+                )
 
             lua_path = f"livery/{airframe_dcs_name}/{squadron} {aviator.callsign}/description.lua"
-            lua_sections = squadron_livery.lua_sections.all()
-            create_aviator_lua.delay(aviator,lua_sections, lua_path)
-           
+            rq_low_queue.enqueue(
+                "livery.create_aviator_lua", 
+                aviator.squadron.designation,
+                aviator.callsign,
+                serializers.serialize("json", squadron_livery.lua_sections.all()),
+                lua_path
+            )
+
         return Response({'detail': "Complete"}, status=status.HTTP_201_CREATED)
 
 
