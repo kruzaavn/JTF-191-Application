@@ -141,9 +141,6 @@ export default {
         this.show_snackbar = true
       })
     }
-  },
-  beforeDestroy() {
-    clearInterval(this.timer)
   }
 }
 </script>
