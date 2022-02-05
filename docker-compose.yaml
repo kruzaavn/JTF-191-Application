@@ -63,16 +63,16 @@ services:
       - ./api-server/src:/server
     command: python manage.py runserver 0.0.0.0:8000
 
-  rqworker:
+  rq-worker:
     restart: always
-    build: ./rq-workers
+    build: ./rq-worker
     command: rq worker -u redis://redis:6379 high_priority low_priority --path /usr/src/workers/src
     depends_on:
       - redis
     links:
       - redis
     volumes:
-      - ./rq-workers:/usr/src/workers
+      - ./rq-worker:/usr/src/workers
 
   rq-dashboard:
     build: ./rq-dashboard

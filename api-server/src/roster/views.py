@@ -466,8 +466,6 @@ class AviatorLiveriesListView(ListCreateAPIView):
         Steps:
         - Get all aviators
         - Per aviator:
-            - Get Position
-            - Get Squadron
             - Per Airframe
                 - Get liveries from Blob based on the above props
                 - Get Skin details from Django
@@ -475,52 +473,60 @@ class AviatorLiveriesListView(ListCreateAPIView):
                 - Upload those to Blob
         """
         rq_low_queue = Queue("low_priority", connection=Redis("redis"))
-        base_url = "https://jtf191.com"
+
+        base_url = request.META['HTTP_HOST']
+
         if not request.user.is_staff:
             return Response({'detail': ['Not allowed']},
                             status=status.HTTP_403_FORBIDDEN)
 
         aviators = Aviator.objects.all()
+
         if not aviators:
             return Response({'detail': ['No Aviators found']},
                             status=status.HTTP_404_NOT_FOUND)
 
         for aviator in aviators:
-            squadron = aviator.squadron.designation
 
             # This is needed as DCS needs a very specific name for each airframe
-            airframe_dcs_name = aviator.squadron.air_frame.dcs_type_name
-            if not airframe_dcs_name:
+            if not aviator.squadron.air_frame.dcs_type_name:
                 # we skip this airframe as it doesn't have the type name set
                 continue
 
-            # Get liveries from DB
-            squadron_livery = Livery.objects.filter(squadron__designation = squadron)\
-                    .filter(position_code = aviator.position_code).first()
-            if not squadron_livery:
-                # No livery for current position
-                # If position is not base, try defaulting to base (4) if present
-                squadron_livery = Livery.objects.filter(squadron__designation = squadron)\
-                    .filter(position_code = 4).first()
+            # Get livery from DB
+            # This first call will return the correct livery for the aviator according to position code, this should
+            # minimize the number of times we have to search the db, pedantic I know.
 
-                if not squadron_livery:
-                    # not base livery set for this airframe, skipping
+            try:
+                squadron_livery = Livery.objects.get(
+                    squadron=aviator.squadron,
+                    position_code=aviator.position_code
+                )
+            except ObjectDoesNotExist:
+                # if that fails then try and get the default
+                try:
+                    squadron_livery = Livery.objects.get(
+                        squadron=aviator.squadron,
+                        position_code=4
+                    )
+
+                except ObjectDoesNotExist:
+
+                    # if both fail then just pass
                     continue
 
             # Get all the livery's skins
             skins = squadron_livery.skins.all()
-            combat_logs =  CombatLog.objects.select_related("target").filter(aviator__id=aviator.id).annotate(kills=Count("target__category")).values("target__category", "kills")
-            aviator_props = {
-                "rank": aviator.rank,
-                "first_name": aviator.first_name,
-                "last_name": aviator.last_name,
-                "callsign": aviator.callsign,
-            }
+
+            combat_logs = CombatLog.objects.select_related("target").filter(
+                aviator__id=aviator.id).annotate(kills=Count("target__category")).values("target__category", "kills")
+
+            aviator_props = AviatorSerializer(aviator).data
 
             # Create custom DDS file for aviator and save in blob storage
             for skin in skins:
                 file_name = os.path.basename(skin.dds_file.name)
-                dds_path = f"livery/{airframe_dcs_name}/{squadron} {aviator.callsign}/{file_name}"
+                dds_path = f"livery/{aviator.squadron.air_frame.dcs_type_name}/{aviator.squadron.designation} {aviator.callsign}/{file_name}"
 
                 top_citations = aviator.citations.all()[0:3]
                 ribbon_images = [base_url + award.award.ribbon_image.url for award in top_citations]
@@ -535,7 +541,7 @@ class AviatorLiveriesListView(ListCreateAPIView):
                     dds_path
                 )
 
-            lua_path = f"livery/{airframe_dcs_name}/{squadron} {aviator.callsign}/description.lua"
+            lua_path = f"livery/{aviator.squadron.air_frame.dcs_type_name}/{aviator.squadron.designation} {aviator.callsign}/description.lua"
             rq_low_queue.enqueue(
                 "livery.create_aviator_lua", 
                 aviator.squadron.designation,
