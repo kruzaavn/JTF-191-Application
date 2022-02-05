@@ -41,6 +41,11 @@
           </v-list-item-content>
         </v-list-item>
         <div v-if="isLoggedIn">
+          <v-list-item to="/documentation/list">
+            <v-list-item-content>
+              <v-list-item-title>Documentation</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
           <v-list-item to="/qualification/list">
             <v-list-item-content>
               <v-list-item-title>Training Qualifications</v-list-item-title>
