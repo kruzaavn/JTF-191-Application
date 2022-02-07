@@ -474,8 +474,6 @@ class AviatorLiveriesListView(ListCreateAPIView):
         """
         rq_low_queue = Queue("low_priority", connection=Redis("redis"))
 
-        base_url = request.META['HTTP_HOST']
-
         if not request.user.is_staff:
             return Response({'detail': ['Not allowed']},
                             status=status.HTTP_403_FORBIDDEN)
@@ -529,12 +527,12 @@ class AviatorLiveriesListView(ListCreateAPIView):
                 dds_path = f"livery/{aviator.squadron.air_frame.dcs_type_name}/{aviator.squadron.designation} {aviator.callsign}/{file_name}"
 
                 top_citations = aviator.citations.all()[0:3]
-                ribbon_images = [base_url + award.award.ribbon_image.url for award in top_citations]
+                ribbon_images = [award.award.ribbon_image.url for award in top_citations]
 
                 rq_low_queue.enqueue(
                     "livery.create_aviator_dds", 
                     aviator_props,
-                    base_url + skin.dds_file.url,
+                    skin.dds_file.url,
                     skin.json_description,
                     ribbon_images,
                     list(combat_logs),
