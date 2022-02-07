@@ -23,7 +23,7 @@ jobs:
     strategy:
       matrix:
         # listed here are the directories to build from
-        component: [api-relay, api-server, bot, gateway, gci-relay, ui]
+        component: [api-relay, api-server, bot, gateway, gci-relay, ui, rq-worker]
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE
       - uses: actions/checkout@v2
@@ -49,7 +49,7 @@ jobs:
     strategy:
       matrix:
         # listed here are the resources to be restarted
-        component: [ gci-relay, api-relay, munitions-relay, api-server, bot, ui ]
+        component: [ gci-relay, api-relay, rq-worker, munitions-relay, api-server, bot, ui ]
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE
       - uses: actions/checkout@v1

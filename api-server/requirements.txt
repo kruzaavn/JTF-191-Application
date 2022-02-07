@@ -18,3 +18,4 @@ azure-storage-blob
 jsonschema
 cairosvg
 django-json-widget
+rq

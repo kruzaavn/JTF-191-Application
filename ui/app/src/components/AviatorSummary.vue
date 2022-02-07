@@ -1,4 +1,4 @@
-andrea<template>
+<template>
   <v-card class="mx-4 my-5 py-2" v-if="aviator.status !== 'reserve'" tile>
     <v-row>
       <v-col cols="2">
@@ -171,11 +171,18 @@ export default {
       return data
     },
     toKillsTable(kills) {
-      let data = []
-
-      for (const target in kills) {
-        data.push({ target: kills[target].type, number: kills[target].kills })
-      }
+      let data = [];
+      kills.reduce(function(res, value) {
+        if (!res[value.type]) {
+          res[value.type] = {
+            number: 0,
+            target: value.type
+          };
+          data.push(res[value.type])
+        }
+        res[value.type].number += value.kills
+        return res;
+      }, {});
       return data
     },
     getAviatorAggregatedFlightStats(aviatorId) {

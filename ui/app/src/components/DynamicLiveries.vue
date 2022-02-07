@@ -76,10 +76,11 @@ export default {
       show_snackbar: false,
       snackbar_text: "",
       snackbar_timeout: 2000,
+      timer: null,
     }
   },
   computed: {
-    ...mapGetters(['aviator', 'user', 'isAdmin']),
+    ...mapGetters(['aviator', 'user', 'isAdmin', 'rqToken']),
   },
   mounted() {
     this.getUser().then(() => {
@@ -129,9 +130,9 @@ export default {
         url: `/api/roster/liveries/update/`,
         method: 'POST'
       }).then(() => {
-        this.processing = false
-        this.snackbar_text = "Livery package created!"
+        this.snackbar_text = "Process started, please check progress here: https://jtf191.com:9181"
         this.show_snackbar = true
+        this.processing = false
       })
       .catch((error) => {
         console.log(error)

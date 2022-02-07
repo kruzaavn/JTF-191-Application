@@ -3,23 +3,24 @@ import zipfile
 import os
 
 from io import BytesIO
+from redis import Redis
+from rq import Queue
 from datetime import date, datetime, time
 from django.core.mail import send_mail
 from django.http.response import HttpResponse
+from django.db.models import Count
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core import serializers
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView, ListAPIView
 from rest_framework import permissions, authentication
 from django.core.exceptions import ObjectDoesNotExist
-from wand.image import Image
-from wand.drawing import Drawing
-from cairosvg import svg2svg, svg2png
-from urllib.request import urlopen
+
 from azure.storage.blob import BlockBlobService
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
@@ -465,237 +466,91 @@ class AviatorLiveriesListView(ListCreateAPIView):
         Steps:
         - Get all aviators
         - Per aviator:
-            - Get Position
-            - Get Squadron
             - Per Airframe
                 - Get liveries from Blob based on the above props
                 - Get Skin details from Django
                 - Create DDS and LUA files
                 - Upload those to Blob
         """
+        rq_low_queue = Queue("low_priority", connection=Redis("redis"))
+
+        base_url = request.META['HTTP_HOST']
+
         if not request.user.is_staff:
             return Response({'detail': ['Not allowed']},
                             status=status.HTTP_403_FORBIDDEN)
 
         aviators = Aviator.objects.all()
+
         if not aviators:
             return Response({'detail': ['No Aviators found']},
                             status=status.HTTP_404_NOT_FOUND)
 
         for aviator in aviators:
-            squadron = aviator.squadron.designation
 
             # This is needed as DCS needs a very specific name for each airframe
-            airframe_dcs_name = aviator.squadron.air_frame.dcs_type_name
-            if not airframe_dcs_name:
+            if not aviator.squadron.air_frame.dcs_type_name:
                 # we skip this airframe as it doesn't have the type name set
                 continue
 
-            # Get liveries from DB
-            squadron_livery = Livery.objects.filter(squadron__designation = squadron)\
-                    .filter(position_code = aviator.position_code).first()
-            if not squadron_livery:
-                # No livery for current position
-                # If position is not base, try defaulting to base (4) if present
-                squadron_livery = Livery.objects.filter(squadron__designation = squadron)\
-                    .filter(position_code = 4).first()
+            # Get livery from DB
+            # This first call will return the correct livery for the aviator according to position code, this should
+            # minimize the number of times we have to search the db, pedantic I know.
 
-                if not squadron_livery:
-                    # not base livery set for this airframe, skipping
+            try:
+                squadron_livery = Livery.objects.get(
+                    squadron=aviator.squadron,
+                    position_code=aviator.position_code
+                )
+            except ObjectDoesNotExist:
+                # if that fails then try and get the default
+                try:
+                    squadron_livery = Livery.objects.get(
+                        squadron=aviator.squadron,
+                        position_code=4
+                    )
+
+                except ObjectDoesNotExist:
+
+                    # if both fail then just pass
                     continue
 
             # Get all the livery's skins
             skins = squadron_livery.skins.all()
-            
+
+            combat_logs = CombatLog.objects.select_related("target").filter(
+                aviator__id=aviator.id).annotate(kills=Count("target__category")).values("target__category", "kills")
+
+            aviator_props = AviatorSerializer(aviator).data
+
             # Create custom DDS file for aviator and save in blob storage
             for skin in skins:
                 file_name = os.path.basename(skin.dds_file.name)
-                dds_path = f"livery/{airframe_dcs_name}/{squadron} {aviator.callsign}/{file_name}"
-                self.create_aviator_dds(skin, aviator, dds_path)
+                dds_path = f"livery/{aviator.squadron.air_frame.dcs_type_name}/{aviator.squadron.designation} {aviator.callsign}/{file_name}"
 
-            lua_path = f"livery/{airframe_dcs_name}/{squadron} {aviator.callsign}/description.lua"
-            lua_sections = squadron_livery.lua_sections.all()
-            self.create_aviator_lua(aviator,lua_sections, lua_path)
-           
-        return Response({'detail': "Complete"}, status=status.HTTP_201_CREATED)
+                top_citations = aviator.citations.all()[0:3]
+                ribbon_images = [base_url + award.award.ribbon_image.url for award in top_citations]
 
-    def create_aviator_lua(self, aviator, lua_sections, lua_path):
-
-        lua_text = "livery = {\n"        
-        for lua_section in lua_sections:
-            lua_text += f"\n{lua_section.text}\n"
-        lua_text += f"\n}}\nname = \"{aviator.squadron.designation} {aviator.callsign}\""
-
-        self.block_blob_service.create_blob_from_text(self.azure_container, lua_path, lua_text)
-
-    def get_callsign_image(self, aviator, prop):
-        tmp_image = Image(width=prop["img_size"]["width"], height=prop["img_size"]["height"])
-        draw = Drawing()
-
-        if "font" in prop:
-            draw.font = prop["font"]
-
-        if "font_size" in prop:
-            draw.font_size = prop["font_size"]
-
-        if "font_opacity" in prop:
-            draw.fill_opacity = prop["font_opacity"]
-
-        if "font_alignment" in prop:
-            draw.text_alignment = prop["font_alignment"]
-
-        text_offset_x = prop["text_offset_x"]
-        text_offset_y = prop["text_offset_y"]
-
-        draw.text(text_offset_x, text_offset_y, f"{aviator.rank} {aviator.first_name} {aviator.last_name}")
-        draw.text(text_offset_x, text_offset_y + int(draw.font_size), f"{aviator.callsign}")
-
-        draw(tmp_image)
-        
-        if "angle" in prop:
-            tmp_image.rotate(prop["angle"])
-
-        if "flip" in prop and prop["flip"]:
-            tmp_image.flip()
-
-        if "flop" in prop and prop["flop"]:
-            tmp_image.flop()
-
-        return tmp_image
-   
-    def get_ribbonrack_image(self, citations, prop):
-        if citations:
-            img_width = 100
-            img_height = 28
-            tmp_image = Image(width=len(citations)*img_width, height=img_height)
-            draw = Drawing()
-            for (idx, citation) in enumerate(citations):
-                with Image(blob=svg2png(bytestring=citation.award.ribbon_image.read())) as cit_img:
-                    cit_img.resize(img_width)
-                    tmp_image.composite(image=cit_img, left=int(idx * (cit_img.width)), top=0)
-
-            draw(tmp_image)
-            
-            if "angle" in prop:
-                tmp_image.rotate(prop["angle"])
-
-            if "flip" in prop and prop["flip"]:
-                tmp_image.flip()
-
-            if "flop" in prop and prop["flop"]:
-                tmp_image.flop()
-            
-            if "scale" in prop and prop["scale"]:
-                tmp_image.transform(resize=prop["scale"])
-
-            return tmp_image
-
-    def get_killboard_subimage(self, icon_path, combat_log, min_kills):
-        max_icons = 30
-        y_offset = 0
-        tmp_image = Image(width=210, height=65)
-        with Image(filename=icon_path) as icon_img:
-            icon_img.transform(resize="x20")
-            to_show = min(int(combat_log.kills / min_kills), max_icons)
-            max_in_row = (tmp_image.width / icon_img.width) - 1
-            x_offset = 0
-            for _ in range(to_show):
-                if x_offset >= max_in_row:
-                    x_offset = 0
-                    y_offset += 1
-
-                tmp_image.composite(
-                    image=icon_img,
-                    left=int(x_offset * (icon_img.width)),
-                    top=int(y_offset * (icon_img.width))
+                rq_low_queue.enqueue(
+                    "livery.create_aviator_dds", 
+                    aviator_props,
+                    base_url + skin.dds_file.url,
+                    skin.json_description,
+                    ribbon_images,
+                    list(combat_logs),
+                    dds_path
                 )
-                x_offset += 1
-            y_offset += 1
 
-        return tmp_image
-
-    def get_killboard_image(self, aviator_id, prop):
-        tmp_image = Image(width=210, height=200)
-        draw = Drawing()
-
-        min_air_kills = 20
-        min_ground_kills = 100
-        min_maritime_kills = 1
-
-        sql_query = """
-                    select 
-                        COUNT(category) as kills, 
-                        category as target_category, 
-                        1 as id 
-                    from 
-                        roster_combatlog 
-                    inner join 
-                        roster_target on roster_target.id = roster_combatlog.target_id 
-                    where 
-                        aviator_id=%s and type='kill' 
-                    group by 
-                        category; """
-
-        combat_logs = CombatLog.objects.raw(sql_query, [aviator_id])
-
-        y_offset = 0
-        for combat_log in combat_logs:
-            if combat_log.target_category in [0, 1] and combat_log.kills >= min_air_kills:
-                icon = 'icons/jet.png'
-                min_kills = min_air_kills
-            elif combat_log.target_category in [2, 4] and combat_log.kills >= min_ground_kills:
-                icon = 'icons/tank.png'
-                min_kills = min_ground_kills
-            elif combat_log.target_category == 3 and combat_log.kills >= min_maritime_kills:
-                icon = 'icons/carrier.png'
-                min_kills = min_maritime_kills
-            else:
-                continue
-
-            sub_image = self.get_killboard_subimage(icon, combat_log, min_kills)
-            tmp_image.composite(
-                image=sub_image,
-                left=0,
-                top=int(y_offset * (sub_image.height))
+            lua_path = f"livery/{aviator.squadron.air_frame.dcs_type_name}/{aviator.squadron.designation} {aviator.callsign}/description.lua"
+            rq_low_queue.enqueue(
+                "livery.create_aviator_lua", 
+                aviator.squadron.designation,
+                aviator.callsign,
+                serializers.serialize("json", squadron_livery.lua_sections.all()),
+                lua_path
             )
-            y_offset += 1
 
-        draw(tmp_image)
-        
-        if "angle" in prop:
-            tmp_image.rotate(prop["angle"])
-
-        if "flip" in prop and prop["flip"]:
-            tmp_image.flip()
-
-        if "flop" in prop and prop["flop"]:
-            tmp_image.flop()
-        
-        if "scale" in prop and prop["scale"]:
-            tmp_image.transform(resize=prop["scale"])
-
-        return tmp_image
-
-    def create_aviator_dds(self, skin, aviator, blob_path):
-
-        with Image(file=skin.dds_file.open(mode='rb')) as img:
-            for prop in skin.json_description:
-                if prop["prop"] == "callsign":
-                    img.composite(image=self.get_callsign_image(aviator, prop), left=prop["x"], top=prop["y"])
-
-                citations = aviator.citations.all()[0:3] # only showing max 3 ribbons
-                if prop["prop"] == "award" and citations:
-                    img.composite(image=self.get_ribbonrack_image(citations, prop), left=prop["x"], top=prop["y"])
-
-                if prop["prop"] == "killboard" and citations:
-                    img.composite(image=self.get_killboard_image(aviator.id, prop), left=prop["x"], top=prop["y"])
-
-            # Result into a buffer
-            buf = BytesIO()
-            img.compression = 'dxt1'
-            img.save(file=buf)
-            
-            self.block_blob_service.create_blob_from_bytes(container_name=self.azure_container, blob_name=blob_path, blob=buf.getvalue())
+        return Response({'detail': "Complete"}, status=status.HTTP_201_CREATED)
 
 
 class TargetListView(ListAPIView):
