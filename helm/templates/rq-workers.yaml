@@ -19,4 +19,4 @@ spec:
         image: "{{ .Values.image.registryUrl }}/rq-worker:{{ .Values.image.tag }}"
         imagePullPolicy: Always
         command: ["rq"]
-        args: ["worker", "-u", "redis://redis:6379", "high_priority", "low_priority", "--path", "/usr/src/workers/src"]
+        args: ["worker", "-u", "redis://redis:6379", "high_priority", "low_priority", "--path", "/worker"]
