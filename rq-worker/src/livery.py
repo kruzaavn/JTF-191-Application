@@ -1,5 +1,6 @@
 from fileinput import filename
 import os
+import json
 from urllib.request import urlopen
 from wand.image import Image
 from wand.drawing import Drawing
@@ -11,10 +12,10 @@ from io import BytesIO
 def create_aviator_lua(squadron_designation, aviator_callsign, lua_sections, lua_path):
     lua_text = "livery = {\n"        
     for lua_section in lua_sections:
-        lua_text += f"\n{lua_section}\n"
+        lua_text += f"\n{lua_section['text']}\n"
     lua_text += f"\n}}\nname = \"{squadron_designation} {aviator_callsign}\""
     azure_key = os.getenv('AZURE_STORAGE_KEY')
-    account_name = 'jtf191blobstorage'
+    account_name = os.getenv('AZURE_STORAGE_ACCOUNT_NAME', 'jtf191blobstorage')
     azure_container = 'static'
     block_blob_service = BlockBlobService(account_name=account_name, account_key=azure_key)
 
@@ -191,7 +192,7 @@ def create_aviator_dds(aviator_props, skin_url, skin_description, citations, com
         img.save(file=buf)
 
         azure_key = os.getenv('AZURE_STORAGE_KEY')
-        account_name = 'jtf191blobstorage'
+        account_name = os.getenv('AZURE_STORAGE_ACCOUNT_NAME', 'jtf191blobstorage')
         azure_container = 'static'
         block_blob_service = BlockBlobService(account_name=account_name, account_key=azure_key)
 

@@ -59,6 +59,9 @@ services:
     depends_on:
       - db
       - redis
+    environment:
+      - AZURE_STORAGE_ACCOUNT_NAME
+      - AZURE_STORAGE_KEY
     volumes:
       - ./api-server/src:/server
     command: python manage.py runserver 0.0.0.0:8000
@@ -71,6 +74,9 @@ services:
       - redis
     links:
       - redis
+    environment:
+      - AZURE_STORAGE_ACCOUNT_NAME
+      - AZURE_STORAGE_KEY
     volumes:
       - ./rq-worker:/usr/src/workers
 

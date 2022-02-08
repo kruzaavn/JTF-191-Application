@@ -155,6 +155,8 @@ class LiveryLuaSectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = LiveryLuaSection
         fields = '__all__'
+
+
 class TargetSerializer(serializers.ModelSerializer):
 
     type = serializers.ReadOnlyField()
