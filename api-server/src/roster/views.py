@@ -13,7 +13,6 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core import serializers
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -30,7 +29,7 @@ from .models import Aviator, Livery, Squadron, HQ, DCSModules, ProspectiveAviato
     Documentation, UserImage, Munition, Stores, Operation, FlightLog, CombatLog, \
     Target
 
-from .serializers import AviatorSerializer, CombatLogAggregateSerializer, SquadronSerializer, HQSerializer, \
+from .serializers import AviatorSerializer, CombatLogAggregateSerializer, LiveryLuaSectionSerializer, SquadronSerializer, HQSerializer, \
     DCSModuleSerializer, ProspectiveAviatorSerializer, EventSerializer, DocumentationSerializer, \
     DocumentationModuleSerializer, UserSerializer, UserRegisterSerializer, \
     EventCreateSerializer, MunitionSerializer, StoresSerializer, UserImageSerializer, OperationSerializer, \
@@ -442,7 +441,7 @@ class AviatorLiveriesListView(ListCreateAPIView):
     # Get calls will be for all logged in users and return the files from blob
     permission_classes = [permissions.IsAuthenticated]
     azure_key = os.getenv('AZURE_STORAGE_KEY')
-    account_name = 'jtf191blobstorage'
+    account_name = os.getenv('AZURE_STORAGE_ACCOUNT_NAME', 'jtf191blobstorage')
     azure_container = 'static'
 
     block_blob_service = BlockBlobService(account_name=account_name, account_key=azure_key)
@@ -540,11 +539,13 @@ class AviatorLiveriesListView(ListCreateAPIView):
                 )
 
             lua_path = f"livery/{aviator.squadron.air_frame.dcs_type_name}/{aviator.squadron.designation} {aviator.callsign}/description.lua"
+            lua_sections = LiveryLuaSectionSerializer(squadron_livery.lua_sections, many=True).data
+
             rq_low_queue.enqueue(
                 "livery.create_aviator_lua", 
                 aviator.squadron.designation,
                 aviator.callsign,
-                serializers.serialize("json", squadron_livery.lua_sections.all()),
+                lua_sections,
                 lua_path
             )
 
