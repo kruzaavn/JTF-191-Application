@@ -86,15 +86,15 @@ def get_killboard_image(combat_logs, prop):
     y_offset = 0
     to_render = {
         "air": {
-            "icon": "/usr/src/workers/src/icons/jet.png",
+            "icon": "/worker/icons/jet.png",
             "kills": 0
         },
         "ground": {
-            "icon": "/usr/src/workers/src/icons/tank.png",
+            "icon": "/worker/icons/tank.png",
             "kills": 0
         },
         "maritime": {
-            "icon": "/usr/src/workers/src/icons/carrier.png",
+            "icon": "/worker/icons/carrier.png",
             "kills": 0
         }
     }
@@ -140,7 +140,7 @@ def get_callsign_image(aviator_props, prop):
     draw = Drawing()
 
     if "font" in prop:
-        draw.font = "fonts/" + prop["font"]
+        draw.font = "/worker/fonts/" + prop["font"]
 
     if "font_size" in prop:
         draw.font_size = prop["font_size"]
@@ -172,6 +172,46 @@ def get_callsign_image(aviator_props, prop):
         tmp_image.flop()
 
     return tmp_image
+
+
+def get_bort_numbers_image(aviator_props, prop):
+    tmp_image = Image(width=prop["img_size"]["width"], height=prop["img_size"]["height"])
+
+    if "tail_number" not in aviator_props:
+        return tmp_image
+ 
+    draw = Drawing()
+
+    if "font" in prop:
+        draw.font = "/worker/fonts/" + prop["font"]
+
+    if "font_size" in prop:
+        draw.font_size = prop["font_size"]
+
+    if "font_opacity" in prop:
+        draw.fill_opacity = prop["font_opacity"]
+
+    if "font_alignment" in prop:
+        draw.text_alignment = prop["font_alignment"]
+
+    text_offset_x = prop["text_offset_x"]
+    text_offset_y = prop["text_offset_y"]
+
+    draw.text(text_offset_x, text_offset_y + int(draw.font_size), aviator_props["tail_number"])
+
+    draw(tmp_image)
+    
+    if "angle" in prop:
+        tmp_image.rotate(prop["angle"])
+
+    if "flip" in prop and prop["flip"]:
+        tmp_image.flip()
+
+    if "flop" in prop and prop["flop"]:
+        tmp_image.flop()
+
+    return tmp_image
+
     
 def create_aviator_dds(aviator_props, skin_url, skin_description, citations, combat_logs, blob_path):
     response = urlopen(skin_url)
@@ -185,6 +225,9 @@ def create_aviator_dds(aviator_props, skin_url, skin_description, citations, com
 
             if prop["prop"] == "killboard" and citations:
                 img.composite(image=get_killboard_image(combat_logs, prop), left=prop["x"], top=prop["y"])
+                
+            if prop["prop"] == "bort" and citations:
+                img.composite(image=get_bort_numbers_image(aviator_props, prop), left=prop["x"], top=prop["y"])
 
         # Result into a buffer
         buf = BytesIO()

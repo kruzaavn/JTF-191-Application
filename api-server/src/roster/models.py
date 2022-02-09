@@ -494,8 +494,10 @@ class LiverySkin(models.Model):
     def save(self, *args, **kwargs):
         try:
             this = LiverySkin.objects.get(id=self.id)
-            print(this.dds_file.path)
-            if this.dds_file:
+
+            # Avoid deleting when there is no new file
+            # i.e. clicking save without uploading a new one
+            if this.dds_file and self.dds_file != this.dds_file:
                 this.dds_file.storage.delete(this.dds_file.name)
         except ObjectDoesNotExist:
             pass
