@@ -1,6 +1,4 @@
-from fileinput import filename
 import os
-import json
 from urllib.request import urlopen
 from wand.image import Image
 from wand.drawing import Drawing

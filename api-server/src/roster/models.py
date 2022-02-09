@@ -1,10 +1,9 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator, BaseValidator
 from django.contrib.auth.models import User
-from datetime import datetime, date
+from datetime import datetime
 import jsonschema
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-import os
 
 def stats_default():
     return {"hours": {}, "kills": {}}
