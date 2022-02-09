@@ -5,7 +5,6 @@ import os
 from io import BytesIO
 from redis import Redis
 from rq import Queue
-from urllib.parse import urlparse
 from datetime import date, datetime, time
 from django.core.mail import send_mail
 from django.http.response import HttpResponse
