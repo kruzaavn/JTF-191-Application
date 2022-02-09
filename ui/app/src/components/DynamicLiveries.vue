@@ -130,7 +130,7 @@ export default {
         url: `/api/roster/liveries/update/`,
         method: 'POST'
       }).then(() => {
-        this.snackbar_text = "Process started, please check progress here: https://jtf191.com:9181"
+        this.snackbar_text = "Process started..."
         this.show_snackbar = true
         this.processing = false
       })

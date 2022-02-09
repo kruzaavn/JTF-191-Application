@@ -1,9 +1,9 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator, BaseValidator
 from django.contrib.auth.models import User
-from datetime import datetime, date
+from datetime import datetime
 import jsonschema
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
 def stats_default():
     return {"hours": {}, "kills": {}}
@@ -481,12 +481,26 @@ class LiverySkin(models.Model):
         ]
     }
     name = models.CharField(max_length=128)
-    dds_file = models.FileField(upload_to='livery_dds', unique=True)
+    dds_file = models.FileField(upload_to='livery_dds')
     json_description = models.JSONField(
         blank=True,
         null=True,
         validators=[LiverySkinJsonValidator(limit_value=JSON_FIELD_SCHEMA)]
     )
+
+    # Allows for overwrites of the existing dds_file with the same name
+    # As they are referenced in the Lua file an need to be consistent
+    def save(self, *args, **kwargs):
+        try:
+            this = LiverySkin.objects.get(id=self.id)
+
+            # Avoid deleting when there is no new file
+            # i.e. clicking save without uploading a new one
+            if this.dds_file and self.dds_file != this.dds_file:
+                this.dds_file.storage.delete(this.dds_file.name)
+        except ObjectDoesNotExist:
+            pass
+        super(LiverySkin, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
