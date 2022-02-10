@@ -22,6 +22,7 @@
         depressed
         :disabled="processing"
         @click="createLiveryPackage"
+        v-if="isAdmin"
       >
         Create livery package
       </v-btn>
