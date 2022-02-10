@@ -69,7 +69,7 @@ services:
   rq-worker:
     restart: always
     build: ./rq-worker
-    command: rq worker -u redis://redis:6379 high_priority low_priority --path /worker
+    command: rq worker -u redis://redis:6379 high_priority liveries --path /worker
     depends_on:
       - redis
     links:

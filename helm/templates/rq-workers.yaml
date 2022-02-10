@@ -19,7 +19,7 @@ spec:
         image: "{{ .Values.image.registryUrl }}/rq-worker:{{ .Values.image.tag }}"
         imagePullPolicy: Always
         command: ["rq"]
-        args: ["worker", "-u", "redis://redis:6379", "high_priority", "low_priority", "--path", "/worker"]
+        args: ["worker", "-u", "redis://redis:6379", "high_priority", "liveries", "--path", "/worker"]
         env:
           - name: AZURE_STORAGE_KEY
             valueFrom:
