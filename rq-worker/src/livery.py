@@ -1,6 +1,7 @@
 import os
 from urllib.request import urlopen
 from wand.image import Image
+from wand.color import Color
 from wand.drawing import Drawing
 from cairosvg import svg2png
 from azure.storage.blob import BlockBlobService
@@ -149,14 +150,22 @@ def get_callsign_image(aviator_props, prop):
     if "font_alignment" in prop:
         draw.text_alignment = prop["font_alignment"]
 
+    if "font_color" in prop:
+        draw.fill_color = Color(prop["font_color"])
+
+    quotes = ""
+    if "callsign_quotes" in prop and prop["callsign_quotes"] == "1":
+        quotes = "\""
+
     text_offset_x = prop["text_offset_x"]
     text_offset_y = prop["text_offset_y"]
 
+    callsign = quotes + aviator_props["callsign"] + quotes
     if "type" in prop and prop["type"] == 2:
-        draw.text(text_offset_x, text_offset_y, f'{aviator_props["rank"]} {aviator_props["first_name"]} "{aviator_props["callsign"]}" {aviator_props["last_name"]}')
+        draw.text(text_offset_x, text_offset_y, f'{aviator_props["rank"]} {aviator_props["first_name"]} {callsign} {aviator_props["last_name"]}')
     else:
         draw.text(text_offset_x, text_offset_y, f'{aviator_props["rank"]} {aviator_props["first_name"]} {aviator_props["last_name"]}')
-        draw.text(text_offset_x, text_offset_y + int(draw.font_size), aviator_props["callsign"])
+        draw.text(text_offset_x, text_offset_y + int(draw.font_size), callsign)
 
     draw(tmp_image)
     
@@ -191,6 +200,9 @@ def get_bort_numbers_image(aviator_props, prop):
 
     if "font_alignment" in prop:
         draw.text_alignment = prop["font_alignment"]
+
+    if "font_color" in prop:
+        draw.fill_color = Color(prop["font_color"])
 
     text_offset_x = prop["text_offset_x"]
     text_offset_y = prop["text_offset_y"]
