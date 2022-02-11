@@ -761,13 +761,13 @@ class RqQueueStatusListView(ListAPIView):
 
             jobs = Job.fetch_many(job_queue.get_jobs(), connection=connection)
 
-            job_status = [
+            jobs_status = [
                 {'id': x.id,
                  'status': x.get_status(),
                  'function': x.func_name,
                  'worker': x.worker_name
                  } for x in jobs]
 
-            return Response(job_status, status=status.HTTP_200_OK)
+            return Response(jobs_status, status=status.HTTP_200_OK)
         except Exception as e:
             return Response("error: " + str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
