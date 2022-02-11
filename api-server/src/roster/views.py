@@ -749,7 +749,7 @@ class CombatLogTimeSeriesView(ListAPIView):
         return logs
 
 
-class RqQueueStatusListView(ListAPIView):
+class RqQueueStatusListView(APIView):
     # Return the status of the passed RQ queue, if it exists
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
