@@ -759,7 +759,7 @@ class RqQueueStatusListView(ListAPIView):
             job_queue = Queue(self.kwargs.get('name'), connection=connection)
             workers = Worker.all(queue=job_queue)
 
-            jobs = Job.fetch_many(job_queue.get_jobs(), connection=connection)
+            jobs = Job.fetch_many(job_queue.get_job_ids(), connection=connection)
 
             jobs_status = [
                 {'id': x.id,
