@@ -6,6 +6,7 @@ import os
 from io import BytesIO
 from redis import Redis
 from rq import Queue, Worker
+from rq.job import Job
 from datetime import date, datetime, time
 from django.core.mail import send_mail
 from django.http.response import HttpResponse
@@ -754,9 +755,19 @@ class RqQueueStatusListView(ListAPIView):
 
     def get(self, request, *args, **kwargs):
         try:
-            rq_low_queue = Queue(self.kwargs.get('name'), connection=Redis("redis"))
-            workers = Worker.all(queue=rq_low_queue)
-            active_worker = workers[0]
-            return Response(active_worker.state, status=status.HTTP_200_OK)
+            connection = Redis("redis")
+            job_queue = Queue(self.kwargs.get('name'), connection=connection)
+            workers = Worker.all(queue=job_queue)
+
+            jobs = Job.fetch_many(job_queue.get_jobs(), connection=connection)
+
+            job_status = [
+                {'id': x.id,
+                 'status': x.get_status(),
+                 'function': x.func_name,
+                 'worker': x.worker_name
+                 } for x in jobs]
+
+            return Response(job_status, status=status.HTTP_200_OK)
         except Exception as e:
             return Response("error: " + str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
