@@ -22,6 +22,7 @@
         depressed
         :disabled="processing"
         @click="createLiveryPackage"
+        v-if="isAdmin"
       >
         Create livery package
       </v-btn>
@@ -132,7 +133,9 @@ export default {
       }).then(() => {
         this.snackbar_text = "Process started..."
         this.show_snackbar = true
-        this.processing = false
+        this.timer = setInterval(function () {
+          this.checkQueue()
+        }.bind(this), 10000);
       })
       .catch((error) => {
         console.log(error)
@@ -140,7 +143,40 @@ export default {
         this.snackbar_text = "Error while creating the livery package."
         this.show_snackbar = true
       })
+    },
+    checkQueue() {
+      axios({
+        url: `/api/roster/rq/queue/liveries/status/`,
+        method: 'GET'
+      }).then((response) => {
+        console.log(response.data)
+        if (response.data.includes("error")) {
+          this.processing = false
+          this.snackbar_text = response.data.error
+          this.show_snackbar = true
+          clearInterval(this.timer)
+        } else {
+          if (response.data != 'idle') {
+            this.snackbar_text = "Liveries still processing.. (" + response.data + ")"
+            this.show_snackbar = true
+          } else {
+            this.processing = false
+            this.snackbar_text = "Livery creation process complete!"
+            this.show_snackbar = true
+            clearInterval(this.timer)
+          }
+        }
+      })
+      .catch((error) => {
+        this.processing = false
+        this.snackbar_text = error
+        this.show_snackbar = true
+        clearInterval(this.timer)
+      })
     }
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
   }
 }
 </script>

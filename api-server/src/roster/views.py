@@ -1,10 +1,11 @@
 import pprint
+import queue
 import zipfile
 import os
 
 from io import BytesIO
 from redis import Redis
-from rq import Queue
+from rq import Queue, Worker
 from datetime import date, datetime, time
 from django.core.mail import send_mail
 from django.http.response import HttpResponse
@@ -471,7 +472,7 @@ class AviatorLiveriesListView(ListCreateAPIView):
                 - Create DDS and LUA files
                 - Upload those to Blob
         """
-        rq_low_queue = Queue("low_priority", connection=Redis("redis"))
+        rq_low_queue = Queue("liveries", connection=Redis("redis"))
 
         if not request.user.is_staff:
             return Response({'detail': ['Not allowed']},
@@ -745,3 +746,17 @@ class CombatLogTimeSeriesView(ListAPIView):
             logs = CombatLog.objects.raw(sql_query, [self.kwargs['aviator_pk'], self.kwargs['time_span']])
 
         return logs
+
+
+class RqQueueStatusListView(ListAPIView):
+    # Return the status of the passed RQ queue, if it exists
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            rq_low_queue = Queue(self.kwargs.get('name'), connection=Redis("redis"))
+            workers = Worker.all(queue=rq_low_queue)
+            active_worker = workers[0]
+            return Response(active_worker.state, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response("error: " + str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
