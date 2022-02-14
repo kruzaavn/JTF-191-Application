@@ -187,7 +187,7 @@ export default {
         this.show_snackbar = true
         this.timer = setInterval(function () {
           this.checkQueue()
-        }.bind(this), 100);
+        }.bind(this), 2000);
       })
       .catch((error) => {
         console.log(error)
