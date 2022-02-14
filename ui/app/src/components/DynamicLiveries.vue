@@ -26,7 +26,44 @@
       >
         Create livery package
       </v-btn>
+      <v-btn
+        outlined
+        tile
+        depressed
+        v-if="isAdmin"
+        @click="show_stats = !show_stats"
+      >
+        Show/Hide previous run stats
+      </v-btn>
     </v-card-actions>
+    <v-container v-if="show_stats">
+      <v-row class="text-left">
+        <v-col cols="12">
+          <v-simple-table>
+            <template v-slot:default>
+              <tbody>
+                <tr>
+                  <td>Completed jobs</td>
+                  <td>{{ finished_jobs }}</td>
+                </tr>
+                <tr>
+                  <td>Scheduled jobs</td>
+                  <td>{{ scheduled_jobs }}</td>
+                </tr>
+                <tr>
+                  <td>Failed jobs</td>
+                  <td>{{ falied_jobs }}</td>
+                </tr>
+                <tr>
+                  <td>In progress jobs</td>
+                  <td>{{ started_jobs }}</td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </v-col>
+      </v-row>
+    </v-container>
     <v-container v-if="processing">
       <v-row class="text-center">
         <v-col cols="12">
@@ -36,11 +73,10 @@
       <v-row class="justify-center">
         <v-col cols="12">
           <v-progress-linear
-            color="deep-purple accent-4"
-            indeterminate
             rounded
             height="6"
             width="80%"
+            :value="progress"
           ></v-progress-linear>
         </v-col>
       </v-row>
@@ -50,13 +86,12 @@
       :timeout="snackbar_timeout"
     >
       {{ snackbar_text }}
-
       <template v-slot:action="{ attrs }">
         <v-btn
           color="blue"
           text
           v-bind="attrs"
-          @click="snackbar = false"
+          @click="show_snackbar = false"
         >
           Close
         </v-btn>
@@ -76,8 +111,15 @@ export default {
       processing: false,
       show_snackbar: false,
       snackbar_text: "",
-      snackbar_timeout: 2000,
+      snackbar_timeout: 1000,
       timer: null,
+      livery_job_ids: [],
+      started_jobs: 0,
+      finished_jobs: 0,
+      falied_jobs: 0,
+      scheduled_jobs: 0,
+      show_stats: false,
+      progress: 0
     }
   },
   computed: {
@@ -130,41 +172,51 @@ export default {
       axios({
         url: `/api/roster/liveries/update/`,
         method: 'POST'
-      }).then(() => {
-        this.snackbar_text = "Process started..."
+      }).then((response) => {
+        // Get job ids
+        this.livery_job_ids = response.data
+
+        // Reset stats
+        this.show_stats = true
+        this.scheduled_jobs = this.livery_job_ids.length
+        this.started_jobs = 0
+        this.finished_jobs = 0
+        this.falied_jobs = 0
+
+        this.snackbar_text = `Success: ${this.scheduled_jobs} jobs scheduled...`
         this.show_snackbar = true
         this.timer = setInterval(function () {
           this.checkQueue()
-        }.bind(this), 10000);
+        }.bind(this), 2000);
       })
       .catch((error) => {
         console.log(error)
         this.processing = false
-        this.snackbar_text = "Error while creating the livery package."
+        this.snackbar_text = error
         this.show_snackbar = true
       })
     },
     checkQueue() {
       axios({
-        url: `/api/roster/rq/queue/liveries/status/`,
-        method: 'GET'
+        url: `/api/roster/rq/queue/status/`,
+        method: 'POST',
+        data: {
+          'queue_name': 'liveries',
+          'job_ids': this.livery_job_ids
+        }
       }).then((response) => {
-        console.log(response.data)
-        if (response.data.includes("error")) {
+        this.started_jobs = response.data.started_jobs
+        this.finished_jobs = response.data.finished_jobs
+        this.falied_jobs = response.data.falied_jobs
+        this.scheduled_jobs = response.data.scheduled_jobs
+
+        this.progress = ((this.finished_jobs + this.falied_jobs) / this.livery_job_ids.length) * 100
+
+        if (this.scheduled_jobs == 0 && this.started_jobs == 0) {
+          this.snackbar_text = "Livery process complete"
           this.processing = false
-          this.snackbar_text = response.data.error
           this.show_snackbar = true
           clearInterval(this.timer)
-        } else {
-          if (response.data != 'idle') {
-            this.snackbar_text = "Liveries still processing.. (" + response.data + ")"
-            this.show_snackbar = true
-          } else {
-            this.processing = false
-            this.snackbar_text = "Livery creation process complete!"
-            this.show_snackbar = true
-            clearInterval(this.timer)
-          }
         }
       })
       .catch((error) => {
