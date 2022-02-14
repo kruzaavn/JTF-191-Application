@@ -48,6 +48,6 @@ urlpatterns = [
     path('stores/list/<str:name>/', StoresListView.as_view()),
     path('operation/list/', OperationListView.as_view()),
     path('liveries/update/', AviatorLiveriesListView.as_view()),
-    path('rq/queue/<str:name>/status/', RqQueueStatusListView.as_view())
+    path('rq/queue/status/', RqQueueStatusListView.as_view())
 
 ]

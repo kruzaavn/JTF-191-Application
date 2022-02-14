@@ -1,12 +1,12 @@
+import json
 import pprint
-import queue
 import zipfile
 import os
 
 from io import BytesIO
 from redis import Redis
-from rq import Queue, Worker
-from rq.job import Job
+from rq import Queue
+from rq.registry import StartedJobRegistry, FinishedJobRegistry, FailedJobRegistry, ScheduledJobRegistry
 from datetime import date, datetime, time
 from django.core.mail import send_mail
 from django.http.response import HttpResponse
@@ -475,6 +475,8 @@ class AviatorLiveriesListView(ListCreateAPIView):
         """
         rq_low_queue = Queue("liveries", connection=Redis("redis"))
 
+        job_ids = []
+
         if not request.user.is_staff:
             return Response({'detail': ['Not allowed']},
                             status=status.HTTP_403_FORBIDDEN)
@@ -530,7 +532,7 @@ class AviatorLiveriesListView(ListCreateAPIView):
                 top_citations = aviator.citations.all()[0:3]
                 ribbon_images = [award.award.ribbon_image.url for award in top_citations]
 
-                rq_low_queue.enqueue(
+                job = rq_low_queue.enqueue(
                     "livery.create_aviator_dds", 
                     aviator_props,
                     skin.dds_file.url,
@@ -539,19 +541,21 @@ class AviatorLiveriesListView(ListCreateAPIView):
                     list(combat_logs),
                     dds_path
                 )
+                job_ids.append(job.id)
 
             lua_path = f"livery/{aviator.squadron.air_frame.dcs_type_name}/{aviator.squadron.designation} {aviator.callsign}/description.lua"
             lua_sections = LiveryLuaSectionSerializer(squadron_livery.lua_sections, many=True).data
 
-            rq_low_queue.enqueue(
+            job = rq_low_queue.enqueue(
                 "livery.create_aviator_lua", 
                 aviator.squadron.designation,
                 aviator.callsign,
                 lua_sections,
                 lua_path
             )
+            job_ids.append(job.id)
 
-        return Response({'detail': "Complete"}, status=status.HTTP_201_CREATED)
+        return Response(job_ids, status=status.HTTP_201_CREATED)
 
 
 class TargetListView(ListAPIView):
@@ -751,25 +755,41 @@ class CombatLogTimeSeriesView(ListAPIView):
 
 class RqQueueStatusListView(APIView):
     # Return the status of the passed RQ queue, if it exists
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    permission_classes = [permissions.IsAuthenticated]
 
-    def get(self, request, *args, **kwargs):
+    def post(self, request):
         try:
             connection = Redis("redis")
-            job_queue = Queue(self.kwargs.get('name'), connection=connection)
-            workers = Worker.all(queue=job_queue)
+            queue_name = request.data.get('queue_name')
+            if not queue_name:
+                return Response("missing queue_name attribute", status=status.HTTP_400_BAD_REQUEST)
 
+            job_ids = request.data.get('job_ids')
 
-            jobs = Job.fetch_many(job_queue.get_job_ids(), connection=connection)
+            # get registries by queue
+            job_queue = Queue(queue_name, connection=connection)
+            started_registry = StartedJobRegistry(queue=job_queue)
+            finished_registry = FinishedJobRegistry(queue=job_queue)
+            falied_registry = FailedJobRegistry(queue=job_queue)
+            scheduled_registry = ScheduledJobRegistry(queue=job_queue)
 
-
-            jobs_status = [
-                {'id': x.id,
-                 'status': x.get_status(),
-                 'function': x.func_name,
-                 'worker': x.worker_name
-                 } for x in jobs]
-
-            return Response(jobs_status, status=status.HTTP_200_OK)
+            response = {
+                "started_jobs": 0,
+                "finished_jobs": 0,
+                "falied_jobs": 0,
+                "scheduled_jobs": 0
+            }
+            
+            for job_id in job_ids:
+                if job_id in started_registry:
+                    response["started_jobs"] += 1
+                elif job_id in finished_registry:
+                    response["finished_jobs"] += 1
+                elif job_id in falied_registry:
+                    response["falied_jobs"] += 1
+                elif job_id in scheduled_registry:
+                    response["scheduled_jobs"] += 1
+                    
+            return Response(response, status=status.HTTP_200_OK)
         except Exception as e:
             return Response("error: " + str(e), status=status.HTTP_500_INTERNAL_SERVER_ERROR)
