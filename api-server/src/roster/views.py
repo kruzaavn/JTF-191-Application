@@ -6,7 +6,7 @@ import os
 from io import BytesIO
 from redis import Redis
 from rq import Queue
-from rq.registry import StartedJobRegistry, FinishedJobRegistry, FailedJobRegistry, ScheduledJobRegistry
+from rq.registry import StartedJobRegistry, FinishedJobRegistry, FailedJobRegistry, ScheduledJobRegistry, DeferredJobRegistry
 from datetime import date, datetime, time
 from django.core.mail import send_mail
 from django.http.response import HttpResponse
@@ -772,12 +772,14 @@ class RqQueueStatusListView(APIView):
             finished_registry = FinishedJobRegistry(queue=job_queue)
             falied_registry = FailedJobRegistry(queue=job_queue)
             scheduled_registry = ScheduledJobRegistry(queue=job_queue)
+            deferred_registry = DeferredJobRegistry(queue=job_queue)
 
             response = {
                 "started_jobs": 0,
                 "finished_jobs": 0,
                 "falied_jobs": 0,
-                "scheduled_jobs": 0
+                "scheduled_jobs": 0,
+                "deferred_jobs": 0
             }
             
             for job_id in job_ids:
@@ -789,6 +791,8 @@ class RqQueueStatusListView(APIView):
                     response["falied_jobs"] += 1
                 elif job_id in scheduled_registry:
                     response["scheduled_jobs"] += 1
+                elif job_id in deferred_registry:
+                    response["deferred_jobs"] += 1
                     
             return Response(response, status=status.HTTP_200_OK)
         except Exception as e:

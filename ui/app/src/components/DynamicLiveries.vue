@@ -33,7 +33,7 @@
         v-if="isAdmin"
         @click="show_stats = !show_stats"
       >
-        Show/Hide previous run stats
+        Toggle run stats
       </v-btn>
     </v-card-actions>
     <v-container v-if="show_stats">
@@ -57,6 +57,10 @@
                 <tr>
                   <td>In progress jobs</td>
                   <td>{{ started_jobs }}</td>
+                </tr>
+                <tr>
+                  <td>Waiting jobs</td>
+                  <td>{{ deferred_jobs }}</td>
                 </tr>
               </tbody>
             </template>
@@ -118,6 +122,7 @@ export default {
       finished_jobs: 0,
       falied_jobs: 0,
       scheduled_jobs: 0,
+      deferred_jobs: 0,
       show_stats: false,
       progress: 0
     }
@@ -182,6 +187,7 @@ export default {
         this.started_jobs = 0
         this.finished_jobs = 0
         this.falied_jobs = 0
+        this.deferred_jobs = 0
 
         this.snackbar_text = `Success: ${this.scheduled_jobs} jobs scheduled...`
         this.show_snackbar = true
@@ -209,6 +215,7 @@ export default {
         this.finished_jobs = response.data.finished_jobs
         this.falied_jobs = response.data.falied_jobs
         this.scheduled_jobs = response.data.scheduled_jobs
+        this.deferred_jobs = response.data.deferred_jobs
 
         this.progress = ((this.finished_jobs + this.falied_jobs) / this.livery_job_ids.length) * 100
 
