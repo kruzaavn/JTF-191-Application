@@ -796,6 +796,7 @@ class RqQueueStatusListView(APIView):
             deferred_registry = DeferredJobRegistry(queue=job_queue)
 
             response = {
+                "queued_jobs": len(job_queue.jobs),
                 "started_jobs": 0,
                 "finished_jobs": 0,
                 "falied_jobs": 0,
