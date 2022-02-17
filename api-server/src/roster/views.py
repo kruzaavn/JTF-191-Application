@@ -517,7 +517,7 @@ class AviatorLiveriesListView(ListCreateAPIView):
                 selected_squadrons = request.data
 
                 # Only process the squadrons that were selected
-                if aviator.squadron.id in selected_squadrons:
+                if aviator.squadron.id not in selected_squadrons:
                     continue
 
                 squadron_livery = Livery.objects.get(

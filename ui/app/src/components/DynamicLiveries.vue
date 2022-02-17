@@ -235,6 +235,7 @@ export default {
         this.show_snackbar = true
         return
       }
+      this.progress = 0
       this.processing = true
       axios({
         url: `/api/roster/liveries/update/`,
