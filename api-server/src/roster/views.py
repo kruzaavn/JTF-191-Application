@@ -451,8 +451,23 @@ class AviatorLiveriesListView(ListCreateAPIView):
     def get(self, request):
         blobs = self.block_blob_service.list_blobs(container_name=self.azure_container, prefix="livery/")
         archive = BytesIO()
+        selected_squadrons = []
+        selected_squadrons_ids = request.query_params.dict()
+
+        # map squadrons' ids to names
+        for squadron_id in selected_squadrons_ids.values():
+            try:
+                squadron = Squadron.objects.get(id=squadron_id)
+                selected_squadrons.append(squadron.designation)
+            except ObjectDoesNotExist:
+                pass
+
         with zipfile.ZipFile(archive, 'w') as zip_file:
             for blob in blobs:
+                if not any(squadron_name in blob.name for squadron_name in selected_squadrons):
+                    print("not in squadrons")
+                    continue
+
                 file = self.block_blob_service.get_blob_to_bytes(
                         container_name=self.azure_container,
                         blob_name=blob.name)
@@ -499,6 +514,12 @@ class AviatorLiveriesListView(ListCreateAPIView):
             # minimize the number of times we have to search the db, pedantic I know.
 
             try:
+                selected_squadrons = request.data
+
+                # Only process the squadrons that were selected
+                if aviator.squadron.id not in selected_squadrons:
+                    continue
+
                 squadron_livery = Livery.objects.get(
                     squadron=aviator.squadron,
                     position_code=aviator.position_code
@@ -775,6 +796,7 @@ class RqQueueStatusListView(APIView):
             deferred_registry = DeferredJobRegistry(queue=job_queue)
 
             response = {
+                "queued_jobs": len(job_queue.jobs),
                 "started_jobs": 0,
                 "finished_jobs": 0,
                 "falied_jobs": 0,

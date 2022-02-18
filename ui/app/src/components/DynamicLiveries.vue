@@ -3,8 +3,50 @@
     <v-card-title>Livery actions</v-card-title>
     <v-card-text>
       <div>To download the most up to date liveries please use the button below. Make sure to unzip and move the content of the "liveries" folder into your DCS folder.</div>
-      <div v-if="isAdmin">To create a new livery package, please click the button below. This will recreate all the aviators' liveries 
-        and store them in our database. Anybody can then click the "Download livery package" button to get the updated ones.</div>
+      <div v-if="isAdmin">
+        <p>To create a new livery package, please click the button below. This will recreate all the aviators' liveries 
+        and store them in our database. Anybody can then click the "Download livery package" button to get the updated ones.</p>
+        <p>
+          To start please select below one or more squadrons to create or download liveries for that selection.
+        </p>
+      </div>
+      <div v-if="!isAdmin">
+        <p>
+          To start please select below one or more squadrons to download liveries for that selection.
+        </p>
+      </div>
+      <div>
+        <v-select
+          v-model="selected_squadrons"
+          :items="squadrons"
+          label="Select livery context"
+          dense
+          item-text="name"
+          item-value="id"
+          multiple
+          class="my-10"
+        >
+          <template v-slot:prepend-item>
+            <v-list-item
+              ripple
+              @mousedown.prevent
+              @click="toggle"
+            >
+              <v-list-item-action>
+                <v-icon :color="selected_squadrons.length > 0 ? 'indigo darken-4' : ''">
+                  {{ icon }}
+                </v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>
+                  All
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-divider class="mt-2"></v-divider>
+          </template>
+        </v-select>
+      </div>
     </v-card-text>
     <v-card-actions class="justify-center">
       <v-btn
@@ -60,7 +102,7 @@
                 </tr>
                 <tr>
                   <td>Waiting jobs</td>
-                  <td>{{ deferred_jobs }}</td>
+                  <td>{{ queued_jobs }}</td>
                 </tr>
               </tbody>
             </template>
@@ -122,13 +164,22 @@ export default {
       finished_jobs: 0,
       falied_jobs: 0,
       scheduled_jobs: 0,
-      deferred_jobs: 0,
+      queued_jobs: 0,
       show_stats: false,
-      progress: 0
+      progress: 0,
+      selected_squadrons: [],
     }
   },
   computed: {
-    ...mapGetters(['aviator', 'user', 'isAdmin', 'rqToken']),
+    ...mapGetters(['aviator', 'user', 'isAdmin', 'rqToken', 'squadrons']),
+    allSquadronsSelected() {
+      return this.selected_squadrons.length === this.squadrons.length
+    },
+    icon () {
+      if (this.allSquadronsSelected) return 'mdi-close-box'
+      if (0 < this.selected_squadrons.length && !this.allSquadronsSelected) return 'mdi-minus-box'
+      return 'mdi-checkbox-blank-outline'
+    },
   },
   mounted() {
     this.getUser().then(() => {
@@ -141,11 +192,17 @@ export default {
   methods: {
     ...mapActions(['getAviatorFromUser', 'getUser']),
     downloadLiveryPackage() {
+      if(this.selected_squadrons.length == 0) {
+        this.snackbar_text = "Please select at least one squadron"
+        this.show_snackbar = true
+        return
+      }
       this.processing = true
       axios({
         url: `/api/roster/liveries/update/`,
         method: 'GET',
         responseType: 'blob',
+        params: this.selected_squadrons
       }).then((response) => {
         if (response.data.size > 0) {
             var fileURL = window.URL.createObjectURL(new Blob([response.data]))
@@ -173,10 +230,17 @@ export default {
       })
     },
     createLiveryPackage() {
+      if(this.selected_squadrons.length == 0) {
+        this.snackbar_text = "Please select at least one squadron"
+        this.show_snackbar = true
+        return
+      }
+      this.progress = 0
       this.processing = true
       axios({
         url: `/api/roster/liveries/update/`,
-        method: 'POST'
+        method: 'POST',
+        data: this.selected_squadrons
       }).then((response) => {
         // Get job ids
         this.livery_job_ids = response.data
@@ -187,7 +251,7 @@ export default {
         this.started_jobs = 0
         this.finished_jobs = 0
         this.falied_jobs = 0
-        this.deferred_jobs = 0
+        this.queued_jobs = 0
 
         this.snackbar_text = `Success: ${this.scheduled_jobs} jobs scheduled...`
         this.show_snackbar = true
@@ -215,7 +279,7 @@ export default {
         this.finished_jobs = response.data.finished_jobs
         this.falied_jobs = response.data.falied_jobs
         this.scheduled_jobs = response.data.scheduled_jobs
-        this.deferred_jobs = response.data.deferred_jobs
+        this.queued_jobs = response.data.queued_jobs
 
         this.progress = ((this.finished_jobs + this.falied_jobs) / this.livery_job_ids.length) * 100
 
@@ -232,7 +296,16 @@ export default {
         this.show_snackbar = true
         clearInterval(this.timer)
       })
-    }
+    },
+    toggle () {
+      this.$nextTick(() => {
+        if (this.selected_squadrons.length == this.squadrons.length) {
+          this.selected_squadrons = []
+        } else {
+          this.selected_squadrons = this.squadrons.map(function(item) { return item["id"] }).slice()
+        }
+      })
+    },
   },
   beforeDestroy() {
     clearInterval(this.timer)
