@@ -233,10 +233,10 @@ def create_aviator_dds(aviator_props, skin_url, skin_description, citations, com
             if prop["prop"] == "award" and citations:
                 img.composite(image=get_ribbonrack_image(citations, prop), left=prop["x"], top=prop["y"])
 
-            if prop["prop"] == "killboard" and citations:
+            if prop["prop"] == "killboard":
                 img.composite(image=get_killboard_image(combat_logs, prop), left=prop["x"], top=prop["y"])
                 
-            if prop["prop"] == "bort" and citations:
+            if prop["prop"] == "bort":
                 img.composite(image=get_bort_numbers_image(aviator_props, prop), left=prop["x"], top=prop["y"])
 
         # Result into a buffer
