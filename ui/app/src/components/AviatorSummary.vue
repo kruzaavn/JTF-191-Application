@@ -225,6 +225,7 @@ export default {
       ).then((response) => {
         this.aviatorTimeSeriesStats.push(['Date', 'Hours'])
         if(response.data.length > 0) {
+          const today = moment()
           let startDate = moment().subtract(90, 'days')
           // console.log(startDate)
           for (const stat in response.data) {
@@ -232,13 +233,20 @@ export default {
             const currentStat = response.data[stat]
             const currentDate = moment(currentStat.date)
             if(currentDate.isAfter(startDate)) {
-              for (var m = startDate; m.isBefore(currentStat.date); m.add(1, 'days')) {
+              for (const m = startDate; m.isBefore(currentStat.date); m.add(1, 'days')) {
                 this.aviatorTimeSeriesStats.push([m.format('YYYY-MM-DD'), 0 ])
               }
             }
             const hours = moment.duration(currentStat.total_flight_time).asHours().toFixed(2)
             this.aviatorTimeSeriesStats.push([currentStat.date, parseFloat(hours) ])
             startDate = currentDate.add(1, 'days')
+          }
+
+          // fill in up to today is necessary
+          if (today.isAfter(startDate)) {
+            for (const m = startDate; m.isBefore(today); m.add(1, 'days')) {
+              this.aviatorTimeSeriesStats.push([m.format('YYYY-MM-DD'), 0 ])
+            }
           }
         } else {
           this.aviatorTimeSeriesStats.push(['', 0])
