@@ -225,15 +225,25 @@ export default {
       ).then((response) => {
         this.aviatorTimeSeriesStats.push(['Date', 'Hours'])
         if(response.data.length > 0) {
+          let startDate = moment().subtract(90, 'days')
+          // console.log(startDate)
           for (const stat in response.data) {
-            const hours = moment.duration(response.data[stat].total_flight_time).asHours().toFixed(2)
-            this.aviatorTimeSeriesStats.push([response.data[stat].date, parseFloat(hours) ])
+            // fill in the gaps in dates with 0s
+            const currentStat = response.data[stat]
+            const currentDate = moment(currentStat.date)
+            if(currentDate.isAfter(startDate)) {
+              for (var m = startDate; m.isBefore(currentStat.date); m.add(1, 'days')) {
+                this.aviatorTimeSeriesStats.push([m.format('YYYY-MM-DD'), 0 ])
+              }
+            }
+            const hours = moment.duration(currentStat.total_flight_time).asHours().toFixed(2)
+            this.aviatorTimeSeriesStats.push([currentStat.date, parseFloat(hours) ])
+            startDate = currentDate.add(1, 'days')
           }
         } else {
           this.aviatorTimeSeriesStats.push(['', 0])
         }
         const chartOptions = {
-          curveType: 'function',
           legend: {position: 'none'},
           chartArea: {'width': '90%', 'height': '80%'},
           titlePosition: 'none',
