@@ -99,7 +99,7 @@ def get_killboard_image(combat_logs, prop):
     }
     for combat_log in combat_logs:
         if combat_log["target__category"] in [0, 1]:
-            to_render["air"]["kills"] = combat_log["kills"]
+            to_render["air"]["kills"] += combat_log["kills"]
         elif combat_log["target__category"] in [2, 4]:
             to_render["ground"]["kills"] += combat_log["kills"]
         elif combat_log["target__category"] == 3:
