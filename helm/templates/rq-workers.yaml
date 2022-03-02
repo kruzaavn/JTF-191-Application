@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rq-worker-deployment
+  labels:
+    app: rq-worker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rq-worker
+  template:
+    metadata:
+      labels:
+        app: rq-worker
+    spec:
+      containers:
+      - name: rq-worker
+        image: "{{ .Values.image.registryUrl }}/rq-worker:{{ .Values.image.tag }}"
+        imagePullPolicy: Always
+        command: ["rq"]
+        args: ["worker", "-u", "redis://redis:6379", "high_priority", "liveries", "--path", "/worker"]
+        env:
+          - name: AZURE_STORAGE_KEY
+            valueFrom:
+              secretKeyRef:
+                name: secret
+                key: azureStorageKey

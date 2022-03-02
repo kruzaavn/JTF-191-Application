@@ -63,7 +63,7 @@ const mutations = {
   },
   setAviator(state, aviator) {
     state.aviator = aviator
-  },
+  }
 }
 
 const getters = {
@@ -108,7 +108,7 @@ const getters = {
   },
   operations: (state) => {
     return state.operationList
-  },
+  }
 }
 
 const actions = {

@@ -1,4 +1,4 @@
-andrea<template>
+<template>
   <v-card class="mx-4 my-5 py-2" v-if="aviator.status !== 'reserve'" tile>
     <v-row>
       <v-col cols="2">
@@ -171,11 +171,18 @@ export default {
       return data
     },
     toKillsTable(kills) {
-      let data = []
-
-      for (const target in kills) {
-        data.push({ target: kills[target].type, number: kills[target].kills })
-      }
+      let data = [];
+      kills.reduce(function(res, value) {
+        if (!res[value.type]) {
+          res[value.type] = {
+            number: 0,
+            target: value.type
+          };
+          data.push(res[value.type])
+        }
+        res[value.type].number += value.kills
+        return res;
+      }, {});
       return data
     },
     getAviatorAggregatedFlightStats(aviatorId) {
@@ -218,15 +225,33 @@ export default {
       ).then((response) => {
         this.aviatorTimeSeriesStats.push(['Date', 'Hours'])
         if(response.data.length > 0) {
+          const today = moment()
+          let startDate = moment().subtract(90, 'days')
+          // console.log(startDate)
           for (const stat in response.data) {
-            const hours = moment.duration(response.data[stat].total_flight_time).asHours().toFixed(2)
-            this.aviatorTimeSeriesStats.push([response.data[stat].date, parseFloat(hours) ])
+            // fill in the gaps in dates with 0s
+            const currentStat = response.data[stat]
+            const currentDate = moment(currentStat.date)
+            if(currentDate.isAfter(startDate)) {
+              for (const m = startDate; m.isBefore(currentStat.date); m.add(1, 'days')) {
+                this.aviatorTimeSeriesStats.push([m.format('YYYY-MM-DD'), 0 ])
+              }
+            }
+            const hours = moment.duration(currentStat.total_flight_time).asHours().toFixed(2)
+            this.aviatorTimeSeriesStats.push([currentStat.date, parseFloat(hours) ])
+            startDate = currentDate.add(1, 'days')
+          }
+
+          // fill in up to today is necessary
+          if (today.isAfter(startDate)) {
+            for (const m = startDate; m.isBefore(today); m.add(1, 'days')) {
+              this.aviatorTimeSeriesStats.push([m.format('YYYY-MM-DD'), 0 ])
+            }
           }
         } else {
           this.aviatorTimeSeriesStats.push(['', 0])
         }
         const chartOptions = {
-          curveType: 'function',
           legend: {position: 'none'},
           chartArea: {'width': '90%', 'height': '80%'},
           titlePosition: 'none',

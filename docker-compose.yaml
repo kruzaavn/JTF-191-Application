@@ -5,7 +5,7 @@ services:
     restart: always
     image: redis:latest
     expose:
-      - "6329"
+      - "6379"
     volumes:
       - redisdata:/var/lib/redis/data/
 
@@ -59,10 +59,39 @@ services:
     depends_on:
       - db
       - redis
+    environment:
+      - AZURE_STORAGE_ACCOUNT_NAME
+      - AZURE_STORAGE_KEY
     volumes:
       - ./api-server/src:/server
     command: python manage.py runserver 0.0.0.0:8000
 
+  rq-worker:
+    restart: always
+    build: ./rq-worker
+    command: rq worker -u redis://redis:6379 high_priority liveries --path /worker
+    depends_on:
+      - redis
+    links:
+      - redis
+    environment:
+      - AZURE_STORAGE_ACCOUNT_NAME
+      - AZURE_STORAGE_KEY
+    volumes:
+      - ./rq-worker:/usr/src/workers
+
+  rq-dashboard:
+    build: ./rq-dashboard
+    environment:
+      - RQ_DASHBOARD_REDIS_URL=redis://redis:6379
+    ports:
+        - '9181:9181'
+    expose:
+        - "9181"
+    links:
+        - redis
+    depends_on:
+        - redis
 
 volumes:
   dbdata:
