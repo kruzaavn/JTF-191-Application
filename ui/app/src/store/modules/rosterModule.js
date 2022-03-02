@@ -6,8 +6,8 @@ const state = {
   hqs: [],
   dcsModules: [],
   schedule: [],
-  qualificationList: [],
-  qualificationModuleList: [],
+  documentationList: [],
+  documentationModuleList: [],
   photos: [],
   storesList: [],
   munitionList: [],
@@ -43,11 +43,11 @@ const mutations = {
     const index = state.schedule.findIndex((element) => element.id === event.id)
     state.schedule.splice(index, 1, event)
   },
-  setQualifications(state, qualifications) {
-    state.qualificationList = qualifications
+  setDocumentation(state, documentation) {
+    state.documentationList = documentation
   },
-  setQualificationModules(state, modules) {
-    state.qualificationModuleList = modules
+  setDocumentationModules(state, modules) {
+    state.documentationModuleList = modules
   },
   setPhotos(state, photos) {
     state.photos = photos
@@ -73,8 +73,10 @@ const getters = {
   aviator: (state) => state.aviator,
   dcsModules: (state) => state.dcsModules,
   schedule: (state) => state.schedule,
-  qualifications: (state) => state.qualificationList,
-  qualificationModules: (state) => state.qualificationModuleList,
+  qualificationsByType: (state) => (docType) => {
+    return state.documentationList.filter(doc => doc.type === docType)
+  },
+  qualificationModules: (state) => state.documentationModuleList,
   photos: (state) => state.photos,
   munitions: (state) => state.munitionList,
   stores: (state) => state.storesList,
@@ -147,13 +149,13 @@ const actions = {
     await axios.delete(`/api/roster/event/detail/${event.id}/`)
     commit('removeEvent', event)
   },
-  async getQualifications({ commit }) {
-    const response = await axios.get('/api/roster/qualifications/list/')
-    commit('setQualifications', response.data)
+  async getDocumentation({ commit }) {
+    const response = await axios.get('/api/roster/documentation/list/')
+    commit('setDocumentation', response.data)
   },
-  async getQualificationModules({ commit }) {
-    const response = await axios.get('/api/roster/qualifications/modules/list/')
-    commit('setQualificationModules', response.data)
+  async getDocumentationModules({ commit }) {
+    const response = await axios.get('/api/roster/documentation/modules/list/')
+    commit('setDocumentationModules', response.data)
   },
   async getPhotos({ commit }) {
     const response = await axios.get('/api/roster/user_images/list/')
