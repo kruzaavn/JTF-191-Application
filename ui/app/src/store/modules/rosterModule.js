@@ -73,10 +73,8 @@ const getters = {
   aviator: (state) => state.aviator,
   dcsModules: (state) => state.dcsModules,
   schedule: (state) => state.schedule,
-  qualificationsByType: (state) => (docType) => {
-    return state.documentationList.filter(doc => doc.type === docType)
-  },
-  qualificationModules: (state) => state.documentationModuleList,
+  documentation: (state) => state.documentationList,
+  documentationModules: (state) => state.documentationModuleList,
   photos: (state) => state.photos,
   munitions: (state) => state.munitionList,
   stores: (state) => state.storesList,

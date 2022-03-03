@@ -49,14 +49,58 @@
 </template>
 
 <script>
+import { mapGetters }from "vuex";
+
 export default {
   name: "DocumentationViewer",
   props: {
-    title: String
+    title: String,
+    docs: Array
+  },
+  data() {
+    return {
+      iframeHeight: 0, // initial height
+      documentation: null,
+    }
+  },
+  computed: {
+    ...mapGetters(['documentationModules'])
+  },
+  methods: {
+
+    setIframeHeight() {
+      if (this.documentation.documentation_type === 'document') {
+        this.iframeHeight = 5000
+      } else if (
+        ['slides', 'spreadsheet', 'video'].includes(
+          this.documentation.documentation_type
+        )
+      ) {
+        this.iframeHeight = window.innerHeight * 0.8
+      }
+    },
+    setIframeLink() {
+      if (this.documentation.documentation_type === 'document') {
+        return `${this.documentation.link}?embedded=true`
+      } else if (this.documentation.documentation_type === 'slides') {
+        return this.documentation.link.replace('/pub', '/embed')
+      } else if (this.documentation.documentation_type === 'spreadsheet') {
+        return `${this.documentation.link}?widget=true&amp;headers=false`
+      } else if (this.documentation.documentation_type === 'video') {
+        return this.documentation.link.replace('watch?v=', 'embed/')
+      } else {
+        return this.documentation.link
+      }
+    }
   }
 }
 </script>
 
 <style scoped>
+
+  iframe {
+    border: 0;
+    min-width: 100%;
+  }
 
 </style>
