@@ -1,5 +1,5 @@
 <template>
-  <v-footer fixed padless>
+  <v-footer padless>
     <v-col class="text-caption text-center" cols="12">
       Support the Wing
       <form action="https://www.paypal.com/donate" method="post" target="_top">
@@ -19,7 +19,7 @@
 
 <script>
 export default {
-  name: "Footer",
+  name: "FooterComponent",
 };
 </script>
 

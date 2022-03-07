@@ -1,5 +1,8 @@
 <template>
-  <v-container>
+  <v-container
+      class=""
+  style="height: 100vh;"
+  >
     <v-row>
       <v-col
         v-for="photo in photos"
@@ -7,16 +10,17 @@
         md="4"
         lg="3"
         sm="6"
+        cols="12"
         class="d-flex child-flex"
       >
-        <v-lazy>
+
           <v-img
             :src="photo.url || photo.file"
-            height="30vh"
+            aspect-ratio="16:9"
             lazy-src="https://dummyimage.com/600x400/bfbfbf/bfbfbf.png"
           >
           </v-img>
-        </v-lazy>
+
       </v-col>
     </v-row>
   </v-container>
@@ -39,4 +43,7 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+
+
+</style>

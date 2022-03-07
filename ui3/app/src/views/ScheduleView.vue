@@ -46,8 +46,8 @@
             >
               <v-toolbar :color="eventColor(selectedEvent)" dark>
                 <v-toolbar-title
-                  >{{ selectedEvent.type | capitalize }}:
-                  {{ selectedEvent.name | capitalize }}</v-toolbar-title
+                  >{{ capitalize(selectedEvent.type) }}:
+                  {{ capitalize(selectedEvent.name) }}</v-toolbar-title
                 >
                 <v-spacer></v-spacer>
               </v-toolbar>
@@ -113,8 +113,6 @@ export default {
 
       return events;
     },
-  },
-  filters: {
     capitalize: function (value) {
       if (!value) return "";
       value = value.toString();

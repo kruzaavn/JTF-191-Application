@@ -86,7 +86,7 @@ import Login from './components/Login'
 import Footer from '@/components/Footer'
 
 export default {
-  name: 'Title',
+  name: 'TitleView',
   components: { Footer, Login },
   props: {
     source: String,

@@ -2,7 +2,7 @@
   <div class="text-center">
     <v-menu offset-y v-if="isLoggedIn">
       <template v-slot:activator="{ on }">
-        <v-btn color="white" outlined v-on="on">
+        <v-btn v-on="on">
           {{ user.username }}
           <v-icon right>fa-chevron-circle-down fa-xs</v-icon>
         </v-btn>
@@ -24,7 +24,7 @@
 
     <v-dialog v-model="dialog" width="75vw" v-if="!isLoggedIn">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn color="white" outlined tile depressed v-bind="attrs" v-on="on">
+        <v-btn v-bind="attrs" v-on="on">
           <v-icon left>mdi-login</v-icon>
           Login
         </v-btn>
@@ -77,7 +77,7 @@
 import { mapActions, mapGetters } from "vuex";
 
 export default {
-  name: "Login",
+  name: "LoginComponent",
   data() {
     return {
       dialog: false,

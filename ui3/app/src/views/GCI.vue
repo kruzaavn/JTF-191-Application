@@ -42,11 +42,11 @@
                       <span class="float-right">{{ server.password }}</span
                       ><v-spacer></v-spacer> Start Time
                       <span class="float-right">{{
-                        server.start_time | utcFormat
+                        utcFormat(server.start_time)
                       }}</span
                       ><v-spacer></v-spacer> Connection Time
                       <span class="float-right">{{
-                        server.connection_time | dateFormat
+                        dateFormat(server.connection_time)
                       }}</span
                       ><v-spacer></v-spacer>
                     </v-col>
@@ -126,8 +126,6 @@ export default {
   },
   computed: {
     ...mapGetters(["servers"]),
-  },
-  filters: {
     dateFormat: function (value) {
       let date = new Date(value);
       return `${date.toLocaleString("en-US")}`;

@@ -58,7 +58,8 @@
             :headers="killsHeaders"
             :items="toKillsTable(aviatorAggregatedCombatStats)"
           >
-            <template v-slot:[`item.target`]="{ item }"> <!-- fixme eslint Vue3 error dont really know why i have to put it in brackets to make it happy, found on stack overflow -->
+            <template v-slot:[`item.target`]="{ item }">
+              <!-- fixme eslint Vue3 error dont really know why i have to put it in brackets to make it happy, found on stack overflow -->
               <v-icon v-if="item.target === 'air'">fa-fighter-jet fa-xs</v-icon>
               <v-icon v-if="item.target === 'maritime'">fa-ship fa-xs</v-icon>
               <v-icon v-if="item.target === 'ground'">mdi-tank</v-icon>
