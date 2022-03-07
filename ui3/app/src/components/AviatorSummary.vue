@@ -43,16 +43,16 @@
       <v-row>
         <v-col>
           <h4>Total Flight Hours {{ totalFlightHours }}</h4>
-          <v-data-table
+          <v-table
             dense
             :headers="hoursHeaders"
             :items="toHoursTable(aviatorAggregatedFlightStats)"
           >
-          </v-data-table>
+          </v-table>
         </v-col>
         <v-col>
           <h4>Total kills {{ totalKills }}</h4>
-          <v-data-table
+          <v-table
             dense
             :hide-default-footer="true"
             :headers="killsHeaders"
@@ -64,7 +64,7 @@
               <v-icon v-if="item.target === 'maritime'">fa-ship fa-xs</v-icon>
               <v-icon v-if="item.target === 'ground'">mdi-tank</v-icon>
             </template>
-          </v-data-table>
+          </v-table>
         </v-col>
       </v-row>
       <v-row>

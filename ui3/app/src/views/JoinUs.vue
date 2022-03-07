@@ -3,20 +3,20 @@
     <div id="joinusform" v-if="!submitted">
       <h1>Join Us</h1>
       <p>Requirements to join JTF-191</p>
-      <ul>
-        <li>18 years or older</li>
-        <li>Cockpit visualization, VR headset or Track IR</li>
-        <li>Hands on throttle and stick (HOTAS)</li>
-        <li>
+      <v-list>
+        <v-list-item>18 years or older</v-list-item>
+        <v-list-item>Cockpit visualization, VR headset or Track IR</v-list-item>
+        <v-list-item>Hands on throttle and stick (HOTAS)</v-list-item>
+        <v-list-item>
           Be able to attend make required time commitments, approximately 2-3
           nights a week for 2 hours at 8pm Eastern time including a Mission
           Night on Saturday.
-        </li>
-        <li>
+        </v-list-item>
+        <v-list-item>
           Have a good attitude and a willingness to learn.
           <router-link to="/about">see our core values</router-link>
-        </li>
-      </ul>
+        </v-list-item>
+      </v-list>
       <v-form ref="form">
         <v-row>
           <v-col>

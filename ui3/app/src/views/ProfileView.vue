@@ -3,9 +3,8 @@
     <v-row align-content="center" class="pb-10">
       <v-col>
         <v-img
-          contain
           :src="aviator.squadron.img"
-          height="30vh"
+          aspect-ratio="16:9"
           class="my-1"
         ></v-img>
       </v-col>

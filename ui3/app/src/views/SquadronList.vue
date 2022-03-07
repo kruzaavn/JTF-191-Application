@@ -25,8 +25,6 @@
           >
             <v-card
               :to="'/squadron/' + squadron.designation"
-              dark
-              color="grey"
               class="mx-auto"
               tile
             >

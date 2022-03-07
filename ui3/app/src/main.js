@@ -8,19 +8,23 @@ import { loadFonts } from "./plugins/webfontloader";
 loadFonts();
 
 createApp({
-    created() {
-    const token = localStorage.getItem('token')
+  created() {
+    const token = localStorage.getItem("token");
     if (token) {
-      let parsedToken = JSON.parse(token)
-      this.$store.commit('setToken', parsedToken)
+      let parsedToken = JSON.parse(token);
+      this.$store.commit("setToken", parsedToken);
       if (!this.$store.getters.tokenExpired) {
         setTimeout(() => {
-          this.$store.dispatch('getUser')
-        }, 1000)
+          this.$store.dispatch("getUser");
+        }, 1000);
       } else {
-        this.$store.dispatch('logout')
+        this.$store.dispatch("logout");
       }
     }
   },
-    render: () => h(App),
-}).use(router).use(store).use(vuetify).mount("#app");
+  render: () => h(App),
+})
+  .use(router)
+  .use(store)
+  .use(vuetify)
+  .mount("#app");

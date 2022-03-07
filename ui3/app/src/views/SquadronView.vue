@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid>
+  <v-container>
     <v-row align-content="start">
       <v-col>
         <v-card class="py-4" tile>
@@ -13,12 +13,12 @@
               Aviators: {{ members.length }}
             </v-card-title>
           </v-img>
-          <v-card class="mx-4 my-5 py-2">
-            <markdown-it-vue
-              class="px-2"
-              :content="squadron.description"
-            ></markdown-it-vue>
-          </v-card>
+          <!--          <v-card class="mx-4 my-5 py-2">-->
+          <!--            <markdown-it-vue-->
+          <!--              class="px-2"-->
+          <!--              :content="squadron.description"-->
+          <!--            ></markdown-it-vue>-->
+          <!--          </v-card>-->
 
           <div v-for="member in members" :key="member.id">
             <AviatorSummary :aviator="member" />
@@ -51,11 +51,6 @@ export default {
       return this.squadrons.filter(
         (sqd) => sqd.designation === this.squadronDesignation
       )[0];
-    },
-  },
-  filters: {
-    upper: function (value) {
-      return value.toUpperCase();
     },
   },
   methods: {},

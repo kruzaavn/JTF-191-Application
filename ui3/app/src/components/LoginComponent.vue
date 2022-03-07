@@ -1,10 +1,10 @@
 <template>
   <div class="text-center">
-    <v-menu offset-y v-if="isLoggedIn">
-      <template v-slot:activator="{ on }">
-        <v-btn v-on="on">
+    <v-menu open-on-click offset-y v-if="isLoggedIn">
+      <template v-slot:activator="{ props }">
+        <v-btn v-bind="props">
           {{ user.username }}
-          <v-icon right>fa-chevron-circle-down fa-xs</v-icon>
+          <v-icon right>mdi-chevron-down</v-icon>
         </v-btn>
       </template>
       <v-list>
