@@ -22,54 +22,52 @@
       </v-list>
     </v-menu>
 
-    <v-dialog v-model="dialog" width="75vw" v-if="!isLoggedIn">
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn v-bind="attrs" v-on="on">
-          <v-icon left>mdi-login</v-icon>
-          Login
-        </v-btn>
-      </template>
-      <v-card>
-        <v-card-title primary-title>
-          <h2>Login</h2>
-        </v-card-title>
+    <v-btn v-if="!isLoggedIn">
+      <v-icon left>mdi-login</v-icon>
+      Login
+      <v-dialog v-model="dialog" activator="parent">
+        <v-card>
+          <v-card-title primary-title>
+            <h2>Login</h2>
+          </v-card-title>
 
-        <v-card-text>
-          <v-form @submit.prevent="submit" ref="form">
-            <v-text-field
-              v-model="credentials.username"
-              prepend-icon="mdi-account"
-              label="username"
-              :rules="[rules.blank]"
-            />
-            <v-text-field
-              :prepend-icon="show_password ? 'mdi-eye' : 'mdi-eye-off'"
-              v-model="credentials.password"
-              label="password"
-              :rules="[rules.blank]"
-              :type="show_password ? 'text' : 'password'"
-              @click:prepend="show_password = !show_password"
-            />
-          </v-form>
-        </v-card-text>
-        <v-divider />
-        <v-card-actions>
-          <v-alert v-if="errors" dense outlined type="warning">
-            {{ errors.detail }}
-          </v-alert>
-          <v-spacer></v-spacer>
-          <v-btn
-            outlined
-            color="info"
-            type="submit"
-            value="submit"
-            @click="submit"
-          >
-            Login
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+          <v-card-text>
+            <v-form @submit.prevent="submit" ref="form">
+              <v-text-field
+                v-model="credentials.username"
+                prepend-icon="mdi-account"
+                label="username"
+                :rules="[rules.blank]"
+              />
+              <v-text-field
+                :prepend-icon="show_password ? 'mdi-eye' : 'mdi-eye-off'"
+                v-model="credentials.password"
+                label="password"
+                :rules="[rules.blank]"
+                :type="show_password ? 'text' : 'password'"
+                @click:prepend="show_password = !show_password"
+              />
+            </v-form>
+          </v-card-text>
+          <v-divider />
+          <v-card-actions>
+            <v-alert v-if="errors" dense outlined type="warning">
+              {{ errors.detail }}
+            </v-alert>
+            <v-spacer></v-spacer>
+            <v-btn
+              outlined
+              color="info"
+              type="submit"
+              value="submit"
+              @click="submit"
+            >
+              Login
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-btn>
   </div>
 </template>
 

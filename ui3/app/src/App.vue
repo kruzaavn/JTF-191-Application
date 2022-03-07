@@ -1,23 +1,14 @@
 <template>
   <v-app id="inspire" :theme="theme">
     <v-app-bar>
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
       <router-link to="/">
         <v-img min-width="150px" max-width="250px" src="@/assets/logo.png">
         </v-img>
       </router-link>
       <v-spacer></v-spacer>
 
-      <v-btn
-        v-if="isAdmin"
-        color="white"
-        outlined
-        tile
-        depressed
-        :href="adminLink"
-      >
-        ADMIN
-      </v-btn>
+      <v-btn v-if="isAdmin" :href="adminLink"> ADMIN </v-btn>
       <LoginComponent />
       <v-btn @click="toggleTheme">toggle theme</v-btn>
     </v-app-bar>
@@ -53,7 +44,7 @@
           </v-list-item>
         </div>
       </v-list>
-      <FooterComponent/>
+      <FooterComponent />
     </v-navigation-drawer>
     <v-main>
       <v-container class="fill-height" fluid>
