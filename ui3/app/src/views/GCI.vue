@@ -1,5 +1,5 @@
 <template>
-  <v-container style="height: 100vh">
+  <v-container style="min-height: 100vh">
     <div v-show="!selectedServer" align-content="start">
       <v-row>
         <v-col>

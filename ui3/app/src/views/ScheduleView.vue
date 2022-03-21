@@ -1,5 +1,5 @@
 <template>
-  <v-container height="100%">
+  <v-container style="min-height: 100vh">
     <v-row>
       <v-col>
         <h1>JTF Schedule</h1>

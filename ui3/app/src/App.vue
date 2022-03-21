@@ -47,11 +47,7 @@
       <FooterComponent />
     </v-navigation-drawer>
     <v-main>
-      <v-container class="fill-height" fluid>
-        <v-row justify="center" align="center">
           <router-view></router-view>
-        </v-row>
-      </v-container>
     </v-main>
   </v-app>
 </template>

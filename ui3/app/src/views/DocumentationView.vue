@@ -1,5 +1,5 @@
 <template>
-  <v-container style="height: 100vh">
+  <v-container style="min-height: 100vh">
     <v-row>
       <v-col>
         <h1>{{ pageName }}</h1>

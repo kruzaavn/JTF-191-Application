@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container style="min-height: 100vh">
     <v-row>
       <v-col>
         <h1>ABOUT US</h1>

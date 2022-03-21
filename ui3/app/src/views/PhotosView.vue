@@ -1,5 +1,5 @@
 <template>
-  <v-container class="" style="height: 100vh">
+  <v-container style="min-height: 100vh">
     <v-row>
       <v-col
         v-for="photo in photos"
