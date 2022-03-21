@@ -87,7 +87,7 @@ const routes = [
   {
     path: "/qualification/:qualificationModule",
     name: "Qualification",
-    props: { type: "training" },
+    props: { type: "training", pageName: "Qualifications" },
     component: DocumentationView,
     meta: {
       title: title(title_header, "Qualifications"),
@@ -96,7 +96,7 @@ const routes = [
   {
     path: "/documentation/:documentationModule",
     name: "Documentation",
-    props: { type: "admin" },
+    props: { type: "admin", pageName: "Documentation" },
     component: DocumentationView,
     meta: {
       title: title(title_header, "Documentation"),

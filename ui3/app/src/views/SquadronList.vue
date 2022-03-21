@@ -1,16 +1,18 @@
 <template>
-  <v-container>
+  <v-container style="height: 100vh">
     <v-row
       align-content="start"
       v-for="(squadron_type, index) in squadron_types"
       :key="index"
     >
-      <v-container>
+      <v-col>
         <v-row>
-          <h1>
-            {{ squadron_type[0].toUpperCase() + squadron_type.slice(1) }}
-            Squadrons
-          </h1>
+          <v-col>
+            <h1>
+              {{ squadron_type[0].toUpperCase() + squadron_type.slice(1) }}
+              Squadrons
+            </h1>
+          </v-col>
         </v-row>
         <v-row>
           <v-col
@@ -45,7 +47,7 @@
             </v-card>
           </v-col>
         </v-row>
-      </v-container>
+      </v-col>
     </v-row>
   </v-container>
 </template>

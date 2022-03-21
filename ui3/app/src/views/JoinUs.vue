@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container style="height: 100vh">
     <div id="joinusform" v-if="!submitted">
       <h1>Join Us</h1>
       <p>Requirements to join JTF-191</p>

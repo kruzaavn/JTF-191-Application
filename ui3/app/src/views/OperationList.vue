@@ -1,5 +1,10 @@
 <template>
-  <v-container>
+  <v-container style="height: 100vh">
+    <v-row>
+      <v-col>
+        <h1>Operations</h1>
+      </v-col>
+    </v-row>
     <v-row>
       <v-col
         v-for="operation in operations"

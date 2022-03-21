@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container style="height: 100vh">
     <div id="registrationform" v-if="!submitted">
       <h1>
         User Registration for
