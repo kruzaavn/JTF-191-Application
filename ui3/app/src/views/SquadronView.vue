@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import AviatorSummary from "@/components/AviatorSummary";
 
 export default {
@@ -53,7 +53,14 @@ export default {
       )[0];
     },
   },
-  methods: {},
+  methods: {
+    ...mapActions(["getSquadrons", "getRoster", "getHQs"]),
+  },
+  mounted() {
+    this.getHQs();
+    this.getSquadrons();
+    this.getRoster();
+  },
 };
 </script>
 

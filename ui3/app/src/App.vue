@@ -104,12 +104,6 @@ export default {
         (theme.value = theme.value === "light" ? "dark" : "light"),
     };
   },
-  mounted() {
-    this.getRoster();
-    this.getSquadrons();
-    this.getHQs();
-    this.getOperations();
-  },
 };
 </script>
 

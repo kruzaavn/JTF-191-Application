@@ -60,7 +60,7 @@ export default {
     local: location.host,
   }),
   methods: {
-    ...mapActions([]),
+    ...mapActions(["getSquadrons"]),
   },
   computed: {
     ...mapGetters(["squadrons"]),
@@ -70,6 +70,9 @@ export default {
       let squadron_types = this.squadrons.map((squadron) => squadron.type);
       return [...new Set(squadron_types)];
     },
+  },
+  mounted() {
+    this.getSquadrons();
   },
 };
 </script>

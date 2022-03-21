@@ -1,16 +1,6 @@
 <template>
   <v-container>
-        <v-row>
-      <v-col>
-        <v-window v-model="image_index" show-arrows="hover">
-          <v-window-item v-for="(image, index) in squadronImages" :key="index">
-            <v-card height="200" class="d-flex justify-center align-center">
-              <v-img :src="image" aspect-ratio="16:9"> </v-img>
-            </v-card>
-          </v-window-item>
-        </v-window>
-      </v-col>
-    </v-row>
+    <v-row> </v-row>
     <v-row>
       <v-col>
         <h1>ABOUT US</h1>
@@ -86,12 +76,23 @@
         </v-list>
       </v-col>
     </v-row>
-
+    <v-row>
+      <v-col>
+        <v-carousel hide-delimiters cycle progress>
+          <v-carousel-item
+            v-for="(image, index) in squadronImages"
+            :key="index"
+            :src="image"
+            cover
+          ></v-carousel-item>
+        </v-carousel>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "AboutView",
@@ -104,6 +105,13 @@ export default {
   data: () => ({
     image_index: 0,
   }),
+  methods: {
+    ...mapActions(["getSquadrons", "getRoster"]),
+  },
+  mounted() {
+    this.getRoster();
+    this.getSquadrons();
+  },
 };
 </script>
 

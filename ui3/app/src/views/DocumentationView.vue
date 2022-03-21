@@ -1,22 +1,29 @@
 <template>
-  <DocumentationViewer
-    title="Training Qualifications"
-    :docs="filtered_docs"
-  ></DocumentationViewer>
+  <v-row>
+    <v-col>
+        <div
+          v-for="(doc, docIndex) in filtered_docs"
+          :key="docIndex"
+        ><h3>{{doc.name}}</h3>
+          <v-expansion-panels>
+
+          </v-expansion-panels>
+        </div>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import DocumentationViewer from "../components/DocumentationViewer";
 
 export default {
-  name: "QualificationView",
-  components: { DocumentationViewer },
-  props: ["qualificationModule"],
+  name: "DocumentationView",
+  components: {},
+  props: ["type"],
   computed: {
     ...mapGetters(["documentation"]),
     filtered_docs: function () {
-      return this.documentation.filter((doc) => (doc.type = "training"));
+      return this.documentation.filter((doc) => doc.type === this.type);
     },
   },
   methods: {

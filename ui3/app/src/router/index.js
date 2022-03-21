@@ -1,7 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import AboutView from "@/views/AboutView";
 import GCI from "@/views/GCI.vue";
-import QualificationView from "@/views/QualificationView";
 import SquadronView from "@/views/SquadronView";
 import JoinUs from "@/views/JoinUs";
 import ScheduleView from "@/views/ScheduleView";
@@ -11,6 +10,7 @@ import PhotosView from "@/views/PhotosView";
 import OperationView from "@/views/OperationView";
 import OperationList from "@/views/OperationList";
 import ProfileView from "@/views/ProfileView";
+import DocumentationView from "@/views/DocumentationView";
 
 const title_header = "JTF-191";
 
@@ -87,10 +87,19 @@ const routes = [
   {
     path: "/qualification/:qualificationModule",
     name: "Qualification",
-    props: true,
-    component: QualificationView,
+    props: { type: "training" },
+    component: DocumentationView,
     meta: {
       title: title(title_header, "Qualifications"),
+    },
+  },
+  {
+    path: "/documentation/:documentationModule",
+    name: "Documentation",
+    props: { type: "admin" },
+    component: DocumentationView,
+    meta: {
+      title: title(title_header, "Documentation"),
     },
   },
   {

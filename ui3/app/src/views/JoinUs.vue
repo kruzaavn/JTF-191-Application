@@ -119,6 +119,7 @@
               multiple
               hint="Pick your owned airframes"
               persistent-hint
+              item-text="text"
             ></v-select>
           </v-col>
           <v-col cols="12" sm="6">
@@ -200,19 +201,16 @@ export default {
 
       for (const module of modules) {
         selectable.push({
-          text: module.name,
+          text: module.name || module.dcs_display_name,
           value: module.id,
           disabled: false,
         });
       }
-
       return selectable;
     },
   },
   mounted() {
-    setTimeout(() => {
-      this.getDcsModules();
-    }, 250);
+    this.getDcsModules();
   },
   data: () => ({
     joinUsForm: {
