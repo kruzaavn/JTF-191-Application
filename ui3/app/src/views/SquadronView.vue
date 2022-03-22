@@ -13,13 +13,12 @@
               Aviators: {{ members.length }}
             </v-card-title>
           </v-img>
-          <!--          <v-card class="mx-4 my-5 py-2">-->
-          <!--            <markdown-it-vue-->
-          <!--              class="px-2"-->
-          <!--              :content="squadron.description"-->
-          <!--            ></markdown-it-vue>-->
-          <!--          </v-card>-->
-
+          <v-card class="mx-4 my-5 py-2">
+            <MarkdownComponent
+              class="px-2"
+              :content="squadron.description"
+            ></MarkdownComponent>
+          </v-card>
           <div v-for="member in members" :key="member.id">
             <AviatorSummary :aviator="member" />
           </div>
@@ -32,10 +31,12 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import AviatorSummary from "@/components/AviatorSummary";
+import MarkdownComponent from "@/components/MarkdownComponent";
 
 export default {
   name: "SquadronView",
   components: {
+    MarkdownComponent,
     AviatorSummary,
   },
   props: ["squadronDesignation"],

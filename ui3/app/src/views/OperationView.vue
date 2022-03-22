@@ -15,10 +15,10 @@
       <v-col>
         <h1>Operation Notes</h1>
         <v-card>
-          <markdown-it-vue
+          <MarkdownComponent
             class="px-2 py-2"
             :content="operation.notes"
-          ></markdown-it-vue>
+          ></MarkdownComponent>
         </v-card>
       </v-col>
     </v-row>
@@ -68,9 +68,11 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import MarkdownComponent from "@/components/MarkdownComponent";
 
 export default {
   name: "OperationView",
+  components: {MarkdownComponent},
   props: ["operationName"],
   data: () => ({
     search: "",
