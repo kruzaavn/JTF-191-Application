@@ -98,18 +98,26 @@ def get_killboard_image(combat_logs, prop):
         }
     }
     for combat_log in combat_logs:
-        if combat_log["target__category"] in [0, 1] and combat_log["kills"] >= air_kills_threshold:
-            to_render["air"]["kills"] = int(combat_log["kills"] / air_kills_threshold)
-        elif combat_log["target__category"] in [2, 4] and combat_log["kills"] >= ground_kills_threshold:
-            to_render["ground"]["kills"] += int(combat_log["kills"] / ground_kills_threshold)
-        elif combat_log["target__category"] == 3 and combat_log["kills"] >= maritime_kills_threshold:
-            to_render["maritime"]["kills"] += int(combat_log["kills"] / maritime_kills_threshold)
+        if combat_log["target__category"] in [0, 1]:
+            to_render["air"]["kills"] += combat_log["kills"]
+        elif combat_log["target__category"] in [2, 4]:
+            to_render["ground"]["kills"] += combat_log["kills"]
+        elif combat_log["target__category"] == 3:
+            to_render["maritime"]["kills"] += combat_log["kills"]
         else:
             continue
 
-    for log in to_render.values():
-        if log["kills"] > 0:
-            sub_image = get_killboard_subimage(log["icon"], log["kills"])
+    for log in to_render:
+        kills = 0
+        if log == "air" and to_render[log]["kills"] >= air_kills_threshold:
+            kills = int(to_render[log]["kills"] / air_kills_threshold)
+        elif log == "ground" and to_render[log]["kills"] >= ground_kills_threshold:
+            kills = int(to_render[log]["kills"] / ground_kills_threshold)
+        elif log == "maritime" and to_render[log]["kills"] >= maritime_kills_threshold:
+            kills = int(to_render[log]["kills"] / maritime_kills_threshold)
+
+        if kills > 0:
+            sub_image = get_killboard_subimage(to_render[log]["icon"], kills)
             tmp_image.composite(
                 image=sub_image,
                 left=0,
@@ -154,7 +162,7 @@ def get_callsign_image(aviator_props, prop):
         draw.fill_color = Color(prop["font_color"])
 
     quotes = ""
-    if "callsign_quotes" in prop and prop["callsign_quotes"] == "1":
+    if "callsign_quotes" in prop and prop["callsign_quotes"] == "yes":
         quotes = "\""
 
     text_offset_x = prop["text_offset_x"]
