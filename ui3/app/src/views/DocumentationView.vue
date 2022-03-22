@@ -10,7 +10,7 @@
               v-for="(docModule, docModuleIndex) in get_modules(doc)"
               :key="docModuleIndex"
             >
-              <v-expansion-panel-title @click="loading=true">
+              <v-expansion-panel-title>
                 <template v-slot:default="{ expanded }">
                   <v-row>
                     <v-col class="d-flex justify-start">
@@ -26,16 +26,9 @@
                 </template>
               </v-expansion-panel-title>
               <v-expansion-panel-text>
-                <iframe
-                  :src="setIframeLink(docModule)"
-                  width="100%"
-                  :height="iframeHeight"
-                  @load="setIframeHeight"
-                >
-                </iframe>
-                <div class="text-center" v-if="loading">
-                  <v-progress-circular indeterminate size="10vh"></v-progress-circular>
-                </div>
+                <IFrameComponent
+                    :documentModule="docModule"
+                ></IFrameComponent>
               </v-expansion-panel-text>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -47,17 +40,12 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import IFrameComponent from "@/components/IFrameComponent";
 
 export default {
   name: "DocumentationView",
-  components: {},
+  components: {IFrameComponent},
   props: ["type", "pageName"],
-  data() {
-    return {
-      iframeHeight: 0,
-      loading: false,
-    };
-  },
   computed: {
     ...mapGetters(["documentation", "documentationModules"]),
     filtered_docs: function () {
@@ -84,7 +72,6 @@ export default {
         }
       }
 
-
       return orderedModules.concat(
         modules.sort(function (a, b) {
           const nameA = a.name.toUpperCase(); // ignore upper and lowercase
@@ -101,23 +88,6 @@ export default {
         })
       );
     },
-    setIframeHeight() {
-      this.iframeHeight = window.innerHeight * 0.8;
-      this.loading = false;
-    },
-    setIframeLink(module) {
-      if (module.documentation_type === "document") {
-        return `${module.link}?embedded=true`;
-      } else if (module.documentation_type === "slides") {
-        return module.link.replace("/pub", "/embed");
-      } else if (module.documentation_type === "spreadsheet") {
-        return `${module.link}?widget=true&amp;headers=false`;
-      } else if (module.documentation_type === "video") {
-        return module.link.replace("watch?v=", "embed/");
-      } else {
-        return module.link;
-      }
-    },
   },
   mounted() {
     this.getDocumentation();
@@ -127,8 +97,5 @@ export default {
 </script>
 
 <style scoped>
-iframe {
-  border: 0;
-  min-width: 100%;
-}
+
 </style>
