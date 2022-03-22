@@ -5,8 +5,17 @@ from datetime import datetime
 import jsonschema
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
+
 def stats_default():
     return {"hours": {}, "kills": {}}
+
+
+class JSONValidator(BaseValidator):
+    def compare(self, value, schema):
+        try:
+            jsonschema.validate(value, schema)
+        except jsonschema.exceptions.ValidationError as error:
+            raise ValidationError(error)
 
 
 class HQ(models.Model):
@@ -208,13 +217,43 @@ class Documentation(models.Model):
     """
 
     types = ['training', 'admin']
+    JSON_FIELD_SCHEMA = {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "type": "array",
+            "items": {
+                    "type": "object",
+                    "properties": {
+                        "module": {
+                            "type": "string"
+                        },
+                        "rank": {
+                            "type": "integer"
+                        }
+                    },
+                    "required": [
+                        "module",
+                        "rank"
+                    ]
+            }
+    }
 
     class Meta:
         verbose_name_plural = 'Documentation'
 
     name = models.CharField(max_length=1024)
     modules = models.ManyToManyField(DocumentationModule, blank=True)
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
+    order = models.JSONField(
+        default=list,
+        null=True,
+        blank=True,
+        validators=[JSONValidator(limit_value=JSON_FIELD_SCHEMA)],
+        help_text="""By default modules will be ordered alphanumerically by name, if you would like to specify 
+        additional ordering this field can be used to do that by adding the following json objects to the order array 
+        <br><br> <strong>{ 'module': module name, 'rank': integer}</strong> <br><br> for example <br><br><strong>[{
+        'module': 'Leveling Brief', 'rank': 1}, <br>{'module': 'intermediate formation', 'rank': 2}]</strong> 
+        <br><br> all modules not specified will be still be sorted alphanumerically """
+    )
 
     type = models.CharField(choices=[(x, x) for x in types],
                             default=types[0],
@@ -491,7 +530,7 @@ class LiverySkin(models.Model):
     json_description = models.JSONField(
         blank=True,
         null=True,
-        validators=[LiverySkinJsonValidator(limit_value=JSON_FIELD_SCHEMA)]
+        validators=[JSONValidator(limit_value=JSON_FIELD_SCHEMA)]
     )
 
     # Allows for overwrites of the existing dds_file with the same name

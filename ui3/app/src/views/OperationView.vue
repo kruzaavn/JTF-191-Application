@@ -72,7 +72,7 @@ import MarkdownComponent from "@/components/MarkdownComponent";
 
 export default {
   name: "OperationView",
-  components: {MarkdownComponent},
+  components: { MarkdownComponent },
   props: ["operationName"],
   data: () => ({
     search: "",

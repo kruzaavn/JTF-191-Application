@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import {marked} from "marked";
+import { marked } from "marked";
 
 export default {
   name: "MarkdownComponent",
@@ -16,6 +16,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

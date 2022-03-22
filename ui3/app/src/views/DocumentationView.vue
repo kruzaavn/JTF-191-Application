@@ -7,7 +7,7 @@
           <h2>{{ doc.name }}</h2>
           <v-expansion-panels>
             <v-expansion-panel
-              v-for="(docModule, docModuleIndex) in get_modules(doc.modules)"
+              v-for="(docModule, docModuleIndex) in get_modules(doc)"
               :key="docModuleIndex"
             >
               <v-expansion-panel-title>
@@ -62,9 +62,44 @@ export default {
   },
   methods: {
     ...mapActions(["getDocumentation", "getDocumentationModules"]),
-    get_modules: function (module_list) {
-      return this.documentationModules.filter((module) =>
-        module_list.includes(module.id)
+    get_modules: function (documentation) {
+
+      let modules = this.documentationModules.filter((module) =>
+        documentation.modules.includes(module.id)
+      );
+
+      let orderdModule = documentation.order.sort((a, b) => a.rank - b.rank);
+
+      let orderedModules = [];
+
+      for (let i = 0; i < orderdModule.length; i++) {
+
+        for (let j = 0; j < modules.length; j++) {
+          if (modules[j].name === orderdModule[i].module) {
+
+            orderedModules.push(modules[j])
+            modules.splice(j,1)
+
+          }
+        }
+      }
+
+      console.log(orderedModules)
+
+      return orderedModules.concat(
+        modules.sort(function (a, b) {
+          const nameA = a.name.toUpperCase(); // ignore upper and lowercase
+          const nameB = b.name.toUpperCase(); // ignore upper and lowercase
+          if (nameA < nameB) {
+            return -1;
+          }
+          if (nameA > nameB) {
+            return 1;
+          }
+
+          // names must be equal
+          return 0;
+        })
       );
     },
     setIframeHeight() {
