@@ -10,7 +10,7 @@
               v-for="(docModule, docModuleIndex) in get_modules(doc)"
               :key="docModuleIndex"
             >
-              <v-expansion-panel-title>
+              <v-expansion-panel-title @click="loading=true">
                 <template v-slot:default="{ expanded }">
                   <v-row>
                     <v-col class="d-flex justify-start">
@@ -33,6 +33,9 @@
                   @load="setIframeHeight"
                 >
                 </iframe>
+                <div class="text-center" v-if="loading">
+                  <v-progress-circular indeterminate size="10vh"></v-progress-circular>
+                </div>
               </v-expansion-panel-text>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -52,6 +55,7 @@ export default {
   data() {
     return {
       iframeHeight: 0,
+      loading: false,
     };
   },
   computed: {
@@ -63,7 +67,6 @@ export default {
   methods: {
     ...mapActions(["getDocumentation", "getDocumentationModules"]),
     get_modules: function (documentation) {
-
       let modules = this.documentationModules.filter((module) =>
         documentation.modules.includes(module.id)
       );
@@ -73,18 +76,14 @@ export default {
       let orderedModules = [];
 
       for (let i = 0; i < orderdModule.length; i++) {
-
         for (let j = 0; j < modules.length; j++) {
           if (modules[j].name === orderdModule[i].module) {
-
-            orderedModules.push(modules[j])
-            modules.splice(j,1)
-
+            orderedModules.push(modules[j]);
+            modules.splice(j, 1);
           }
         }
       }
 
-      console.log(orderedModules)
 
       return orderedModules.concat(
         modules.sort(function (a, b) {
@@ -104,6 +103,7 @@ export default {
     },
     setIframeHeight() {
       this.iframeHeight = window.innerHeight * 0.8;
+      this.loading = false;
     },
     setIframeLink(module) {
       if (module.documentation_type === "document") {
