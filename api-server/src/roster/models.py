@@ -9,6 +9,7 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 def stats_default():
     return {"hours": {}, "kills": {}}
 
+markdown_help_text = """<a href="https://www.markdownguide.org/basic-syntax/">Markdown Supported</a><br><a href='https://marked.js.org/demo/'>Markdown Editor</a>"""
 
 class JSONValidator(BaseValidator):
     def compare(self, value, schema):
@@ -82,6 +83,8 @@ class DCSModules(models.Model):
                                null=True,
                                max_length=64)
 
+    supported = models.BooleanField(default=False)
+
     def __str__(self):
 
         if self.name:
@@ -100,7 +103,7 @@ class Squadron(models.Model):
     # fields
     name = models.CharField(max_length=1024)
     designation = models.CharField(max_length=1024)
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True, help_text=markdown_help_text)
     type = models.CharField(max_length=1024, choices=[(x, x) for x in types],
                             default=types[0])
     air_frame = models.ForeignKey(DCSModules, on_delete=models.SET_NULL,
@@ -121,28 +124,11 @@ class Operation(models.Model):
     operation table
     """
 
-    default_notes = """Use this space to disseminate essential information for the operation. 
-
-The following items can be added similar to how you would include them in a word document. 
-
-1. Plain text notes
-2. links to mission files like [.miz][miz] and [.liberation][lib] or [briefings][brief]
-3. Images
-4. Tables
-5. Lists and Task Checkoffs
-
-See markdown basic syntax [here](https://www.markdownguide.org/cheat-sheet/).
-
-[miz]: https://drive.google.com/file/d/1T99VR88fjwkEvNaWvzLIoY5uPVG9tzKY/view?usp=sharing
-[lib]: https://drive.google.com/file/d/1AgS7_KbdpgZRAyPEdVObkKnYcyiAByQX/view?usp=sharing
-[brief]: https://docs.google.com/presentation/d/1EmJxUxc5rK06voa4q9uANF9KX6SwvGBG-DHZTfD-HWM/edit?usp=sharing"""
-
-
     name = models.CharField(max_length=1024)
     img = models.ImageField(upload_to='operations')
     start = models.DateField()
     complete = models.DateField()
-    notes = models.TextField(default=default_notes)
+    notes = models.TextField(blank=True, null=True, help_text=markdown_help_text)
 
     def __str__(self):
         return f'{self.name}'
@@ -242,7 +228,9 @@ class Documentation(models.Model):
 
     name = models.CharField(max_length=1024)
     modules = models.ManyToManyField(DocumentationModule, blank=True)
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True,
+                                   null=True,
+                                   help_text=markdown_help_text)
     order = models.JSONField(
         default=list,
         null=True,

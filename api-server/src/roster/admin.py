@@ -70,7 +70,7 @@ class AviatorAdmin(admin.ModelAdmin):
 
 @admin.register(DCSModules)
 class DCSModuleAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('name', 'dcs_display_name', 'service', 'module_type', 'supported')
 
 
 def convert_to_aviator(modeladmin, request, queryset):

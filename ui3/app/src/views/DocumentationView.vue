@@ -5,6 +5,8 @@
         <h1>{{ pageName }}</h1>
         <div v-for="(doc, docIndex) in filtered_docs" :key="docIndex">
           <h2>{{ doc.name }}</h2>
+          <MarkdownComponent :content="doc.description">
+          </MarkdownComponent>
           <v-expansion-panels>
             <v-expansion-panel
               v-for="(docModule, docModuleIndex) in get_modules(doc)"
@@ -41,10 +43,11 @@
 <script>
 import { mapActions, mapGetters } from "vuex";
 import IFrameComponent from "@/components/IFrameComponent";
+import MarkdownComponent from "@/components/MarkdownComponent";
 
 export default {
   name: "DocumentationView",
-  components: {IFrameComponent},
+  components: {IFrameComponent, MarkdownComponent},
   props: ["type", "pageName"],
   computed: {
     ...mapGetters(["documentation", "documentationModules"]),
