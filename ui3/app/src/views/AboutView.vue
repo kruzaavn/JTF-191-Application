@@ -26,6 +26,18 @@
     </v-row>
     <v-row>
       <v-col>
+        <v-carousel hide-delimiters cycle height="20vh">
+          <v-carousel-item
+            v-for="(image, index) in squadronImages"
+            :key="index"
+            cover
+            ><v-img :src="image" aspect-ratio="4/3"></v-img
+          ></v-carousel-item>
+        </v-carousel>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
         <h1>TF-191 Guiding Values</h1>
         <v-list>
           <v-list-item>
@@ -73,18 +85,6 @@
             fairly and above reproach.
           </v-list-item>
         </v-list>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
-        <v-carousel hide-delimiters cycle progress>
-          <v-carousel-item
-            v-for="(image, index) in squadronImages"
-            :key="index"
-            :src="image"
-            cover
-          ></v-carousel-item>
-        </v-carousel>
       </v-col>
     </v-row>
   </v-container>

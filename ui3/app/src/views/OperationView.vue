@@ -49,7 +49,7 @@
               </v-select>
             </v-row>
           </v-card-title>
-          <v-data-table
+          <v-table
             :headers="munitionsHeader"
             :items="munitionsTable"
             :group-by="groupby"
@@ -59,7 +59,7 @@
             :search="search"
             items-per-page="-1"
           >
-          </v-data-table>
+          </v-table>
         </v-card>
       </v-col>
     </v-row>
