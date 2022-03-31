@@ -1,6 +1,5 @@
 <template>
-  <v-footer padless>
-    <v-col class="text-caption text-center" cols="12">
+    <div class="text-center align-end" >
       Support the Wing
       <form action="https://www.paypal.com/donate" method="post" target="_top">
         <input type="hidden" name="hosted_button_id" value="BJYS8LWHZPEV6" />
@@ -13,8 +12,7 @@
           alt="Donate with PayPal button"
         />
       </form>
-    </v-col>
-  </v-footer>
+    </div>
 </template>
 
 <script>

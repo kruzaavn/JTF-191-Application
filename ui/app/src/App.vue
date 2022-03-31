@@ -7,44 +7,46 @@
         </v-img>
       </router-link>
       <v-spacer></v-spacer>
-
       <v-btn v-if="isAdmin" :href="adminLink"> ADMIN </v-btn>
       <LoginComponent />
       <v-btn @click="toggleTheme">toggle theme</v-btn>
     </v-app-bar>
-    <v-navigation-drawer v-model="drawer" app>
-      <v-list nav dense>
-        <v-list-item to="/">
-          <v-list-item-title>Photos</v-list-item-title>
-        </v-list-item>
-        <v-list-item to="/about">
-          <v-list-item-title>About Us</v-list-item-title>
-        </v-list-item>
-        <v-list-item to="/joinus">
-          <v-list-item-title>Join Us</v-list-item-title>
-        </v-list-item>
-        <v-list-item to="/squadron">
-          <v-list-item-title>Squadrons</v-list-item-title>
-        </v-list-item>
-        <div v-if="isLoggedIn">
-          <v-list-item to="/documentation/list">
-            <v-list-item-title>Documentation</v-list-item-title>
-          </v-list-item>
-          <v-list-item to="/qualification/list">
-            <v-list-item-title>Training Qualifications</v-list-item-title>
-          </v-list-item>
-          <v-list-item to="/schedule">
-            <v-list-item-title>JTF Schedule</v-list-item-title>
-          </v-list-item>
-          <v-list-item to="/server">
-            <v-list-item-title>Servers</v-list-item-title>
-          </v-list-item>
-          <v-list-item to="/operation">
-            <v-list-item-title>Operations</v-list-item-title>
-          </v-list-item>
-        </div>
-      </v-list>
-      <FooterComponent />
+    <v-navigation-drawer v-model="drawer" app class="d-flex">
+          <v-list nav dense>
+            <v-list-item to="/">
+              <v-list-item-title>Photos</v-list-item-title>
+            </v-list-item>
+            <v-list-item to="/about">
+              <v-list-item-title>About Us</v-list-item-title>
+            </v-list-item>
+            <v-list-item to="/joinus">
+              <v-list-item-title>Join Us</v-list-item-title>
+            </v-list-item>
+            <v-list-item to="/squadron">
+              <v-list-item-title>Squadrons</v-list-item-title>
+            </v-list-item>
+            <div v-if="isLoggedIn">
+              <v-list-item to="/documentation/list">
+                <v-list-item-title>Documentation</v-list-item-title>
+              </v-list-item>
+              <v-list-item to="/qualification/list">
+                <v-list-item-title>Training Qualifications</v-list-item-title>
+              </v-list-item>
+              <v-list-item to="/schedule">
+                <v-list-item-title>JTF Schedule</v-list-item-title>
+              </v-list-item>
+              <v-list-item to="/server">
+                <v-list-item-title>Servers</v-list-item-title>
+              </v-list-item>
+              <v-list-item to="/operation">
+                <v-list-item-title>Operations</v-list-item-title>
+              </v-list-item>
+              <v-list-item>
+
+              </v-list-item>
+            </div>
+          </v-list>
+        <FooterComponent  />
     </v-navigation-drawer>
     <v-main>
       <router-view></router-view>
