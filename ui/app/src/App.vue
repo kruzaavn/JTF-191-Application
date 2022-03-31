@@ -92,26 +92,21 @@ export default {
     },
   },
   setup() {
+    const stored_theme = localStorage.getItem("theme");
 
-    const stored_theme = localStorage.getItem('theme')
-
-    let theme = null
+    let theme = null;
 
     if (stored_theme) {
-
       theme = ref(stored_theme);
-
     } else {
-
       theme = ref("light");
-
     }
 
     return {
       theme,
       toggleTheme: () => {
-        (theme.value = theme.value === "light" ? "dark" : "light")
-        localStorage.setItem('theme', theme.value)
+        theme.value = theme.value === "light" ? "dark" : "light";
+        localStorage.setItem("theme", theme.value);
       },
     };
   },

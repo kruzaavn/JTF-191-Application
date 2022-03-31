@@ -13,6 +13,7 @@
         <v-img
           :src="photo.url || photo.file"
           aspect-ratio="16:9"
+          cover
           lazy-src="https://dummyimage.com/600x400/bfbfbf/bfbfbf.png"
         >
         </v-img>

@@ -25,26 +25,31 @@
             sm="12"
             class="d-flex child-flex"
           >
-            <v-card
-              :to="'/squadron/' + squadron.designation"
-              class="mx-auto"
-              tile
-            >
-              <v-img
-                contain
-                :src="squadron.img"
-                height="30vh"
-                class="my-1"
-              ></v-img>
-              <div class="description-card mt-auto">
-                <v-card-title>
-                  {{ squadron.name }}
-                </v-card-title>
-                <v-card-subtitle>
-                  {{ squadron.designation }}
-                </v-card-subtitle>
-              </div>
-            </v-card>
+            <v-container>
+              <v-row>
+                <v-col>
+                  <v-card
+                    :to="'/squadron/' + squadron.designation"
+                    flat
+                    bottom
+                    plain
+                  >
+                    <v-img
+                      :src="squadron.img"
+                      min-height="33vh"
+                      aspect-ratio="16:9"
+                    >
+                    </v-img>
+                    <v-card-title>
+                      {{ squadron.name }}
+                    </v-card-title>
+                    <v-card-text>
+                      {{ squadron.designation }}
+                    </v-card-text>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-container>
           </v-col>
         </v-row>
       </v-col>
