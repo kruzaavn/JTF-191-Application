@@ -80,7 +80,7 @@
 <script>
 import moment from "moment";
 import axios from "axios";
-import { GChart } from "vue-google-charts";
+import { GChart } from "vue3-googl-chart";
 
 export default {
   name: "AviatorSummary",

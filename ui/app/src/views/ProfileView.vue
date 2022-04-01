@@ -1,15 +1,15 @@
 <template>
   <v-container style="min-height: 100vh">
-    <v-row align-content="center" class="pb-10">
-      <v-col>
-        <v-img
+    <v-row class="pb-10">
+      <v-col v-if="aviator.squadron" align="center">
+        <img
           :src="aviator.squadron.img"
-          aspect-ratio="16:9"
-          class="my-1"
-        ></v-img>
+          style="max-height: 30vh; text-align: center;"
+          :alt="aviator.squadron.name"
+        />
       </v-col>
     </v-row>
-    <AviatorSummary :aviator="aviator" />
+    <AviatorSummary :aviator="aviator" v-if="aviator.id" />
     <DynamicLiveries />
   </v-container>
 </template>

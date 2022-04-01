@@ -23,8 +23,8 @@
     "roboto-fontface": "*",
     "vee-validate": "^4.5.10",
     "vue": "^3.2.13",
-    "vue-google-charts": "^0.3.3",
     "vue-router": "^4.0.14",
+    "vue3-googl-chart": "^0.0.1",
     "vuetify": "npm:@vuetify/nightly@next",
     "vuex": "^4.0.2",
     "webfontloader": "^1.0.0"
