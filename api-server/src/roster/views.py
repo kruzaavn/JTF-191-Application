@@ -610,7 +610,8 @@ class FlightLogAggregateView(ListAPIView):
                             roster_flightlog 
                         where 
                             aviator_id=%s and 
-                            flight_id is not NULL 
+                            flight_id is not NULL and 
+                            flight_time < 12
                         group by 
                             flight_id, 
                             platform_id, 
@@ -645,7 +646,8 @@ class FlightLogTimeSeriesView(ListAPIView):
                                 roster_flightlog 
                             where 
                                 aviator_id=%s and 
-                                flight_id is not null 
+                                flight_id is not null and
+                                flight_time < 12
                             group by 
                                 flight_id
                             )   select 
@@ -672,7 +674,8 @@ class FlightLogTimeSeriesView(ListAPIView):
                                 roster_flightlog 
                             where 
                                 aviator_id=%s and 
-                                flight_id is not null
+                                flight_id is not null and
+                                flight_time < 12
                             group by 
                                 flight_id
                             )   select 

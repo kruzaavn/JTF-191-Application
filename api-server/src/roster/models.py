@@ -9,7 +9,10 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 def stats_default():
     return {"hours": {}, "kills": {}}
 
-markdown_help_text = """<a href="https://www.markdownguide.org/basic-syntax/">Markdown Supported</a><br><a href='https://marked.js.org/demo/'>Markdown Editor</a>"""
+
+markdown_help_text = """<a href="https://www.markdownguide.org/basic-syntax/">Markdown Supported</a><br><a 
+href='https://marked.js.org/demo/'>Markdown Editor</a> """
+
 
 class JSONValidator(BaseValidator):
     def compare(self, value, schema):
@@ -83,7 +86,7 @@ class DCSModules(models.Model):
                                null=True,
                                max_length=64)
 
-    supported = models.BooleanField(default=False)
+    supported = models.BooleanField(default=True)
 
     def __str__(self):
 
