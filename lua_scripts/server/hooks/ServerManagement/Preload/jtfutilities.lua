@@ -19,6 +19,18 @@ function jtfutils.uuid()
 	-- This function will return a UUID each time it is called using the powershell UUID generation method
 
 	local f = io.popen([["powershell New-Guid"]])
+	--[[
+	the response back from powershell will look like this
+
+	"""
+
+	Guid
+	----
+	xxxxx-xxxx-xxxx-xxx-xxxxxxxxxx
+	"""
+
+	read the first 3 lines and throw them away, save the last line
+	]]
 	f:read()
 	f:read()
 	f:read()
