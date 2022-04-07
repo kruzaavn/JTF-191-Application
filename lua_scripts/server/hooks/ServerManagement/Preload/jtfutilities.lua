@@ -16,15 +16,17 @@ end
 
 function jtfutils.uuid()
 
-	-- This function will return a UUID each time it is called
+	-- This function will return a UUID each time it is called using the powershell UUID generation method
 
-	local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
-	local uuid =  string.gsub(template, '[xy]', function (c)
-    	local v = (c == 'x') and math.random(0, 0xf) or math.random(8, 0xb)
-		return string.format('%x', v)
-    end)
+	local f = io.popen([["powershell New-Guid"]])
+	f:read()
+	f:read()
+	f:read()
 
-    return string.sub(uuid, 1, string.len(uuid))
+	local uuid = f:read()
+	f:close()
+
+	return uuid
 end
 
 

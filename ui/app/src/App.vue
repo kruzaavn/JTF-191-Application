@@ -46,7 +46,7 @@
               </v-list-item>
             </div>
           </v-list>
-        <FooterComponent  />
+        <FooterComponent/>
     </v-navigation-drawer>
     <v-main>
       <router-view></router-view>
