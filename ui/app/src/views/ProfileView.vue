@@ -4,7 +4,7 @@
       <v-col v-if="aviator.squadron" align="center">
         <img
           :src="aviator.squadron.img"
-          style="max-height: 30vh; text-align: center;"
+          style="max-height: 30vh; text-align: center"
           :alt="aviator.squadron.name"
         />
       </v-col>

@@ -17,7 +17,7 @@
         <v-container>
           <v-row>
             <v-col>
-              <v-card :to="'/operation/' + operation.name" flat bottom plain>
+              <v-card :to="'/operation/' + operation.name" tile>
                 <v-img
                   :src="operation.img"
                   lazy-src="https://dummyimage.com/600x400/bfbfbf/bfbfbf.png"
