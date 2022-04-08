@@ -30,9 +30,8 @@
                 <v-col>
                   <v-card
                     :to="'/squadron/' + squadron.designation"
-                    flat
-                    bottom
-                    plain
+                    class="mx-auto"
+                    tile
                   >
                     <v-img
                       :src="squadron.img"
@@ -40,9 +39,11 @@
                       aspect-ratio="16:9"
                     >
                     </v-img>
+                    <v-divider></v-divider>
                     <v-card-title>
                       {{ squadron.name }}
                     </v-card-title>
+
                     <v-card-text>
                       {{ squadron.designation }}
                     </v-card-text>

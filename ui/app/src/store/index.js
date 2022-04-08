@@ -3,7 +3,7 @@ import authModule from "./modules/authModual";
 import gciModule from "./modules/gciModule";
 import rosterModule from "./modules/rosterModule";
 
-export default createStore({
+export const store = createStore({
   state: {},
   getters: {},
   mutations: {},
