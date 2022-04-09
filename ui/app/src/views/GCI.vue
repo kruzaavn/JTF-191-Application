@@ -72,7 +72,7 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import map from "@/plugins/map";
+import map from "../plugins/map.js";
 
 export default {
   name: "GCI",

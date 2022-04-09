@@ -84,8 +84,8 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import Event from "@/components/Event";
-import UpdateEvent from "@/components/UpdateEvent";
+import Event from "../components/Event.vue";
+import UpdateEvent from "../components/UpdateEvent.vue";
 
 export default {
   name: "ScheduleView",
