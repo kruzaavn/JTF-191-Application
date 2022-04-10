@@ -1,16 +1,17 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import AboutView from "@/views/AboutView";
-import GCI from "@/views/GCI.vue";
-import SquadronView from "@/views/SquadronView";
-import JoinUs from "@/views/JoinUs";
-import ScheduleView from "@/views/ScheduleView";
-import RegisterView from "@/views/RegisterView";
-import SquadronList from "@/views/SquadronList";
-import PhotosView from "@/views/PhotosView";
-import OperationView from "@/views/OperationView";
-import OperationList from "@/views/OperationList";
-import ProfileView from "@/views/ProfileView";
-import DocumentationView from "@/views/DocumentationView";
+import AboutView from "../views/AboutView.vue";
+import GCI from "../views/GCI.vue";
+import SquadronView from "../views/SquadronView.vue";
+import JoinUs from "../views/JoinUs.vue";
+import ScheduleView from "../views/ScheduleView.vue";
+import RegisterView from "../views/RegisterView.vue";
+import SquadronList from "../views/SquadronList.vue";
+import PhotosView from "../views/PhotosView.vue";
+import OperationView from "../views/OperationView.vue";
+import OperationList from "../views/OperationList.vue";
+import ProfileView from "../views/ProfileView.vue";
+import DocumentationView from "../views/DocumentationView.vue";
+
 
 const title_header = "JTF-191";
 

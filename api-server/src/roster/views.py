@@ -610,12 +610,13 @@ class FlightLogAggregateView(ListAPIView):
                             roster_flightlog 
                         where 
                             aviator_id=%s and 
-                            flight_id is not NULL and 
-                            flight_time < 12
+                            flight_id is not NULL
                         group by 
                             flight_id, 
                             platform_id, 
                             aviator_id
+                        having
+                                extract (HOUR from MAX(time) - MIN(time)) < 12
                             )   select 
                                     SUM(flight_time) as total_flight_time, 
                                     1 as id, 
@@ -646,10 +647,11 @@ class FlightLogTimeSeriesView(ListAPIView):
                                 roster_flightlog 
                             where 
                                 aviator_id=%s and 
-                                flight_id is not null and
-                                flight_time < 12
+                                flight_id is not null
                             group by 
                                 flight_id
+                            having
+                                extract (HOUR from MAX(time) - MIN(time)) < 12
                             )   select 
                                     SUM(flight_time) as total_flight_time, 
                                     date, 
@@ -674,10 +676,11 @@ class FlightLogTimeSeriesView(ListAPIView):
                                 roster_flightlog 
                             where 
                                 aviator_id=%s and 
-                                flight_id is not null and
-                                flight_time < 12
+                                flight_id is not null
                             group by 
                                 flight_id
+                            having 
+                                extract (HOUR from MAX(time) - MIN(time)) < 12
                             )   select 
                                     SUM(flight_time) as total_flight_time, 
                                     date, 

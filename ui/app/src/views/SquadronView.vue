@@ -29,8 +29,8 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import AviatorSummary from "@/components/AviatorSummary";
-import MarkdownComponent from "@/components/MarkdownComponent";
+import AviatorSummary from "../components/AviatorSummary.vue";
+import MarkdownComponent from "../components/MarkdownComponent.vue";
 
 export default {
   name: "SquadronView",

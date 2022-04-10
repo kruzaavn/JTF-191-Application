@@ -3,7 +3,7 @@
     <v-app-bar>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
       <router-link to="/">
-        <v-img min-width="150px" max-width="250px" src="@/assets/logo.png">
+        <v-img min-width="150px" max-width="250px" src="./src/assets/logo.png">
         </v-img>
       </router-link>
       <v-spacer></v-spacer>
@@ -54,8 +54,8 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import LoginComponent from "@/components/LoginComponent";
-import FooterComponent from "@/components/FooterComponent";
+import LoginComponent from "./components/LoginComponent.vue";
+import FooterComponent from "./components/FooterComponent.vue";
 import { ref } from "vue";
 
 export default {

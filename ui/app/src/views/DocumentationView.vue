@@ -39,8 +39,8 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import IFrameComponent from "@/components/IFrameComponent";
-import MarkdownComponent from "@/components/MarkdownComponent";
+import IFrameComponent from "../components/IFrameComponent.vue";
+import MarkdownComponent from "../components/MarkdownComponent.vue";
 
 export default {
   name: "DocumentationView",

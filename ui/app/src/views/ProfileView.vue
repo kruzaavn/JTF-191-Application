@@ -16,8 +16,8 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import AviatorSummary from "@/components/AviatorSummary";
-import DynamicLiveries from "@/components/DynamicLiveries";
+import AviatorSummary from "../components/AviatorSummary.vue";
+import DynamicLiveries from "../components/DynamicLiveries.vue";
 
 export default {
   name: "ProfileView",

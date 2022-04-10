@@ -68,7 +68,7 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import MarkdownComponent from "@/components/MarkdownComponent";
+import MarkdownComponent from "../components/MarkdownComponent.vue";
 
 export default {
   name: "OperationView",
