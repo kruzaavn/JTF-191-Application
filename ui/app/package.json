@@ -27,7 +27,6 @@
     "vue-router": "^4.0.14",
     "vue3-googl-chart": "^0.0.1",
     "vuetify": "npm:@vuetify/nightly@next",
-    "vuex": "^4.0.2",
     "webfontloader": "^1.0.0"
   },
   "devDependencies": {
