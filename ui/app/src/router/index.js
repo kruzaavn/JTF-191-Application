@@ -12,7 +12,6 @@ import OperationList from "../views/OperationList.vue";
 import ProfileView from "../views/ProfileView.vue";
 import DocumentationView from "../views/DocumentationView.vue";
 
-
 const title_header = "JTF-191";
 
 function title(header, title) {
