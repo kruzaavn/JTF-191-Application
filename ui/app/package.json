@@ -9,8 +9,11 @@
     "prettier": "prettier --write ."
   },
   "dependencies": {
-    "vue": "^3.2.25",
-    "vuex": "^4.0.2",
+    "@fullcalendar/core": "^5.11.0",
+    "@fullcalendar/daygrid": "^5.11.0",
+    "@fullcalendar/interaction": "^5.11.0",
+    "@fullcalendar/timegrid": "^5.11.0",
+    "@fullcalendar/vue3": "^5.11.0",
     "@mdi/font": "5.9.55",
     "axios": "^0.26.1",
     "core-js": "^3.8.3",
@@ -24,15 +27,17 @@
     "moment": "^2.29.1",
     "roboto-fontface": "*",
     "vee-validate": "^4.5.10",
+    "vue": "^3.2.25",
     "vue-router": "^4.0.14",
     "vue3-googl-chart": "^0.0.1",
     "vuetify": "npm:@vuetify/nightly@next",
+    "vuex": "^4.0.2",
     "webfontloader": "^1.0.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^2.3.0",
-    "vite": "^2.9.0",
+    "prettier": "^2.6.0",
     "sass": "^1.50.0",
-    "prettier": "^2.6.0"
+    "vite": "^2.9.0"
   }
 }

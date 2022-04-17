@@ -26,7 +26,7 @@
       <v-icon left>mdi-login</v-icon>
       Login
       <v-dialog v-model="dialog" activator="parent">
-        <v-card>
+        <v-card width="50vw" min-width="25vw">
           <v-card-title primary-title>
             <h2>Login</h2>
           </v-card-title>

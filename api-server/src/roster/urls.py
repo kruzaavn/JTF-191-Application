@@ -35,7 +35,6 @@ urlpatterns = [
     path('hqs/list/', HQListView.as_view()),
     path('modules/list/', DCSModuleListView.as_view()),
     path('event/list/', EventListView.as_view()),
-    path('event/list/<str:start>/<str:end>/', EventListView.as_view()),
     path('event/detail/<int:pk>/', EventDetailView.as_view()),
     path('documentation/list/', DocumentationListView.as_view()),
     path('documentation/modules/list/', DocumentationModuleListView.as_view()),
