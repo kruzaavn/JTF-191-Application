@@ -3,9 +3,9 @@
     <v-row>
       <v-col>
         <h1>JTF Schedule</h1>
-        <FullCalendar class="calendar" :options="calendarOptions"
-          >
+        <FullCalendar class="calendar" :options="calendarOptions">
         </FullCalendar>
+        <v-dialog> <h1>i've been clicked</h1> </v-dialog>
       </v-col>
     </v-row>
   </v-container>
@@ -28,10 +28,12 @@ const eventDefaults = {
   editable: true,
 };
 
+
 export default {
   name: "ScheduleView",
   components: { FullCalendar },
   data: () => ({
+    dialog: false,
     calendarOptions: {
       plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
       initialView: "dayGridMonth",
@@ -43,6 +45,8 @@ export default {
       selectable: true,
       selectMirror: true,
       nowIndicator: true,
+      dayMaxEvents: 4,
+      eventClick: this.handleEventClick,
       eventSources: [
         {
           extraParams: { type: "operation" },
@@ -64,12 +68,18 @@ export default {
   }),
 
   computed: {},
-  methods: {},
+  methods: {
+    handleEventClick: function (clickInfo) {
+      if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
+        clickInfo.event.remove()
+      }
+    },
+  },
 };
 </script>
 
 <style scoped>
 .calendar {
- height: 80vh;
+  height: 80vh;
 }
 </style>
