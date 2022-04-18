@@ -5,7 +5,12 @@
         <h1>JTF Schedule</h1>
         <FullCalendar class="calendar" :options="calendarOptions">
         </FullCalendar>
-        <v-dialog> <h1>i've been clicked</h1> </v-dialog>
+        <v-dialog v-model="dialog">
+          <EventComponent
+            :event="selectedEvent"
+            @dialogClose="this.dialog = false"
+          ></EventComponent>
+        </v-dialog>
       </v-col>
     </v-row>
   </v-container>
@@ -17,6 +22,7 @@ import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import EventComponent from "../components/EventComponent.vue";
 
 function formatEvent(eventData) {
   return { title: eventData.name, ...eventData };
@@ -28,51 +34,82 @@ const eventDefaults = {
   editable: true,
 };
 
-
 export default {
   name: "ScheduleView",
-  components: { FullCalendar },
-  data: () => ({
-    dialog: false,
-    calendarOptions: {
-      plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-      initialView: "dayGridMonth",
-      headerToolbar: {
-        left: "prev,next today",
-        center: "title",
-        right: "dayGridMonth,timeGridWeek",
+  components: { FullCalendar, EventComponent },
+  data: function () {
+    return {
+      dialog: false,
+      selectedEvent: {},
+      calendarOptions: {
+        plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+        initialView: "dayGridMonth",
+        headerToolbar: {
+          left: "prev,next today",
+          center: "title",
+          right: "dayGridMonth,timeGridWeek",
+        },
+        selectable: true,
+        selectMirror: true,
+        nowIndicator: true,
+        dayMaxEvents: 3,
+        eventClick: this.handleEventClick,
+        select: this.handleDateSelect,
+        eventMouseEnter: this.handleEnterEvent,
+        eventMouseLeave: this.handleLeaveEvent,
+        eventSources: [
+          {
+            extraParams: { type: "operation" },
+            backgroundColor: "#F26419",
+            textColor: "white",
+            ...eventDefaults,
+          },
+          {
+            extraParams: { type: "training" },
+            backgroundColor: "#86BBD8",
+            textColor: "black",
+            ...eventDefaults,
+          },
+          {
+            extraParams: { type: "admin" },
+            backgroundColor: "#2F4858",
+            textColor: "white",
+            ...eventDefaults,
+          },
+        ],
       },
-      selectable: true,
-      selectMirror: true,
-      nowIndicator: true,
-      dayMaxEvents: 4,
-      eventClick: this.handleEventClick,
-      eventSources: [
-        {
-          extraParams: { type: "operation" },
-          color: "blue",
-          ...eventDefaults,
-        },
-        {
-          extraParams: { type: "training" },
-          color: "green",
-          ...eventDefaults,
-        },
-        {
-          extraParams: { type: "admin" },
-          color: "purple",
-          ...eventDefaults,
-        },
-      ],
-    },
-  }),
+    };
+  },
 
   computed: {},
   methods: {
     handleEventClick: function (clickInfo) {
-      if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-        clickInfo.event.remove()
-      }
+      this.dialog = !this.dialog;
+      this.selectedEvent = clickInfo.event;
+    },
+    handleDateSelect(selectInfo) {
+      let calendarApi = selectInfo.view.calendar;
+
+      // this.dialog = !this.dialog
+
+      calendarApi.unselect(); // clear date selection
+
+      const Event = calendarApi.addEvent({
+        title: "NewEvent",
+        start: selectInfo.startStr,
+        end: selectInfo.endStr,
+        backgroundColor: "#F6AE2D",
+        textColor: "black",
+        extendedProps: {
+          description: "Enter Event Description",
+        },
+      });
+    },
+    handleEnterEvent(mouseEnterInfo) {
+      mouseEnterInfo.event.setProp("borderColor", "red");
+    },
+    handleLeaveEvent(mouseLeaveInfo) {
+      mouseLeaveInfo.event.setProp("borderColor", "");
     },
   },
 };
