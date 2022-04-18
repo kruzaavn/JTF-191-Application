@@ -18,13 +18,14 @@
             prepend-icon="mdi-star"
             title="Starred"
             value="starred"
+            @click="commitEvent"
           ></v-list-item>
         </v-list>
       </v-navigation-drawer>
 
       <v-main style="min-height: 50vh; min-width: 50vh">
-        <v-toolbar :color="event.source ? 'red' : 'green'"
-          >{{ event.title }}
+        <v-toolbar :color="event.source ? event.source.internalEventSource.ui.backgroundColor : '#F6AE2D'"
+          ><span :style="{color: event.source ? event.source.internalEventSource.ui.textColor : 'black'}">{{ event.title }}</span>
         </v-toolbar>
         <MarkdownComponent
           v-if="!editDescription"
@@ -53,7 +54,7 @@ export default {
   },
   methods: {
     commitEvent: function () {
-      console.log("Committed");
+      console.log(this.event);
     },
   },
 };
