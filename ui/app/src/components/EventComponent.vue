@@ -24,6 +24,7 @@
             title="Delete"
             value="delete"
             style="color:red"
+            @click="removeEvent(); $emit('dialogClose')"
           ></v-list-item>
         </v-list>
       </v-navigation-drawer>
@@ -84,15 +85,19 @@ export default {
   data: function () {
     return {
       drawer: true,
-      description: "",
+      description: this.event.extendedProps.description,
       editDescription: false,
       title: this.event.title,
     };
   },
   methods: {
     commitEvent: function () {
-      console.log(this.event);
+      this.event.setProp('title', this.title)
+      this.event.setExtendedProp('description', this.description)
     },
+    removeEvent: function () {
+      this.event.remove()
+    }
   },
 };
 </script>
