@@ -22,6 +22,7 @@ import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import listPlugin from '@fullcalendar/list'
 import EventComponent from "../components/EventComponent.vue";
 
 function formatEvent(eventData) {
@@ -42,12 +43,12 @@ export default {
       dialog: false,
       selectedEvent: {},
       calendarOptions: {
-        plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+        plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
         initialView: "dayGridMonth",
         headerToolbar: {
           left: "prev,next today",
           center: "title",
-          right: "dayGridMonth,timeGridWeek",
+          right: "dayGridMonth,timeGridWeek,listMonth",
         },
         selectable: true,
         selectMirror: true,
