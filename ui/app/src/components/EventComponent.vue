@@ -84,6 +84,7 @@
                 v-model:model-value="title"
               ></v-text-field></v-toolbar-title
           ></v-toolbar>
+          <v-select :items="getSources()" class="px-4 pt-4" dense label="Event Type"></v-select>
           <v-textarea
             v-model:model-value="description"
             max-rows="10"
@@ -121,6 +122,9 @@ export default {
       this.event.remove();
       this.$emit("dialogClose");
     },
+    getSources: function () {
+      return ['Admin', 'Operational']
+    }
   },
 };
 </script>
