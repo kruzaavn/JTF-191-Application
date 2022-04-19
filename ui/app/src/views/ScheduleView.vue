@@ -22,7 +22,7 @@ import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import listPlugin from '@fullcalendar/list'
+import listPlugin from "@fullcalendar/list";
 import EventComponent from "../components/EventComponent.vue";
 
 function formatEvent(eventData) {
@@ -101,6 +101,7 @@ export default {
         end: selectInfo.endStr,
         backgroundColor: "#F6AE2D",
         textColor: "black",
+        editable: true,
         extendedProps: {
           description: "Enter Event Description",
         },
