@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <v-layout>
-      <v-navigation-drawer expand-on-hover rail>
+      <v-navigation-drawer expand-on-hover rail position="right">
         <v-list nav>
           <v-list-item
             :prepend-icon="menuPage === 'edit' ? 'mdi-text-box' : 'mdi-xml'"
@@ -33,7 +33,7 @@
           ></v-list-item>
         </v-list>
       </v-navigation-drawer>
-      <v-main style="min-width: 50vw; min-height: 50vh">
+      <v-main class="display-window">
         <div id="menu-page-display" v-if="menuPage === 'display'">
           <v-toolbar
             :color="
@@ -54,6 +54,7 @@
           <MarkdownComponent
             :content="description"
             class="pa-4"
+
           ></MarkdownComponent>
         </div>
         <div id="menu-page-edit" v-if="menuPage === 'edit'">
@@ -100,7 +101,6 @@
           <v-textarea
             class="text-body-2 px-4"
             v-model:model-value="description"
-            max-rows="10"
             placeholder="Markdown Supported Text Area"
           ></v-textarea>
         </div>
@@ -140,10 +140,13 @@ export default {
     commitEvent: function () {
       this.event.setProp("title", this.title);
       this.event.setExtendedProp("description", this.description);
+      this.$emit("dialogClose");
+      // this.getCalendar().refetchEvents() todo enable for pulling updated data
     },
     removeEvent: function () {
       this.event.remove();
       this.$emit("dialogClose");
+      // this.getCalendar().refetchEvents() todo enable for pulling updated data
     },
     getCalendar: function () {
       return this.event._context.calendarApi;
@@ -170,4 +173,13 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+.display-window {
+  min-width: 50vw;
+  max-width: 70vw;
+  min-height: 50vh;
+  max-height: 70vh;
+}
+
+</style>
