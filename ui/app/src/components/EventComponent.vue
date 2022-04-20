@@ -1,5 +1,5 @@
 <template>
-  <v-card style="min-height: 50vh; min-width: 50vw">
+  <v-card>
     <v-layout>
       <v-navigation-drawer expand-on-hover rail>
         <v-list nav>
@@ -33,8 +33,7 @@
           ></v-list-item>
         </v-list>
       </v-navigation-drawer>
-
-      <v-main >
+      <v-main style="min-width: 50vw; min-height: 50vh">
         <div id="menu-page-display" v-if="menuPage === 'display'">
           <v-toolbar
             :color="
@@ -52,19 +51,10 @@
               >{{ title }}</v-toolbar-title
             ></v-toolbar
           >
-          <v-container>
-            <v-row>
-            <v-col id="markdown">
-              <MarkdownComponent
-                :content="description"
-                class="pa-4"
-              ></MarkdownComponent>
-            </v-col>
-            <v-col id="Required Squadrons">
-                  <v-img v-for="sqdn in requiredSquadrons" width="100px" :src="getSquadronImage(sqdn)"></v-img>
-            </v-col>
-              </v-row>
-            </v-container>
+          <MarkdownComponent
+            :content="description"
+            class="pa-4"
+          ></MarkdownComponent>
         </div>
         <div id="menu-page-edit" v-if="menuPage === 'edit'">
           <v-toolbar
@@ -144,7 +134,6 @@ export default {
   },
   computed: {
     ...mapGetters(["squadrons"]),
-
   },
 
   methods: {
@@ -177,12 +166,6 @@ export default {
     getSquadronDesignations: function () {
       return this.squadrons.map((x) => x.designation);
     },
-    getSquadronImage: function (squadronDesignation) {
-
-      const required = this.squadrons.find((x) => x.designation === squadronDesignation)
-      return required.img
-    }
-
   },
 };
 </script>
