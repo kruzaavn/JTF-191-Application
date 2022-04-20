@@ -54,7 +54,6 @@
           <MarkdownComponent
             :content="description"
             class="pa-4"
-
           ></MarkdownComponent>
         </div>
         <div id="menu-page-edit" v-if="menuPage === 'edit'">
@@ -111,7 +110,8 @@
 
 <script>
 import MarkdownComponent from "./MarkdownComponent.vue";
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
+import axios from "axios";
 
 export default {
   name: "EventComponent",
@@ -144,8 +144,14 @@ export default {
       // this.getCalendar().refetchEvents() todo enable for pulling updated data
     },
     removeEvent: function () {
+
+      if (this.event.id) {
+        this.removeFromSchedule(this.event.id);
+      }
+
       this.event.remove();
       this.$emit("dialogClose");
+
       // this.getCalendar().refetchEvents() todo enable for pulling updated data
     },
     getCalendar: function () {
@@ -169,17 +175,29 @@ export default {
     getSquadronDesignations: function () {
       return this.squadrons.map((x) => x.designation);
     },
+    addToSchedule: async function (event) {
+      await axios.post("/api/roster/event/list/", event);
+    },
+    updateSchedule: async function(event) {
+      const response = await axios.put(
+        `/api/roster/event/detail/${event.id}/`,
+        event
+      );
+    },
+    removeFromSchedule: async function (id) {
+      const response = await axios.delete(
+        `/api/roster/event/detail/${id}/`
+      );
+    },
   },
 };
 </script>
 
 <style scoped>
-
 .display-window {
   min-width: 50vw;
   max-width: 70vw;
   min-height: 50vh;
   max-height: 70vh;
 }
-
 </style>
