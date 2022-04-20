@@ -24,6 +24,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
 import EventComponent from "../components/EventComponent.vue";
+import { mapActions, mapGetters } from "vuex";
 
 function formatEvent(eventData) {
   return { title: eventData.name, ...eventData };
@@ -58,6 +59,7 @@ export default {
         select: this.handleDateSelect,
         eventMouseEnter: this.handleEnterEvent,
         eventMouseLeave: this.handleLeaveEvent,
+        navLinks: true,
         eventSources: [
           {
             extraParams: { type: "operation" },
@@ -84,6 +86,7 @@ export default {
 
   computed: {},
   methods: {
+    ...mapActions(["getSquadrons"]),
     handleEventClick: function (clickInfo) {
       this.dialog = !this.dialog;
       this.selectedEvent = clickInfo.event;
@@ -113,6 +116,9 @@ export default {
     handleLeaveEvent(mouseLeaveInfo) {
       mouseLeaveInfo.event.setProp("borderColor", "");
     },
+  },
+  mounted() {
+    this.getSquadrons();
   },
 };
 </script>

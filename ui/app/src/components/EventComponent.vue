@@ -1,13 +1,13 @@
 <template>
-  <v-card>
+  <v-card style="min-height: 50vh; min-width: 50vw">
     <v-layout>
       <v-navigation-drawer expand-on-hover rail>
         <v-list nav>
           <v-list-item
-            :prepend-icon="!editDescription ? 'mdi-xml' : 'mdi-text-box'"
-            :title="!editDescription ? 'Edit' : 'View'"
+            :prepend-icon="menuPage === 'edit' ? 'mdi-text-box' : 'mdi-xml'"
+            :title="menuPage === 'edit' ? 'View' : 'Edit'"
             value="description"
-            @click="editDescription = !editDescription"
+            @click="gotoMenuPage('edit')"
           ></v-list-item>
         </v-list>
         <v-spacer></v-spacer>
@@ -34,8 +34,8 @@
         </v-list>
       </v-navigation-drawer>
 
-      <v-main style="min-height: 50vh; min-width: 50vh">
-        <div id="event-display-static" v-if="!editDescription">
+      <v-main >
+        <div id="menu-page-display" v-if="menuPage === 'display'">
           <v-toolbar
             :color="
               event.source
@@ -52,13 +52,21 @@
               >{{ title }}</v-toolbar-title
             ></v-toolbar
           >
-          <MarkdownComponent
-            v-if="!editDescription"
-            :content="description"
-            class="pa-4"
-          ></MarkdownComponent>
+          <v-container>
+            <v-row>
+            <v-col id="markdown">
+              <MarkdownComponent
+                :content="description"
+                class="pa-4"
+              ></MarkdownComponent>
+            </v-col>
+            <v-col id="Required Squadrons">
+                  <v-img v-for="sqdn in requiredSquadrons" width="100px" :src="getSquadronImage(sqdn)"></v-img>
+            </v-col>
+              </v-row>
+            </v-container>
         </div>
-        <div id="event-display-edit" v-if="editDescription">
+        <div id="menu-page-edit" v-if="menuPage === 'edit'">
           <v-toolbar
             :color="
               event.source
@@ -84,11 +92,25 @@
                 v-model:model-value="title"
               ></v-text-field></v-toolbar-title
           ></v-toolbar>
-          <v-select :items="getSources()" class="px-4 pt-4" dense label="Event Type"></v-select>
+          <v-select
+            :items="getSourceNames()"
+            class="px-4"
+            v-model:model-value="eventType"
+            dense
+            label="Event Type"
+          ></v-select>
+          <v-select
+            :items="getSquadronDesignations()"
+            class="px-4"
+            v-model:model-value="requiredSquadrons"
+            dense
+            multiple
+            label="Required Squadrons"
+          ></v-select>
           <v-textarea
+            class="text-body-2 px-4"
             v-model:model-value="description"
             max-rows="10"
-            class="pa-4"
             placeholder="Markdown Supported Text Area"
           ></v-textarea>
         </div>
@@ -99,6 +121,7 @@
 
 <script>
 import MarkdownComponent from "./MarkdownComponent.vue";
+import { mapGetters } from "vuex";
 
 export default {
   name: "EventComponent",
@@ -109,10 +132,21 @@ export default {
     return {
       drawer: true,
       description: this.event.extendedProps.description,
-      editDescription: false,
+      menuPage: "display",
       title: this.event.title,
+      requiredSquadrons: this.event.extendedProps.required_squadrons
+        ? this.event.extendedProps.required_squadrons.map((x) => x.designation)
+        : [],
+      eventType: this.event.source
+        ? this.event.source.internalEventSource.meta.extraParams.type
+        : null,
     };
   },
+  computed: {
+    ...mapGetters(["squadrons"]),
+
+  },
+
   methods: {
     commitEvent: function () {
       this.event.setProp("title", this.title);
@@ -122,9 +156,33 @@ export default {
       this.event.remove();
       this.$emit("dialogClose");
     },
+    getCalendar: function () {
+      return this.event._context.calendarApi;
+    },
     getSources: function () {
-      return ['Admin', 'Operational']
+      return this.getCalendar().getEventSources();
+    },
+    getSourceNames: function () {
+      return this.getSources().map(
+        (x) => x.internalEventSource.meta.extraParams.type
+      );
+    },
+    gotoMenuPage(page) {
+      if (page === this.menuPage) {
+        this.menuPage = "display";
+      } else {
+        this.menuPage = page;
+      }
+    },
+    getSquadronDesignations: function () {
+      return this.squadrons.map((x) => x.designation);
+    },
+    getSquadronImage: function (squadronDesignation) {
+
+      const required = this.squadrons.find((x) => x.designation === squadronDesignation)
+      return required.img
     }
+
   },
 };
 </script>
