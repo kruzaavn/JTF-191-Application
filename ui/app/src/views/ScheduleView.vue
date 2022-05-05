@@ -3,7 +3,11 @@
     <v-row>
       <v-col>
         <h1>JTF Schedule</h1>
-        <FullCalendar ref="fullCalendar" class="calendar" :options="calendarOptions">
+        <FullCalendar
+          ref="fullCalendar"
+          class="calendar"
+          :options="calendarOptions"
+        >
         </FullCalendar>
         <v-dialog v-model="dialog">
           <EventComponent
@@ -25,16 +29,17 @@ import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
 import EventComponent from "../components/EventComponent.vue";
 import { mapActions } from "vuex";
+import { eventSources } from "../assets/js/eventSources";
 
-function formatEvent(eventData) {
-  return { title: eventData.name, ...eventData };
-}
-
-const eventDefaults = {
-  url: "/api/roster/event/list/",
-  eventDataTransform: formatEvent,
-  editable: true,
-};
+// function formatEvent(eventData) {
+//   return { title: eventData.name, ...eventData };
+// }
+//
+// const eventDefaults = {
+//   url: "/api/roster/event/list/",
+//   eventDataTransform: formatEvent,
+//   editable: true,
+// };
 
 export default {
   name: "ScheduleView",
@@ -60,26 +65,7 @@ export default {
         eventMouseEnter: this.handleEnterEvent,
         eventMouseLeave: this.handleLeaveEvent,
         navLinks: true,
-        eventSources: [
-          {
-            extraParams: { type: "operation" },
-            backgroundColor: "#F26419",
-            textColor: "white",
-            ...eventDefaults,
-          },
-          {
-            extraParams: { type: "training" },
-            backgroundColor: "#86BBD8",
-            textColor: "black",
-            ...eventDefaults,
-          },
-          {
-            extraParams: { type: "admin" },
-            backgroundColor: "#2F4858",
-            textColor: "white",
-            ...eventDefaults,
-          },
-        ],
+        eventSources: eventSources,
       },
     };
   },
@@ -114,10 +100,10 @@ export default {
     handleLeaveEvent(mouseLeaveInfo) {
       mouseLeaveInfo.event.setProp("borderColor", "");
     },
-    calendarUpdate: function() {
+    calendarUpdate: function () {
       this.dialog = false;
-      this.$refs.fullCalendar.getApi().refetchEvents()
-    }
+      this.$refs.fullCalendar.getApi().refetchEvents();
+    },
   },
   mounted() {
     this.getSquadrons();

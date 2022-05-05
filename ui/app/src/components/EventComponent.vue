@@ -35,18 +35,10 @@
       </v-navigation-drawer>
       <v-main class="display-window">
         <div id="menu-page-display" v-if="menuPage === 'display'">
-          <v-toolbar
-            :color="
-              event.source
-                ? event.source.internalEventSource.ui.backgroundColor
-                : '#F6AE2D'
-            "
-            class="d-flex"
+          <v-toolbar :color="getEventBackgroundColor()" class="d-flex"
             ><v-toolbar-title
               :style="{
-                color: event.source
-                  ? event.source.internalEventSource.ui.textColor
-                  : 'black',
+                color: getEventTextColor(),
               }"
               >{{ title }}</v-toolbar-title
             ></v-toolbar
@@ -57,27 +49,13 @@
           ></MarkdownComponent>
         </div>
         <div id="menu-page-edit" v-if="menuPage === 'edit'">
-          <v-toolbar
-            :color="
-              event.source
-                ? event.source.internalEventSource.ui.backgroundColor
-                : '#F6AE2D'
-            "
-            class="d-flex"
-            ><v-toolbar-title
-              :style="{
-                color: event.source
-                  ? event.source.internalEventSource.ui.textColor
-                  : 'black',
-              }"
-            >
+          <v-toolbar :color="getEventBackgroundColor()" class="d-flex"
+            ><v-toolbar-title :style="getEventTextColor()">
               <v-text-field
                 class="mt-4"
                 placeholder="Event Name"
                 :style="{
-                  color: event.source
-                    ? event.source.internalEventSource.ui.textColor
-                    : 'black',
+                  color: getEventTextColor(),
                 }"
                 v-model:model-value="title"
               ></v-text-field></v-toolbar-title
@@ -110,7 +88,8 @@
 
 <script>
 import MarkdownComponent from "./MarkdownComponent.vue";
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
+import { eventSources } from "../assets/js/eventSources";
 import axios from "axios";
 
 export default {
@@ -137,48 +116,60 @@ export default {
   },
 
   methods: {
-    commitEvent: function () {
+    getEventSource: function () {
+      return eventSources.find(
+        (element) => element.extraParams.type === this.eventType
+      );
+    },
+    getEventBackgroundColor: function () {
+      let eventSource = this.getEventSource();
 
+      if (eventSource) {
+        return eventSource.backgroundColor;
+      } else {
+        return "#F6AE2D";
+      }
+    },
+    getEventTextColor: function () {
+      let eventSource = this.getEventSource();
+
+      if (eventSource) {
+        return eventSource.textColor;
+      } else {
+        return "black";
+      }
+    },
+    commitEvent: async function () {
       let new_event = {
-          start: this.event.startStr,
-          end: this.event.endStr,
-          name: this.title,
-          description: this.description,
-          type: this.eventType,
-          required_squadrons: this.squadrons
+        start: this.event.startStr,
+        end: this.event.endStr,
+        name: this.title,
+        description: this.description,
+        type: this.eventType,
+        required_squadrons: this.squadrons
             .filter((x) => this.requiredSquadrons.includes(x.designation))
             .map((x) => x.id),
-        };
+      };
 
       if (this.event.id) {
-        new_event.id = this.event.id
-        this.updateSchedule(this.event.id, new_event)
-
+        new_event.id = this.event.id;
+        await this.updateSchedule(this.event.id, new_event);
       } else {
-
-        this.addToSchedule(new_event);
+        await this.addToSchedule(new_event);
       }
 
       this.$emit("dialogClose");
     },
-    removeEvent: function () {
+    removeEvent: async function () {
       if (this.event.id) {
-        this.removeFromSchedule(this.event.id);
+        await this.removeFromSchedule(this.event.id);
       }
 
       this.event.remove();
       this.$emit("dialogClose");
     },
-    getCalendar: function () {
-      return this.event._context.calendarApi;
-    },
-    getSources: function () {
-      return this.getCalendar().getEventSources();
-    },
     getSourceNames: function () {
-      return this.getSources().map(
-        (x) => x.internalEventSource.meta.extraParams.type
-      );
+      return eventSources.map((x) => x.extraParams.type);
     },
     gotoMenuPage(page) {
       if (page === this.menuPage) {
