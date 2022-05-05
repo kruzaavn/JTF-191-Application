@@ -27,19 +27,10 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
+import rrulePlugin from "@fullcalendar/rrule";
 import EventComponent from "../components/EventComponent.vue";
 import { mapActions } from "vuex";
 import { eventSources } from "../assets/js/eventSources";
-
-// function formatEvent(eventData) {
-//   return { title: eventData.name, ...eventData };
-// }
-//
-// const eventDefaults = {
-//   url: "/api/roster/event/list/",
-//   eventDataTransform: formatEvent,
-//   editable: true,
-// };
 
 export default {
   name: "ScheduleView",
@@ -49,7 +40,13 @@ export default {
       dialog: false,
       selectedEvent: {},
       calendarOptions: {
-        plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
+        plugins: [
+          rrulePlugin,
+          dayGridPlugin,
+          timeGridPlugin,
+          listPlugin,
+          interactionPlugin,
+        ],
         initialView: "timeGridWeek",
         headerToolbar: {
           left: "prev,next today",
@@ -90,7 +87,7 @@ export default {
         textColor: "black",
         editable: true,
         extendedProps: {
-          description: "Enter Event Description",
+          description: '',
         },
       });
     },

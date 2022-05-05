@@ -44,7 +44,7 @@
           <v-list-item> </v-list-item>
         </div>
       </v-list>
-      <FooterComponent />
+      <FooterComponent class="fixedBottom"/>
     </v-navigation-drawer>
     <v-main>
       <router-view></router-view>
@@ -115,4 +115,10 @@ export default {
 
 <style lang="scss">
 @import "src/assets/css/app.scss";
+
+.fixedBottom {
+  position: fixed !important;
+  bottom: 0 !important;
+  width: 100%;
+}
 </style>
