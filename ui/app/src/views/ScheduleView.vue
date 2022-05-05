@@ -3,12 +3,12 @@
     <v-row>
       <v-col>
         <h1>JTF Schedule</h1>
-        <FullCalendar class="calendar" :options="calendarOptions">
+        <FullCalendar ref="fullCalendar" class="calendar" :options="calendarOptions">
         </FullCalendar>
         <v-dialog v-model="dialog">
           <EventComponent
             :event="selectedEvent"
-            @dialogClose="this.dialog = false"
+            @dialogClose="calendarUpdate"
           ></EventComponent>
         </v-dialog>
       </v-col>
@@ -24,7 +24,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
 import EventComponent from "../components/EventComponent.vue";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex";
 
 function formatEvent(eventData) {
   return { title: eventData.name, ...eventData };
@@ -45,11 +45,11 @@ export default {
       selectedEvent: {},
       calendarOptions: {
         plugins: [dayGridPlugin, timeGridPlugin, listPlugin, interactionPlugin],
-        initialView: "dayGridMonth",
+        initialView: "timeGridWeek",
         headerToolbar: {
           left: "prev,next today",
           center: "title",
-          right: "dayGridMonth,timeGridWeek,listMonth",
+          right: "timeGridWeek,listMonth,dayGridMonth",
         },
         selectable: true,
         selectMirror: true,
@@ -94,8 +94,6 @@ export default {
     handleDateSelect(selectInfo) {
       let calendarApi = selectInfo.view.calendar;
 
-      // this.dialog = !this.dialog
-
       calendarApi.unselect(); // clear date selection
 
       const Event = calendarApi.addEvent({
@@ -116,6 +114,10 @@ export default {
     handleLeaveEvent(mouseLeaveInfo) {
       mouseLeaveInfo.event.setProp("borderColor", "");
     },
+    calendarUpdate: function() {
+      this.dialog = false;
+      this.$refs.fullCalendar.getApi().refetchEvents()
+    }
   },
   mounted() {
     this.getSquadrons();

@@ -138,21 +138,36 @@ export default {
 
   methods: {
     commitEvent: function () {
-      this.event.setProp("title", this.title);
-      this.event.setExtendedProp("description", this.description);
+
+      let new_event = {
+          start: this.event.startStr,
+          end: this.event.endStr,
+          name: this.title,
+          description: this.description,
+          type: this.eventType,
+          required_squadrons: this.squadrons
+            .filter((x) => this.requiredSquadrons.includes(x.designation))
+            .map((x) => x.id),
+        };
+
+      if (this.event.id) {
+        new_event.id = this.event.id
+        this.updateSchedule(this.event.id, new_event)
+
+      } else {
+
+        this.addToSchedule(new_event);
+      }
+
       this.$emit("dialogClose");
-      // this.getCalendar().refetchEvents() todo enable for pulling updated data
     },
     removeEvent: function () {
-
       if (this.event.id) {
         this.removeFromSchedule(this.event.id);
       }
 
       this.event.remove();
       this.$emit("dialogClose");
-
-      // this.getCalendar().refetchEvents() todo enable for pulling updated data
     },
     getCalendar: function () {
       return this.event._context.calendarApi;
@@ -178,16 +193,14 @@ export default {
     addToSchedule: async function (event) {
       await axios.post("/api/roster/event/list/", event);
     },
-    updateSchedule: async function(event) {
+    updateSchedule: async function (id, event) {
       const response = await axios.put(
-        `/api/roster/event/detail/${event.id}/`,
+        `/api/roster/event/detail/${id}/`,
         event
       );
     },
     removeFromSchedule: async function (id) {
-      const response = await axios.delete(
-        `/api/roster/event/detail/${id}/`
-      );
+      const response = await axios.delete(`/api/roster/event/detail/${id}/`);
     },
   },
 };
