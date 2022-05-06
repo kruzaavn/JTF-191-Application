@@ -44,7 +44,7 @@
           <v-list-item> </v-list-item>
         </div>
       </v-list>
-      <FooterComponent class="fixedBottom"/>
+      <FooterComponent class="fixedBottom" />
     </v-navigation-drawer>
     <v-main>
       <router-view></router-view>

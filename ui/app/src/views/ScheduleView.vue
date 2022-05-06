@@ -87,7 +87,7 @@ export default {
         textColor: "black",
         editable: true,
         extendedProps: {
-          description: '',
+          description: "",
         },
       });
     },

@@ -26,7 +26,7 @@
           ></v-list-item>
           <v-spacer></v-spacer>
           <v-list-item
-              class="fixedBottom"
+            class="fixedBottom"
             prepend-icon="mdi-trash-can-outline"
             title="Delete"
             value="delete"
@@ -67,7 +67,7 @@
               :items="getSourceNames()"
               class="px-4"
               v-model:model-value="eventType"
-              :rules="[v => !!v || 'Event type must be selected']"
+              :rules="[(v) => !!v || 'Event type must be selected']"
               dense
               label="Event Type"
             ></v-select>
@@ -104,14 +104,35 @@
               dense
               label="Event Recurrence"
             ></v-select>
-            <v-text-field
-              class="px-4"
-              :disabled="recurring === 'Never'"
-              label="Recurrence Stop Date"
-              hint="DD/MM/YY"
-              :rules="dateValidationRule"
-            ></v-text-field>
+            <div class="px-4">
+              <div class="text-caption">Number of Recurrences</div>
+              <v-slider
+                min="0"
+                max="12"
+                step="1"
+                show-ticks
+                thumb-label
+                :disabled="recurring === 'Never'"
+                v-model:model-value="recurrences"
+                label="Recurrence Stop Date"
+              ></v-slider>
+            </div>
           </v-form>
+          <div class="text-caption px-4">Recurring Dates</div>
+          <v-row class="px-4">
+            <v-col
+              xs="12"
+              md="4"
+              cols="3"
+              v-for="date in computeRecurrences.slice(1)"
+            >
+              <v-card :color="getEventBackgroundColor()">
+                <v-card-title :style="{ color: getEventTextColor() }">{{
+                  date.toDateString()
+                }}</v-card-title>
+              </v-card>
+            </v-col>
+          </v-row>
         </div>
       </v-main>
     </v-layout>
@@ -143,16 +164,38 @@ export default {
         ? this.event.source.internalEventSource.meta.extraParams.type
         : null,
       recurring: "Never",
-      dateValidationRule: [
-        (v) =>
-          /^(?=\d)(?:(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:\x20|$))|(?:2[0-8]|1\d|0?[1-9]))([-.\/])(?:1[012]|0?[1-9])\1(?:1[6-9]|[2-9]\d)?\d\d(?:(?=\x20\d)\x20|$))?(((0?[1-9]|1[012])(:[0-5]\d){0,2}(\x20[AP]M))|([01]\d|2[0-3])(:[0-5]\d){1,2})?$/.test(
-            v
-          ) || "Date format is invalid",
-      ],
+      recurrences: 0,
     };
   },
   computed: {
     ...mapGetters(["squadrons"]),
+    computeRecurrences: function () {
+      const ruleMap = {
+        Weekly: RRule.WEEKLY,
+        "Bi-Weekly": RRule.WEEKLY,
+        Monthly: RRule.MONTHLY,
+        Never: null,
+      };
+
+      const intervalMap = {
+        Weekly: 1,
+        "Bi-Weekly": 2,
+        Monthly: 1,
+        Never: 0,
+      };
+
+      if (this.recurring !== "Never" && this.recurrences) {
+        const rule = new RRule({
+          freq: ruleMap[this.recurring],
+          interval: intervalMap[this.recurring],
+          dtstart: this.event.start,
+          count: this.recurrences + 1,
+        });
+        return rule.all();
+      } else {
+        return [];
+      }
+    },
   },
 
   methods: {
@@ -241,10 +284,8 @@ export default {
 
 <style scoped>
 .display-window {
-  min-width: 50vw;
-  max-width: 70vw;
-  min-height: 50vh;
-  max-height: 70vh;
+  width: 50vw;
+  height: 70vh;
 }
 
 .fixedBottom {
@@ -252,5 +293,4 @@ export default {
   bottom: 0 !important;
   width: 100%;
 }
-
 </style>
