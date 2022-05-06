@@ -117,8 +117,8 @@ export default {
 @import "src/assets/css/app.scss";
 
 .fixedBottom {
-  position: fixed !important;
-  bottom: 0 !important;
+  position: fixed;
+  bottom: 0;
   width: 100%;
 }
 </style>

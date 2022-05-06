@@ -13,6 +13,7 @@
         <v-spacer></v-spacer>
         <v-list nav>
           <v-list-item
+            v-if="!event.id"
             prepend-icon="mdi-repeat"
             title="Recurring"
             value="save"
@@ -145,6 +146,7 @@ import { mapGetters } from "vuex";
 import { eventSources } from "../assets/js/eventSources";
 import axios from "axios";
 import { RRule } from "rrule";
+import { DateTime } from "luxon";
 
 export default {
   name: "EventComponent",
@@ -170,31 +172,14 @@ export default {
   computed: {
     ...mapGetters(["squadrons"]),
     computeRecurrences: function () {
-      const ruleMap = {
-        Weekly: RRule.WEEKLY,
-        "Bi-Weekly": RRule.WEEKLY,
-        Monthly: RRule.MONTHLY,
-        Never: null,
-      };
+      const rule = new RRule({
+        freq: this.recurring === "Monthly" ? RRule.MONTHLY : RRule.WEEKLY,
+        interval: this.recurring === "Bi-Weekly" ? 2 : 1,
+        dtstart: this.event.start,
+        count: this.recurrences + 1,
+      });
 
-      const intervalMap = {
-        Weekly: 1,
-        "Bi-Weekly": 2,
-        Monthly: 1,
-        Never: 0,
-      };
-
-      if (this.recurring !== "Never" && this.recurrences) {
-        const rule = new RRule({
-          freq: ruleMap[this.recurring],
-          interval: intervalMap[this.recurring],
-          dtstart: this.event.start,
-          count: this.recurrences + 1,
-        });
-        return rule.all();
-      } else {
-        return [];
-      }
+      return rule.all();
     },
   },
 
@@ -223,9 +208,7 @@ export default {
       }
     },
     commitEvent: async function () {
-      let new_event = {
-        start: this.event.startStr,
-        end: this.event.endStr,
+      const common_event_properties = {
         name: this.title,
         description: this.description,
         type: this.eventType,
@@ -235,14 +218,33 @@ export default {
       };
 
       if (this.event.id) {
-        new_event.id = this.event.id;
-        await this.updateSchedule(this.event.id, new_event);
-        this.event.remove();
+        const updated_event = {
+          id: this.event.id,
+          start: this.event.startStr,
+          end: this.event.endStr,
+          ...common_event_properties,
+        };
+
+        await this.updateSchedule(updated_event.id, updated_event);
       } else {
-        await this.addToSchedule(new_event);
-        this.event.remove();
+        const start = DateTime.fromJSDate(this.event.start);
+        const end = DateTime.fromJSDate(this.event.end);
+        const timeDelta = end.diff(start);
+
+        for (const occurrence of this.computeRecurrences) {
+          const occurrenceStart = DateTime.fromJSDate(occurrence);
+          const occurrenceEnd = occurrenceStart.plus(timeDelta);
+
+          const new_event = {
+            start: occurrenceStart.toISO(),
+            end: occurrenceEnd.toISO(),
+            ...common_event_properties,
+          };
+          await this.addToSchedule(new_event);
+        }
       }
 
+      this.event.remove();
       this.$emit("dialogClose");
     },
     removeEvent: async function () {
@@ -289,8 +291,8 @@ export default {
 }
 
 .fixedBottom {
-  position: fixed !important;
-  bottom: 0 !important;
+  position: fixed;
+  bottom: 0;
   width: 100%;
 }
 </style>
