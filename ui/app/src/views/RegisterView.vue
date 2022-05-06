@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container style="min-height: 100vh">
     <div id="registrationform" v-if="!submitted">
       <h1>
         User Registration for
@@ -65,36 +65,34 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import axios from 'axios'
-import router from '@/router'
+import { mapGetters, mapActions } from "vuex";
+import axios from "axios";
+import router from "../router";
 
 export default {
-  name: 'Register',
-  props: ['id'],
+  name: "RegisterView",
+  props: ["id"],
   computed: {
-    ...mapGetters(['roster']),
+    ...mapGetters(["roster"]),
     passwordMatchesRule() {
       return () =>
         this.registerForm.password === this.validatePassword ||
-        'Password must match'
+        "Password must match";
     },
   },
   methods: {
-    ...mapActions(['getDcsModules']),
+    ...mapActions(["getDcsModules"]),
     postApplication: function () {
       if (this.$refs.form.validate()) {
         axios
           .post(`/api/roster/users/create/${this.id}/`, this.registerForm)
           .then(() => {
-            this.submitted = true
-            setTimeout(() => {
-              router.push('/')
-            }, 5000)
+            this.submitted = true;
+              router.push("/");
           })
           .catch((error) => {
-            this.errors = error.response.data
-          })
+            this.errors = error.response.data;
+          });
       }
     },
   },
@@ -102,22 +100,22 @@ export default {
     registerForm: {
       // form data for api submission, changed variable style to
       // api format.
-      username: '',
-      password: '',
+      username: "",
+      password: "",
     },
-    validatePassword: '',
+    validatePassword: "",
     errors: null,
     submitted: false,
     rules: {
       blank: function (v) {
-        return v.length > 0 || 'must not be blank'
+        return v.length > 0 || "must not be blank";
       },
       minimumLength: function (v) {
-        return v.length >= 8 || 'password must be at least 8 characters long'
+        return v.length >= 8 || "password must be at least 8 characters long";
       },
     },
   }),
-}
+};
 </script>
 
 <style></style>

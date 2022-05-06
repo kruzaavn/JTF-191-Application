@@ -5,8 +5,21 @@ from datetime import datetime
 import jsonschema
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
+
 def stats_default():
     return {"hours": {}, "kills": {}}
+
+
+markdown_help_text = """<a href="https://www.markdownguide.org/basic-syntax/">Markdown Supported</a><br><a 
+href='https://marked.js.org/demo/'>Markdown Editor</a> """
+
+
+class JSONValidator(BaseValidator):
+    def compare(self, value, schema):
+        try:
+            jsonschema.validate(value, schema)
+        except jsonschema.exceptions.ValidationError as error:
+            raise ValidationError(error)
 
 
 class HQ(models.Model):
@@ -73,6 +86,8 @@ class DCSModules(models.Model):
                                null=True,
                                max_length=64)
 
+    supported = models.BooleanField(default=True)
+
     def __str__(self):
 
         if self.name:
@@ -91,7 +106,7 @@ class Squadron(models.Model):
     # fields
     name = models.CharField(max_length=1024)
     designation = models.CharField(max_length=1024)
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True, help_text=markdown_help_text)
     type = models.CharField(max_length=1024, choices=[(x, x) for x in types],
                             default=types[0])
     air_frame = models.ForeignKey(DCSModules, on_delete=models.SET_NULL,
@@ -112,28 +127,11 @@ class Operation(models.Model):
     operation table
     """
 
-    default_notes = """Use this space to disseminate essential information for the operation. 
-
-The following items can be added similar to how you would include them in a word document. 
-
-1. Plain text notes
-2. links to mission files like [.miz][miz] and [.liberation][lib] or [briefings][brief]
-3. Images
-4. Tables
-5. Lists and Task Checkoffs
-
-See markdown basic syntax [here](https://www.markdownguide.org/cheat-sheet/).
-
-[miz]: https://drive.google.com/file/d/1T99VR88fjwkEvNaWvzLIoY5uPVG9tzKY/view?usp=sharing
-[lib]: https://drive.google.com/file/d/1AgS7_KbdpgZRAyPEdVObkKnYcyiAByQX/view?usp=sharing
-[brief]: https://docs.google.com/presentation/d/1EmJxUxc5rK06voa4q9uANF9KX6SwvGBG-DHZTfD-HWM/edit?usp=sharing"""
-
-
     name = models.CharField(max_length=1024)
     img = models.ImageField(upload_to='operations')
     start = models.DateField()
     complete = models.DateField()
-    notes = models.TextField(default=default_notes)
+    notes = models.TextField(blank=True, null=True, help_text=markdown_help_text)
 
     def __str__(self):
         return f'{self.name}'
@@ -168,7 +166,6 @@ class Stores(models.Model):
 class Pilot(models.Model):
     first_name = models.CharField(max_length=1024, default='John')
     last_name = models.CharField(max_length=1024, default='Doe')
-    dcs_modules = models.ManyToManyField(DCSModules, blank=True)
     callsign = models.CharField(max_length=1024, blank=True, null=True)
     email = models.EmailField(max_length=1024, blank=True, null=True)
 
@@ -181,7 +178,7 @@ class Pilot(models.Model):
 
 class DocumentationModule(models.Model):
     """
-    qualification modules table
+    documentation modules table
 
 
     this table tracks qualification modules tracking module documentation and checkoff periodicity
@@ -195,7 +192,6 @@ class DocumentationModule(models.Model):
                                           default=documentation_types[0],
                                           max_length=1024
                                           )
-    recertification_time = models.DurationField(blank=True, null=True, help_text='DD HH:MM:SS')
 
     def __str__(self):
         return self.name
@@ -203,17 +199,56 @@ class DocumentationModule(models.Model):
 
 class Documentation(models.Model):
     """
-    qualifications table
+    documentation table
 
     This table tracks all modules that make up any particular qualification.
     """
+
+    types = ['training', 'admin']
+    JSON_FIELD_SCHEMA = {
+            "$schema": "http://json-schema.org/draft-04/schema#",
+            "type": "array",
+            "items": {
+                    "type": "object",
+                    "properties": {
+                        "module": {
+                            "type": "string"
+                        },
+                        "rank": {
+                            "type": "integer"
+                        }
+                    },
+                    "required": [
+                        "module",
+                        "rank"
+                    ]
+            }
+    }
 
     class Meta:
         verbose_name_plural = 'Documentation'
 
     name = models.CharField(max_length=1024)
     modules = models.ManyToManyField(DocumentationModule, blank=True)
-    description = models.TextField()
+    description = models.TextField(blank=True,
+                                   null=True,
+                                   help_text=markdown_help_text)
+    order = models.JSONField(
+        default=list,
+        null=True,
+        blank=True,
+        validators=[JSONValidator(limit_value=JSON_FIELD_SCHEMA)],
+        help_text="""By default modules will be ordered alphanumerically by name, if you would like to specify 
+        additional ordering this field can be used to do that by adding the following json objects to the order array 
+        <br><br> <strong>{ 'module': module name, 'rank': integer}</strong> <br><br> for example <br><br><strong>[{
+        'module': 'Leveling Brief', 'rank': 1}, <br>{'module': 'intermediate formation', 'rank': 2}]</strong> 
+        <br><br> all modules not specified will be still be sorted alphanumerically """
+    )
+
+    type = models.CharField(choices=[(x, x) for x in types],
+                            default=types[0],
+                            max_length=1024
+                            )
 
     def __str__(self):
         return self.name
@@ -342,12 +377,6 @@ class ProspectiveAviator(Pilot):
             email=self.email,
             squadron=squadron,
         )
-
-        if created:
-            dcs_modules = [x for x in self.dcs_modules.all()]
-
-            aviator.dcs_modules.add(*dcs_modules)
-            aviator.save()
 
         return aviator
 
@@ -485,7 +514,7 @@ class LiverySkin(models.Model):
     json_description = models.JSONField(
         blank=True,
         null=True,
-        validators=[LiverySkinJsonValidator(limit_value=JSON_FIELD_SCHEMA)]
+        validators=[JSONValidator(limit_value=JSON_FIELD_SCHEMA)]
     )
 
     # Allows for overwrites of the existing dds_file with the same name

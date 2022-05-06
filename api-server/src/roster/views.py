@@ -352,11 +352,13 @@ class EventListView(ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
-        if 'start' in self.kwargs and 'end' in self.kwargs:
-            start = self.kwargs['start']
-            end = self.kwargs['end']
-            return Event.objects.filter(start__gte=start, end__lte=end)
-        return Event.objects.all()
+
+        params = self.request.query_params
+        start = params.get('start')
+        end = params.get('end')
+        type = params.get('type')
+
+        return Event.objects.filter(start__gte=start, end__lte=end, type=type)
 
     def create(self, request, *args, **kwargs):
         serializer = EventCreateSerializer(data=request.data)
@@ -383,28 +385,14 @@ class EventDetailView(RetrieveUpdateDestroyAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class QualificationListView(ListCreateAPIView):
+class DocumentationListView(ListCreateAPIView):
 
     queryset = Documentation.objects.all()
     serializer_class = DocumentationSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
-class QualificationDetailView(RetrieveUpdateDestroyAPIView):
-
-    queryset = Documentation.objects.all()
-    serializer_class = DocumentationSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-
-class QualificationModuleListView(ListCreateAPIView):
-
-    queryset = DocumentationModule.objects.all()
-    serializer_class = DocumentationModuleSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-
-class QualificationModuleDetailView(RetrieveUpdateDestroyAPIView):
+class DocumentationModuleListView(ListCreateAPIView):
 
     queryset = DocumentationModule.objects.all()
     serializer_class = DocumentationModuleSerializer
@@ -624,11 +612,13 @@ class FlightLogAggregateView(ListAPIView):
                             roster_flightlog 
                         where 
                             aviator_id=%s and 
-                            flight_id is not NULL 
+                            flight_id is not NULL
                         group by 
                             flight_id, 
                             platform_id, 
                             aviator_id
+                        having
+                                extract (HOUR from MAX(time) - MIN(time)) < 12
                             )   select 
                                     SUM(flight_time) as total_flight_time, 
                                     1 as id, 
@@ -659,9 +649,11 @@ class FlightLogTimeSeriesView(ListAPIView):
                                 roster_flightlog 
                             where 
                                 aviator_id=%s and 
-                                flight_id is not null 
+                                flight_id is not null
                             group by 
                                 flight_id
+                            having
+                                extract (HOUR from MAX(time) - MIN(time)) < 12
                             )   select 
                                     SUM(flight_time) as total_flight_time, 
                                     date, 
@@ -689,6 +681,8 @@ class FlightLogTimeSeriesView(ListAPIView):
                                 flight_id is not null
                             group by 
                                 flight_id
+                            having 
+                                extract (HOUR from MAX(time) - MIN(time)) < 12
                             )   select 
                                     SUM(flight_time) as total_flight_time, 
                                     date, 

@@ -1,12 +1,9 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import authModule from './modules/authModual'
-import gciModule from './modules/gciModule'
-import rosterModule from './modules/rosterModule'
+import { createStore } from "vuex";
+import authModule from "./modules/authModual";
+import gciModule from "./modules/gciModule";
+import rosterModule from "./modules/rosterModule";
 
-Vue.use(Vuex)
-
-export default new Vuex.Store({
+export const store = createStore({
   state: {},
   getters: {},
   mutations: {},
@@ -16,4 +13,4 @@ export default new Vuex.Store({
     gciModule,
     rosterModule,
   },
-})
+});

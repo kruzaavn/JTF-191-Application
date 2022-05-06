@@ -1,6 +1,0 @@
-FROM python:3.9
-
-# Install Python dependencies
-RUN pip install git+https://github.com/jace/rq-dashboard.git@master
-
-ENTRYPOINT ["/bin/bash", "-c", "rq-dashboard"]

@@ -54,6 +54,7 @@ class AviatorSerializer(serializers.ModelSerializer):
         citations = instance.citations.all().order_by('award__priority')
         return CitationSerializer(citations, many=True, read_only=True).data
 
+
 class ProspectiveAviatorSerializer(serializers.ModelSerializer):
 
     class Meta:

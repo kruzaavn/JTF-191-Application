@@ -1,50 +1,46 @@
 <template>
-  <v-container>
+  <v-container style="min-height: 100vh">
     <div id="joinusform" v-if="!submitted">
       <h1>Join Us</h1>
       <p>Requirements to join JTF-191</p>
-      <ul>
-        <li>18 years or older</li>
-        <li>Cockpit visualization, VR headset or Track IR</li>
-        <li>Hands on throttle and stick (HOTAS)</li>
-        <li>
-          Be able to attend make required time commitments, approximately 2-3
-          nights a week for 2 hours at 8pm Eastern time including a Mission
-          Night on Saturday.
-        </li>
-        <li>
+      <v-list>
+        <v-list-item>18 years or older</v-list-item>
+        <v-list-item>Cockpit visualization, VR headset or Track IR</v-list-item>
+        <v-list-item>Hands on throttle and stick (HOTAS)</v-list-item>
+        <v-list-item>
+          Be able to attend make required time commitments, approximately 1-2
+          nights a week for 2 hours. All times are coordinated in US Eastern.
+        </v-list-item>
+        <v-list-item>
           Have a good attitude and a willingness to learn.
-          <router-link to="/about">see our core values</router-link>
-        </li>
-      </ul>
+          <router-link to="/about"> see our guiding values</router-link>
+        </v-list-item>
+      </v-list>
       <v-form ref="form">
         <v-row>
           <v-col>
-            <v-row>
+
               <v-checkbox
                 v-model="age"
                 :rules="[(v) => !!v || 'You must be over the age of 18!']"
                 label="Are you over 18?"
               ></v-checkbox>
-            </v-row>
-            <v-row>
-              <v-checkbox
+            </v-col>
+              <v-col>            <v-checkbox
                 v-model="valueStatement"
-                :rules="[(v) => !!v || 'You must read out statement of values']"
+                :rules="[(v) => !!v || 'You must read our statement of values']"
                 label="Have you read our Statement of Values?"
               ></v-checkbox>
-            </v-row>
-            <v-row>
-              <!--                        Doing a timezone drop down menu is a huge headache-->
-              <v-checkbox
+                </v-col><v-col>
+                          <v-checkbox
                 v-model="attendance"
                 :rules="[
                   (v) => !!v || 'You must be able to make the time commitment',
                 ]"
                 label="Are you able make the required time commitment?"
-              ></v-checkbox>
-            </v-row>
-          </v-col>
+              ></v-checkbox></v-col>
+
+
         </v-row>
         <v-row>
           <v-col>
@@ -100,7 +96,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col>
+          <v-col >
             <v-text-field
               v-model="joinUsForm.discord"
               label="Discord Name (e.g. Payno#1234)"
@@ -108,37 +104,13 @@
             >
             </v-text-field>
           </v-col>
-        </v-row>
-        <v-row align="center">
-          <v-col cols="12" sm="6">
-            <v-select
-              v-model="joinUsForm.dcs_modules"
-              :items="filterModulesByType('aircraft')"
-              :menu-props="{ maxHeight: '400' }"
-              label="Airframes"
-              multiple
-              hint="Pick your owned airframes"
-              persistent-hint
-            ></v-select>
-          </v-col>
-          <v-col cols="12" sm="6">
+          <v-col >
             <v-select
               v-model="joinUsForm.preferred_airframe"
               :items="filterModulesByType('aircraft')"
-              :menu-props="{ maxHeight: '400' }"
+
               label="Preferred Airframe"
               hint="Select the airframe you intend to start training with"
-              persistent-hint
-            ></v-select>
-          </v-col>
-          <v-col cols="12" sm="6">
-            <v-select
-              v-model="joinUsForm.dcs_modules"
-              :items="filterModulesByType('map')"
-              :menu-props="{ maxHeight: '400' }"
-              label="Maps"
-              multiple
-              hint="Pick your owned maps"
               persistent-hint
             ></v-select>
           </v-col>
@@ -177,67 +149,56 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import axios from 'axios'
+import { mapGetters, mapActions } from "vuex";
+import axios from "axios";
 export default {
-  name: 'JoinUs',
+  name: "JoinUs",
   computed: {
-    ...mapGetters(['dcsModules']),
+    ...mapGetters(["dcsModules"]),
   },
   methods: {
-    ...mapActions(['getDcsModules']),
+    ...mapActions(["getDcsModules"]),
     postApplication: function () {
       if (this.$refs.form.validate()) {
+        this.joinUsForm.preferred_airframe = this.dcsModules.find((x) => this.joinUsForm.preferred_airframe === x.name ).id
+
         axios
-          .post('/api/roster/prospective_aviators/detail/', this.joinUsForm)
+          .post("/api/roster/prospective_aviators/detail/", this.joinUsForm)
           .then(() => (this.submitted = true))
-          .catch((response) => console.log(response.data))
+          .catch((response) => console.log(response.data));
       }
     },
     filterModulesByType: function (type) {
-      let modules = this.dcsModules.filter((x) => x.module_type === type)
-      let selectable = []
-
-      for (const module of modules) {
-        selectable.push({
-          text: module.name,
-          value: module.id,
-          disabled: false,
-        })
-      }
-
-      return selectable
+      let modules = this.dcsModules.filter((x) => x.module_type === type && x.supported);
+      return  modules.map((x) => x.name);
     },
   },
   mounted() {
-    setTimeout(() => {
-      this.getDcsModules()
-    }, 250)
+    this.getDcsModules();
   },
   data: () => ({
     joinUsForm: {
       // form data for api submission, changed variable style to
       // api format.
-      first_name: '',
-      last_name: '',
-      email: '',
-      callsign: '',
-      hotas: '',
-      head_tracking: '',
-      dcs_modules: [],
-      about: '',
-      discord: '',
-      preferred_airframe: '',
+      first_name: "",
+      last_name: "",
+      email: "",
+      callsign: "",
+      hotas: "",
+      head_tracking: "",
+      about: "",
+      discord: "",
+      preferred_airframe: "",
     },
     attendance: false,
     age: false,
     valueStatement: false,
     submitted: false,
     rules: {
-      blank: [(v) => v.length > 0 || 'must not be blank'],
+      blank: [(v) => v.length > 0 || "must not be blank"],
     },
   }),
-}
+};
 </script>
 
 <style></style>

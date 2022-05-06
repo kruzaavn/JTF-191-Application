@@ -7,9 +7,7 @@
     </template>
 
     <v-card>
-      <v-card-title class="headline">
-        Schedule New Event
-      </v-card-title>
+      <v-card-title class="headline"> Schedule New Event </v-card-title>
       <v-form ref="newEventForm">
         <v-container>
           <v-row>
@@ -50,7 +48,7 @@
             </v-col>
             <v-col cols="7">
               <v-text-field
-                v-if="newEvent.eventType!='leave of absence'"
+                v-if="newEvent.eventType != 'leave of absence'"
                 v-model="newEvent.name"
                 label="Event Name"
                 :rules="[rules.blank]"
@@ -62,7 +60,7 @@
               >
               </v-select>
               <v-select
-                v-if="newEvent.eventType!='leave of absence'"
+                v-if="newEvent.eventType != 'leave of absence'"
                 label="Required squadrons"
                 v-model="newEvent.squadrons"
                 :items="squadrons"
@@ -94,67 +92,68 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import dayjs from 'dayjs'
+import { mapGetters, mapActions } from "vuex";
+import dayjs from "dayjs";
 
 function DefaultNewEvent() {
-  this.date = new Date().toLocaleDateString('en-CA')
-  this.start = '12:00'
-  this.duration = '0:30'
-  this.squadrons = []
-  this.eventType = 'admin'
-  this.name = ''
+  this.date = new Date().toLocaleDateString("en-CA");
+  this.start = "12:00";
+  this.duration = "0:30";
+  this.squadrons = [];
+  this.eventType = "admin";
+  this.name = "";
 }
 
 function Period() {
-  this.periodicity = null
-  this.number = 0
+  this.periodicity = null;
+  this.number = 0;
 }
 
 export default {
-  name: 'UpdateEvent',
+  name: "UpdateEvent",
   computed: {
-    ...mapGetters(['squadrons', 'aviator', 'user']),
+    ...mapGetters(["squadrons", "aviator", "user"]),
   },
   mounted() {
-    this.getUser().then(() => {
-      this.getAviator(this.user.id)
-    })
-    .catch((error) => {
-      console.log(error)
-    })
+    this.getUser()
+      .then(() => {
+        this.getAviator(this.user.id);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
   methods: {
-    ...mapActions(['addToSchedule', 'getAviator', 'getUser']),
+    ...mapActions(["addToSchedule", "getAviator", "getUser"]),
     clearNewEvent: function () {
-      this.newEvent = new DefaultNewEvent()
-      this.period = new Period()
+      this.newEvent = new DefaultNewEvent();
+      this.period = new Period();
     },
     submitNewEvent: function () {
       if (this.$refs.newEventForm.validate()) {
-        let formattedEvent = this.formatEvent()
+        let formattedEvent = this.formatEvent();
 
         if (this.period.periodicity && this.period.number) {
           for (let i = 1; i < parseInt(this.period.number) + 1; i++) {
-            let periodUpdatedEvent = { ...formattedEvent }
+            let periodUpdatedEvent = { ...formattedEvent };
 
-            if (this.period.periodicity === 'bw') {
-              periodUpdatedEvent['start'] = dayjs(periodUpdatedEvent['start'])
-                .add(i * 2, 'w')
-                .toJSON()
-              periodUpdatedEvent['end'] = dayjs(periodUpdatedEvent['end'])
+            if (this.period.periodicity === "bw") {
+              periodUpdatedEvent["start"] = dayjs(periodUpdatedEvent["start"])
+                .add(i * 2, "w")
+                .toJSON();
+              periodUpdatedEvent["end"] = dayjs(periodUpdatedEvent["end"])
                 .add(i * 2, this.period.periodicity)
-                .toJSON()
+                .toJSON();
             } else {
-              periodUpdatedEvent['start'] = dayjs(periodUpdatedEvent['start'])
+              periodUpdatedEvent["start"] = dayjs(periodUpdatedEvent["start"])
                 .add(i, this.period.periodicity)
-                .toJSON()
-              periodUpdatedEvent['end'] = dayjs(periodUpdatedEvent['end'])
+                .toJSON();
+              periodUpdatedEvent["end"] = dayjs(periodUpdatedEvent["end"])
                 .add(i, this.period.periodicity)
-                .toJSON()
+                .toJSON();
             }
 
-            this.addToSchedule(periodUpdatedEvent)
+            this.addToSchedule(periodUpdatedEvent);
           }
         }
 
@@ -162,34 +161,34 @@ export default {
         // the aviator ID and the squadron automatically
         // We also default the name of the event to a standard
         // LOA - <CALLSIGN>
-        if (this.newEvent.eventType == 'leave of absence') {
-          formattedEvent['name'] = `LOA - ${this.aviator.callsign}`
-          formattedEvent['aviator'] = this.aviator.id
-          formattedEvent['required_squadrons'] = [this.aviator.squadron.id]
+        if (this.newEvent.eventType == "leave of absence") {
+          formattedEvent["name"] = `LOA - ${this.aviator.callsign}`;
+          formattedEvent["aviator"] = this.aviator.id;
+          formattedEvent["required_squadrons"] = [this.aviator.squadron.id];
         }
 
         this.addToSchedule(formattedEvent).then(() => {
-          this.clearNewEvent()
-          this.dialog = false
-        })
+          this.clearNewEvent();
+          this.dialog = false;
+        });
       }
     },
     formatEvent: function () {
-      let yymmdd = this.newEvent.date.split('-').map((x) => parseInt(x))
+      let yymmdd = this.newEvent.date.split("-").map((x) => parseInt(x));
 
-      yymmdd[1]--
+      yymmdd[1]--;
 
-      let hhmm = this.newEvent.start.split(':').map((x) => parseInt(x))
+      let hhmm = this.newEvent.start.split(":").map((x) => parseInt(x));
 
-      let start = new Date(...yymmdd, ...hhmm)
+      let start = new Date(...yymmdd, ...hhmm);
 
       let ohhmm = this.newEvent.duration
-        .split(':')
-        .map((x) => parseInt(x) * 1000)
+        .split(":")
+        .map((x) => parseInt(x) * 1000);
 
-      let offset = ohhmm[0] * 3600 + ohhmm[1] * 60
+      let offset = ohhmm[0] * 3600 + ohhmm[1] * 60;
 
-      let end = new Date(start.getTime() + offset)
+      let end = new Date(start.getTime() + offset);
 
       return {
         start: start.toJSON(),
@@ -198,7 +197,7 @@ export default {
         required_squadrons: this.newEvent.squadrons,
         type: this.newEvent.eventType,
         name: this.newEvent.name,
-      }
+      };
     },
   },
   data() {
@@ -206,29 +205,29 @@ export default {
       dialog: false,
       newEvent: new DefaultNewEvent(),
       period: new Period(),
-      eventTypes: ['admin', 'training', 'operation', 'leave of absence'],
+      eventTypes: ["admin", "training", "operation", "leave of absence"],
       periodicityTypes: [
-        { text: '---', value: null },
-        { text: 'Weekly', value: 'w' },
-        { text: 'Bi-Weekly', value: 'bw' },
-        { text: 'Monthly', value: 'M' },
+        { text: "---", value: null },
+        { text: "Weekly", value: "w" },
+        { text: "Bi-Weekly", value: "bw" },
+        { text: "Monthly", value: "M" },
       ],
       rules: {
         blank: function (v) {
-          return v.length > 0 || 'Must not be blank'
+          return v.length > 0 || "Must not be blank";
         },
         format24hrTime: function (v) {
           return (
-            /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(v) || 'Must be in 24hr time'
-          )
+            /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(v) || "Must be in 24hr time"
+          );
         },
         formatTime: function (v) {
-          return /\d+:[0-5][0-9]/.test(v) || 'Must be in (H)H:MM'
+          return /\d+:[0-5][0-9]/.test(v) || "Must be in (H)H:MM";
         },
       },
-    }
+    };
   },
-}
+};
 </script>
 
 <style scoped></style>

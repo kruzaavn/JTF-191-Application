@@ -81,8 +81,8 @@
             tile
             depressed
             @click="
-              deleteEvent()
-              $emit('clear')
+              deleteEvent();
+              $emit('clear');
             "
           >
             Delete Event
@@ -93,8 +93,8 @@
             tile
             depressed
             @click="
-              updateEvent()
-              $emit('clear')
+              updateEvent();
+              $emit('clear');
             "
           >
             Update Event
@@ -106,30 +106,30 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions } from "vuex";
 
 function DefaultNewEvent() {
-  this.date = new Date().toLocaleDateString('en-CA')
-  this.start = '12:00'
-  this.duration = '0:30'
-  this.squadrons = []
-  this.eventType = 'admin'
-  this.name = ''
+  this.date = new Date().toLocaleDateString("en-CA");
+  this.start = "12:00";
+  this.duration = "0:30";
+  this.squadrons = [];
+  this.eventType = "admin";
+  this.name = "";
 }
 
 export default {
-  name: 'UpdateEvent',
-  props: ['selectedEvent'],
+  name: "UpdateEvent",
+  props: ["selectedEvent"],
   computed: {
-    ...mapGetters(['squadrons']),
+    ...mapGetters(["squadrons"]),
   },
   methods: {
-    ...mapActions(['addToSchedule', 'removeFromSchedule', 'updateSchedule']),
+    ...mapActions(["addToSchedule", "removeFromSchedule", "updateSchedule"]),
     deleteEvent: function () {
       if (this.$refs.selectedEventForm.validate()) {
         this.removeFromSchedule(this.formatEvent()).then(
           () => (this.dialog = false)
-        )
+        );
       }
     },
     updateEvent: function () {
@@ -137,21 +137,21 @@ export default {
         if (this.$refs.selectedEventForm.validate()) {
           this.updateSchedule(this.formatEvent()).then(
             () => (this.dialog = false)
-          )
+          );
         }
       }
     },
     formatEvent: function () {
-      let yymmdd = this.newEvent.date.split('-').map((x) => parseInt(x))
-      yymmdd[1]--
-      let hhmm = this.newEvent.start.split(':').map((x) => parseInt(x))
+      let yymmdd = this.newEvent.date.split("-").map((x) => parseInt(x));
+      yymmdd[1]--;
+      let hhmm = this.newEvent.start.split(":").map((x) => parseInt(x));
 
-      let start = new Date(...yymmdd, ...hhmm)
+      let start = new Date(...yymmdd, ...hhmm);
       let ohhmm = this.newEvent.duration
-        .split(':')
-        .map((x) => parseInt(x) * 1000)
-      let offset = ohhmm[0] * 3600 + ohhmm[1] * 60
-      let end = new Date(start.getTime() + offset)
+        .split(":")
+        .map((x) => parseInt(x) * 1000);
+      let offset = ohhmm[0] * 3600 + ohhmm[1] * 60;
+      let end = new Date(start.getTime() + offset);
 
       return {
         id: this.newEvent.id,
@@ -161,29 +161,29 @@ export default {
         required_squadrons: this.newEvent.squadrons,
         type: this.newEvent.eventType,
         name: this.newEvent.name,
-      }
+      };
     },
     formatSelectedEvent: function () {
       if (this.selectedEvent) {
-        const event = { ...this.selectedEvent }
-        const start = new Date(event.start)
-        const end = new Date(event.end)
-        const diff = (end - start) / 1000
-        const dHH = Math.floor(diff / 3600)
-        const dMM = Math.floor((diff - dHH * 3600) / 60)
+        const event = { ...this.selectedEvent };
+        const start = new Date(event.start);
+        const end = new Date(event.end);
+        const diff = (end - start) / 1000;
+        const dHH = Math.floor(diff / 3600);
+        const dMM = Math.floor((diff - dHH * 3600) / 60);
 
         return {
-          date: start.toLocaleDateString('en-CA'),
-          start: `${start.getHours()}:${start.getMinutes() || '00'}`,
-          duration: `${dHH}:${dMM || '00'}`,
+          date: start.toLocaleDateString("en-CA"),
+          start: `${start.getHours()}:${start.getMinutes() || "00"}`,
+          duration: `${dHH}:${dMM || "00"}`,
           description: event.description,
           name: event.name,
           eventType: event.type,
           squadrons: event.required_squadrons.map((x) => x.id),
           id: event.id,
-        }
+        };
       } else {
-        return new DefaultNewEvent()
+        return new DefaultNewEvent();
       }
     },
   },
@@ -191,23 +191,23 @@ export default {
     return {
       dialog: false,
       newEvent: (this.newEvent = this.formatSelectedEvent()),
-      eventTypes: ['admin', 'training', 'operation'],
+      eventTypes: ["admin", "training", "operation"],
       rules: {
         blank: function (v) {
-          return v.length > 0 || 'Must not be blank'
+          return v.length > 0 || "Must not be blank";
         },
         format24hrTime: function (v) {
           return (
-            /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(v) || 'Must be in 24hr time'
-          )
+            /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(v) || "Must be in 24hr time"
+          );
         },
         formatTime: function (v) {
-          return /\d+:[0-5][0-9]/.test(v) || 'Must be in (H)H:MM'
+          return /\d+:[0-5][0-9]/.test(v) || "Must be in (H)H:MM";
         },
       },
-    }
+    };
   },
-}
+};
 </script>
 
 <style scoped></style>

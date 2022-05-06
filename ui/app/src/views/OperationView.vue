@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container style="min-height: 100vh">
     <v-row>
       <v-col>
         <v-card class="py-4" tile>
@@ -15,10 +15,10 @@
       <v-col>
         <h1>Operation Notes</h1>
         <v-card>
-          <markdown-it-vue
+          <MarkdownComponent
             class="px-2 py-2"
             :content="operation.notes"
-          ></markdown-it-vue>
+          ></MarkdownComponent>
         </v-card>
       </v-col>
     </v-row>
@@ -49,7 +49,7 @@
               </v-select>
             </v-row>
           </v-card-title>
-          <v-data-table
+          <v-table
             :headers="munitionsHeader"
             :items="munitionsTable"
             :group-by="groupby"
@@ -59,7 +59,7 @@
             :search="search"
             items-per-page="-1"
           >
-          </v-data-table>
+          </v-table>
         </v-card>
       </v-col>
     </v-row>
@@ -67,41 +67,43 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from "vuex";
+import MarkdownComponent from "../components/MarkdownComponent.vue";
 
 export default {
-  name: 'Operation',
-  props: ['operationName'],
+  name: "OperationView",
+  components: { MarkdownComponent },
+  props: ["operationName"],
   data: () => ({
-    search: '',
-    groupby: 'squadron_name',
+    search: "",
+    groupby: "squadron_name",
     groups: [
-      { text: 'Squadron', value: 'squadron_name' },
-      { text: 'Munition', value: 'munition_name' },
-      { text: 'Category', value: 'munition_type' },
+      { text: "Squadron", value: "squadron_name" },
+      { text: "Munition", value: "munition_name" },
+      { text: "Category", value: "munition_type" },
     ],
     munitionsHeader: [
-      { text: 'Squadron', value: 'squadron_name' },
-      { text: 'Munition', value: 'munition_name' },
-      { text: 'Count', value: 'count', filterable: false, groupable: false },
-      { text: 'Category', value: 'munition_type' },
+      { text: "Squadron", value: "squadron_name" },
+      { text: "Munition", value: "munition_name" },
+      { text: "Count", value: "count", filterable: false, groupable: false },
+      { text: "Category", value: "munition_type" },
     ],
   }),
   computed: {
-    ...mapGetters(['operations', 'munitionsTable']),
+    ...mapGetters(["operations", "munitionsTable"]),
     operation: function () {
-      return this.operations.find((op) => op.name === this.operationName)
+      return this.operations.find((op) => op.name === this.operationName);
     },
   },
   methods: {
-    ...mapActions(['getOperations', 'getMunitionsList', 'getStoresList']),
+    ...mapActions(["getOperations", "getMunitionsList", "getStoresList"]),
   },
   mounted() {
-    this.getOperations()
-    this.getMunitionsList()
-    this.getStoresList(this.operationName)
+    this.getOperations();
+    this.getMunitionsList();
+    this.getStoresList(this.operationName);
   },
-}
+};
 </script>
 
 <style></style>

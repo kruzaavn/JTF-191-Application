@@ -1,140 +1,138 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import About from '../views/About.vue'
-import GCI from '../views/GCI.vue'
-import Qualification from '@/views/Qualification'
-import Squadron from '../views/Squadron'
-import JoinUs from '../views/JoinUs'
-import Schedule from '@/views/Schedule'
-import Register from '@/views/Register'
-import SquadronList from '@/views/SquadronList'
-import Photos from '@/views/Photos'
-import Operation from '@/views/Operation'
-import OperationList from '@/views/OperationList'
-import Profile from '@/views/Profile'
+import { createRouter, createWebHashHistory } from "vue-router";
+import AboutView from "../views/AboutView.vue";
+import GCI from "../views/GCI.vue";
+import SquadronView from "../views/SquadronView.vue";
+import JoinUs from "../views/JoinUs.vue";
+import ScheduleView from "../views/ScheduleView.vue";
+import RegisterView from "../views/RegisterView.vue";
+import SquadronList from "../views/SquadronList.vue";
+import PhotosView from "../views/PhotosView.vue";
+import OperationView from "../views/OperationView.vue";
+import OperationList from "../views/OperationList.vue";
+import ProfileView from "../views/ProfileView.vue";
+import DocumentationView from "../views/DocumentationView.vue";
 
-Vue.use(VueRouter)
-
-const title_header = 'JTF-191'
+const title_header = "JTF-191";
 
 function title(header, title) {
-  return `${header} - ${title}`
+  return `${header} - ${title}`;
 }
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Photos,
+    path: "/",
+    name: "Home",
+    component: PhotosView,
     meta: {
-      title: title(title_header, 'Photos'),
+      title: title(title_header, "Photos"),
     },
   },
   {
-    path: '/about',
-    name: 'About',
-    component: About,
+    path: "/about",
+    name: "About",
+    component: AboutView,
     meta: {
-      title: title(title_header, 'About Us'),
+      title: title(title_header, "About Us"),
     },
   },
   {
-    path: '/profile',
-    name: 'Profile',
-    component: Profile,
+    path: "/profile",
+    name: "Profile",
+    component: ProfileView,
     meta: {
-      title: title(title_header, 'Aviator Profile'),
+      title: title(title_header, "Aviator Profile"),
     },
   },
   {
-    path: '/server',
-    name: 'GCI',
+    path: "/server",
+    name: "GCI",
     component: GCI,
     meta: {
-      title: title(title_header, 'Servers'),
+      title: title(title_header, "Servers"),
     },
   },
   {
-    path: '/squadron/:squadronDesignation',
-    name: 'Squadron',
-    component: Squadron,
+    path: "/squadron/:squadronDesignation",
+    name: "Squadron",
+    component: SquadronView,
     props: true,
     meta: {
-      title: title(title_header, 'Squadrons'),
+      title: title(title_header, "Squadrons"),
     },
   },
   {
-    path: '/squadron',
-    name: 'SquadronList',
+    path: "/squadron",
+    name: "SquadronList",
     component: SquadronList,
     meta: {
-      title: title(title_header, 'Squadrons'),
+      title: title(title_header, "Squadrons"),
     },
   },
   {
-    path: '/joinus',
-    name: 'JoinUs',
+    path: "/joinus",
+    name: "JoinUs",
     component: JoinUs,
     meta: {
-      title: title(title_header, 'Join Us'),
+      title: title(title_header, "Join Us"),
     },
   },
   {
-    path: '/schedule',
-    name: 'Schedule',
-    component: Schedule,
+    path: "/schedule",
+    name: "Schedule",
+    component: ScheduleView,
     meta: {
-      title: title(title_header, 'Schedule'),
+      title: title(title_header, "Schedule"),
     },
   },
   {
-    path: '/qualification/:qualificationModule',
-    name: 'Qualification',
+    path: "/qualification/:qualificationModule",
+    name: "Qualification",
+    props: { type: "training", pageName: "Qualifications" },
+    component: DocumentationView,
+    meta: {
+      title: title(title_header, "Qualifications"),
+    },
+  },
+  {
+    path: "/documentation/:documentationModule",
+    name: "Documentation",
+    props: { type: "admin", pageName: "Documentation" },
+    component: DocumentationView,
+    meta: {
+      title: title(title_header, "Documentation"),
+    },
+  },
+  {
+    path: "/register/:id",
+    name: "Register",
     props: true,
-    component: Qualification,
+    component: RegisterView,
     meta: {
-      title: title(title_header, 'Qualifications'),
+      title: title(title_header, "Register"),
     },
   },
   {
-    path: '/register/:id',
-    name: 'Register',
-    props: true,
-    component: Register,
-    meta: {
-      title: title(title_header, 'Register'),
-    },
-  },
-  {
-    path: '/operation',
-    name: 'OperationList',
+    path: "/operation",
+    name: "OperationList",
     component: OperationList,
     meta: {
-      title: title(title_header, 'Operations'),
+      title: title(title_header, "Operations"),
     },
   },
   {
-    path: '/operation/:operationName',
-    name: 'Operation',
-    component: Operation,
+    path: "/operation/:operationName",
+    name: "Operation",
+    component: OperationView,
     props: true,
     meta: {
-      title: title(title_header, 'Operations'),
+      title: title(title_header, "Operations"),
     },
   },
-]
+];
 
-function scrollBehavior(to, from, savedPosition) {
-  if (savedPosition) {
-    return savedPosition
-  } else {
-    return { x: 0, y: 0 }
-  }
-}
-
-const router = new VueRouter({
+const router = createRouter({
+  history: createWebHashHistory(),
   routes,
-  scrollBehavior,
-})
+});
 
-export default router
+export default router;

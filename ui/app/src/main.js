@@ -1,33 +1,30 @@
-import Vue from 'vue'
-import App from './App.vue'
-import store from './store'
-import router from './router'
-import vuetify from './plugins/vuetify'
-import MarkdownItVue from 'markdown-it-vue'
-import '@/assets/css/main.css'
-import 'markdown-it-vue/dist/markdown-it-vue.css'
+import { createApp, h } from "vue";
+import App from "./App.vue";
+import router from "./router";
+import { store } from "./store/index.js";
+import vuetify from "./plugins/vuetify";
+import { loadFonts } from "./plugins/webfontloader";
 
-Vue.config.productionTip = false
+loadFonts();
 
-new Vue({
-  store,
-  router,
-  vuetify,
+createApp({
   created() {
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem("token");
     if (token) {
-      let parsedToken = JSON.parse(token)
-      this.$store.commit('setToken', parsedToken)
+      let parsedToken = JSON.parse(token);
+      this.$store.commit("setToken", parsedToken);
       if (!this.$store.getters.tokenExpired) {
         setTimeout(() => {
-          this.$store.dispatch('getUser')
-        }, 1000)
+          this.$store.dispatch("getUser");
+        }, 1000);
       } else {
-        this.$store.dispatch('logout')
+        this.$store.dispatch("logout");
       }
     }
   },
-  render: (h) => h(App),
-}).$mount('#app')
-
-Vue.use(MarkdownItVue)
+  render: () => h(App),
+})
+  .use(router)
+  .use(store)
+  .use(vuetify)
+  .mount("#app");
