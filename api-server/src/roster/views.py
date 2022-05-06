@@ -357,6 +357,7 @@ class EventListView(ListCreateAPIView):
         start = params.get('start')
         end = params.get('end')
         type = params.get('type')
+
         return Event.objects.filter(start__gte=start, end__lte=end, type=type)
 
     def create(self, request, *args, **kwargs):

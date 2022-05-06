@@ -3,9 +3,18 @@
     <v-row>
       <v-col>
         <h1>JTF Schedule</h1>
-        <FullCalendar class="calendar" :options="calendarOptions">
+        <FullCalendar
+          ref="fullCalendar"
+          class="calendar"
+          :options="calendarOptions"
+        >
         </FullCalendar>
-        <v-dialog> <h1>i've been clicked</h1> </v-dialog>
+        <v-dialog v-model="dialog">
+          <EventComponent
+            :event="selectedEvent"
+            @dialogClose="calendarUpdate"
+          ></EventComponent>
+        </v-dialog>
       </v-col>
     </v-row>
   </v-container>
@@ -17,63 +26,84 @@ import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-
-function formatEvent(eventData) {
-  return { title: eventData.name, ...eventData };
-}
-
-const eventDefaults = {
-  url: "/api/roster/event/list/",
-  eventDataTransform: formatEvent,
-  editable: true,
-};
-
+import listPlugin from "@fullcalendar/list";
+import rrulePlugin from "@fullcalendar/rrule";
+import EventComponent from "../components/EventComponent.vue";
+import { mapActions } from "vuex";
+import { eventSources } from "../assets/js/eventSources";
 
 export default {
   name: "ScheduleView",
-  components: { FullCalendar },
-  data: () => ({
-    dialog: false,
-    calendarOptions: {
-      plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-      initialView: "dayGridMonth",
-      headerToolbar: {
-        left: "prev,next today",
-        center: "title",
-        right: "dayGridMonth,timeGridWeek",
+  components: { FullCalendar, EventComponent },
+  data: function () {
+    return {
+      dialog: false,
+      selectedEvent: {},
+      calendarOptions: {
+        plugins: [
+          rrulePlugin,
+          dayGridPlugin,
+          timeGridPlugin,
+          listPlugin,
+          interactionPlugin,
+        ],
+        initialView: "timeGridWeek",
+        headerToolbar: {
+          left: "prev,next today",
+          center: "title",
+          right: "timeGridWeek,listMonth,dayGridMonth",
+        },
+        selectable: true,
+        selectMirror: true,
+        nowIndicator: true,
+        dayMaxEvents: 3,
+        eventClick: this.handleEventClick,
+        select: this.handleDateSelect,
+        eventMouseEnter: this.handleEnterEvent,
+        eventMouseLeave: this.handleLeaveEvent,
+        navLinks: true,
+        eventSources: eventSources,
       },
-      selectable: true,
-      selectMirror: true,
-      nowIndicator: true,
-      dayMaxEvents: 4,
-      eventClick: this.handleEventClick,
-      eventSources: [
-        {
-          extraParams: { type: "operation" },
-          color: "blue",
-          ...eventDefaults,
-        },
-        {
-          extraParams: { type: "training" },
-          color: "green",
-          ...eventDefaults,
-        },
-        {
-          extraParams: { type: "admin" },
-          color: "purple",
-          ...eventDefaults,
-        },
-      ],
-    },
-  }),
+    };
+  },
 
   computed: {},
   methods: {
+    ...mapActions(["getSquadrons"]),
     handleEventClick: function (clickInfo) {
-      if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-        clickInfo.event.remove()
-      }
+      this.dialog = !this.dialog;
+      this.selectedEvent = clickInfo.event;
     },
+    handleDateSelect(selectInfo) {
+      let calendarApi = selectInfo.view.calendar;
+
+      calendarApi.unselect(); // clear date selection
+
+      const Event = calendarApi.addEvent({
+        title: "NewEvent",
+        start: selectInfo.startStr,
+        end: selectInfo.endStr,
+        backgroundColor: "#F6AE2D",
+        textColor: "black",
+        editable: true,
+        extendedProps: {
+          description: "",
+        },
+      });
+    },
+    handleEnterEvent(mouseEnterInfo) {
+      mouseEnterInfo.event.setProp("borderColor", "red");
+    },
+    handleLeaveEvent(mouseLeaveInfo) {
+      mouseLeaveInfo.event.setProp("borderColor", "");
+    },
+    calendarUpdate: function () {
+      this.dialog = false;
+      this.$refs.fullCalendar.getApi().refetchEvents();
+    },
+  },
+  mounted() {
+    this.getSquadrons();
   },
 };
 </script>

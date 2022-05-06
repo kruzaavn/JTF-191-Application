@@ -5,7 +5,6 @@ const state = {
   squadronList: [],
   hqs: [],
   dcsModules: [],
-  schedule: [],
   documentationList: [],
   documentationModuleList: [],
   photos: [],
@@ -28,9 +27,6 @@ const mutations = {
   },
   setDcsModules(state, modules) {
     state.dcsModules = modules;
-  },
-  setSchedule(state, schedule) {
-    state.schedule = schedule;
   },
   addEvent(state, event) {
     state.schedule.push(event);
@@ -76,7 +72,6 @@ const getters = {
   hqs: (state) => state.hqs,
   aviator: (state) => state.aviator,
   dcsModules: (state) => state.dcsModules,
-  schedule: (state) => state.schedule,
   documentation: (state) => state.documentationList,
   documentationModules: (state) => state.documentationModuleList,
   photos: (state) => state.photos,
@@ -131,27 +126,6 @@ const actions = {
   async getDcsModules({ commit }) {
     const response = await axios.get("/api/roster/modules/list/");
     commit("setDcsModules", response.data);
-  },
-  async getSchedule({ commit }, date) {
-    const response = await axios.get(
-      `/api/roster/event/list/${date.start}/${date.end}/`
-    );
-    commit("setSchedule", response.data);
-  },
-  async addToSchedule({ commit }, event) {
-    const response = await axios.post("/api/roster/event/list/", event);
-    commit("addEvent", response.data);
-  },
-  async updateSchedule({ commit }, event) {
-    const response = await axios.put(
-      `/api/roster/event/detail/${event.id}/`,
-      event
-    );
-    commit("updateEvent", response.data);
-  },
-  async removeFromSchedule({ commit }, event) {
-    await axios.delete(`/api/roster/event/detail/${event.id}/`);
-    commit("removeEvent", event);
   },
   async getDocumentation({ commit }) {
     const response = await axios.get("/api/roster/documentation/list/");
