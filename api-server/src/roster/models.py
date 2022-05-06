@@ -166,7 +166,6 @@ class Stores(models.Model):
 class Pilot(models.Model):
     first_name = models.CharField(max_length=1024, default='John')
     last_name = models.CharField(max_length=1024, default='Doe')
-    dcs_modules = models.ManyToManyField(DCSModules, blank=True)
     callsign = models.CharField(max_length=1024, blank=True, null=True)
     email = models.EmailField(max_length=1024, blank=True, null=True)
 
@@ -378,12 +377,6 @@ class ProspectiveAviator(Pilot):
             email=self.email,
             squadron=squadron,
         )
-
-        if created:
-            dcs_modules = [x for x in self.dcs_modules.all()]
-
-            aviator.dcs_modules.add(*dcs_modules)
-            aviator.save()
 
         return aviator
 
