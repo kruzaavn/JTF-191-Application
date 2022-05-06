@@ -160,6 +160,8 @@ export default {
     ...mapActions(["getDcsModules"]),
     postApplication: function () {
       if (this.$refs.form.validate()) {
+        this.joinUsForm.preferred_airframe = this.dcsModules.find((x) => this.joinUsForm.preferred_airframe === x.name ).id
+
         axios
           .post("/api/roster/prospective_aviators/detail/", this.joinUsForm)
           .then(() => (this.submitted = true))
@@ -168,7 +170,7 @@ export default {
     },
     filterModulesByType: function (type) {
       let modules = this.dcsModules.filter((x) => x.module_type === type && x.supported);
-      return  modules.map((x) => x.name || x.dcs_display_name);
+      return  modules.map((x) => x.name);
     },
   },
   mounted() {
