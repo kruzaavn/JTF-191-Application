@@ -3,8 +3,7 @@
     <v-app-bar>
       <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
       <router-link to="/">
-        <v-img min-width="150px" max-width="250px" src="./src/assets/logo.png">
-        </v-img>
+        <v-img min-width="150px" max-width="250px" src="/logo.png"> </v-img>
       </router-link>
       <v-spacer></v-spacer>
       <v-btn v-if="isAdmin" :href="adminLink"> ADMIN </v-btn>

@@ -88,7 +88,7 @@ export default {
           .post(`/api/roster/users/create/${this.id}/`, this.registerForm)
           .then(() => {
             this.submitted = true;
-              router.push("/");
+            router.push("/");
           })
           .catch((error) => {
             this.errors = error.response.data;

@@ -43,27 +43,34 @@
       <v-row>
         <v-col>
           <h4>Total Flight Hours {{ totalFlightHours }}</h4>
-          <v-table
-            dense
-            :headers="hoursHeaders"
-            :items="toHoursTable(aviatorAggregatedFlightStats)"
-          >
+          <v-table dense>
+            <thead>
+              <tr>
+                <th v-for="header in hoursHeaders">{{ header }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in aviatorAggregatedFlightStats">
+                <td>{{ row.platform }}</td>
+                <td>{{ this.formatTime(row.total_flight_time) }}</td>
+              </tr>
+            </tbody>
           </v-table>
         </v-col>
         <v-col>
           <h4>Total kills {{ totalKills }}</h4>
-          <v-table
-            dense
-            :hide-default-footer="true"
-            :headers="killsHeaders"
-            :items="toKillsTable(aviatorAggregatedCombatStats)"
-          >
-            <template v-slot:[`item.target`]="{ item }">
-              <!-- fixme eslint Vue3 error dont really know why i have to put it in brackets to make it happy, found on stack overflow -->
-              <v-icon v-if="item.target === 'air'">fa-fighter-jet fa-xs</v-icon>
-              <v-icon v-if="item.target === 'maritime'">fa-ship fa-xs</v-icon>
-              <v-icon v-if="item.target === 'ground'">mdi-tank</v-icon>
-            </template>
+          <v-table dense>
+            <thead>
+              <tr>
+                <th v-for="header in killsHeaders">{{ header }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in toKillsTable(aviatorAggregatedCombatStats)">
+                <td><v-icon :icon="icons[row.target]"></v-icon></td>
+                <td>{{ row.number }}</td>
+              </tr>
+            </tbody>
           </v-table>
         </v-col>
       </v-row>
@@ -81,6 +88,7 @@
 import moment from "moment";
 import axios from "axios";
 import GChart from "vue3-googl-chart";
+import { Duration } from "luxon/build/es6/luxon";
 
 export default {
   name: "AviatorSummary",
@@ -108,24 +116,9 @@ export default {
       5: "https://www.army.mil/e2/images/rv7/ranks/badges/officer/sm/lieutenant_colonel.svg",
       6: "https://www.army.mil/e2/images/rv7/ranks/badges/officer/sm/colonel.svg",
     },
-    hoursHeaders: [
-      {
-        text: "Airframe",
-        align: "start",
-        sortable: true,
-        value: "airframe",
-      },
-      { text: "Hours", sortable: true, align: "start", value: "hours" },
-    ],
-    killsHeaders: [
-      {
-        text: "Target",
-        align: "start",
-        sortable: true,
-        value: "target",
-      },
-      { text: "Number", sortable: true, align: "start", value: "number" },
-    ],
+    icons: { air: "mdi-airplane", maritime: "mdi-ship", ground: "mdi-tank" },
+    hoursHeaders: ["Airframe", "Hours"],
+    killsHeaders: ["Target", "Number"],
     aviatorAggregatedFlightStats: [],
     aviatorAggregatedCombatStats: [],
     aviatorTimeSeriesStats: [],
@@ -135,11 +128,6 @@ export default {
   mounted() {
     this.getAviatorAggregatedFlightStats(this.aviator.id);
     this.getAviatorAggregatedCombatStats(this.aviator.id);
-  },
-  filters: {
-    upper: function (value) {
-      return value.toUpperCase();
-    },
   },
   methods: {
     updateTotalFlightHours(stats) {
@@ -158,17 +146,10 @@ export default {
         { kills: 0 }
       ).kills;
     },
-    toHoursTable(stats) {
-      let data = [];
+    formatTime(timestamp) {
+      const time = Duration.fromISOTime(timestamp);
 
-      for (const stat in stats) {
-        const hours = moment
-          .duration(stats[stat].total_flight_time)
-          .asHours()
-          .toFixed(2);
-        data.push({ airframe: stats[stat].platform, hours: hours });
-      }
-      return data;
+      return `${time.hours}:${time.minutes}`;
     },
     toKillsTable(kills) {
       let data = [];

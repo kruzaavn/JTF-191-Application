@@ -47,11 +47,11 @@ export default {
           listPlugin,
           interactionPlugin,
         ],
-        initialView: "timeGridWeek",
+        initialView: "listWeek",
         headerToolbar: {
           left: "prev,next today",
           center: "title",
-          right: "timeGridWeek,listMonth,dayGridMonth",
+          right: "listWeek,timeGridWeek,dayGridMonth",
         },
         selectable: true,
         selectMirror: true,
