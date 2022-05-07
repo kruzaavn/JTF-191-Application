@@ -19,28 +19,27 @@
       <v-form ref="form">
         <v-row>
           <v-col>
-
-              <v-checkbox
-                v-model="age"
-                :rules="[(v) => !!v || 'You must be over the age of 18!']"
-                label="Are you over 18?"
-              ></v-checkbox>
-            </v-col>
-              <v-col>            <v-checkbox
-                v-model="valueStatement"
-                :rules="[(v) => !!v || 'You must read our statement of values']"
-                label="Have you read our Statement of Values?"
-              ></v-checkbox>
-                </v-col><v-col>
-                          <v-checkbox
-                v-model="attendance"
-                :rules="[
-                  (v) => !!v || 'You must be able to make the time commitment',
-                ]"
-                label="Are you able make the required time commitment?"
-              ></v-checkbox></v-col>
-
-
+            <v-checkbox
+              v-model="age"
+              :rules="[(v) => !!v || 'You must be over the age of 18!']"
+              label="Are you over 18?"
+            ></v-checkbox>
+          </v-col>
+          <v-col>
+            <v-checkbox
+              v-model="valueStatement"
+              :rules="[(v) => !!v || 'You must read our statement of values']"
+              label="Have you read our Statement of Values?"
+            ></v-checkbox> </v-col
+          ><v-col>
+            <v-checkbox
+              v-model="attendance"
+              :rules="[
+                (v) => !!v || 'You must be able to make the time commitment',
+              ]"
+              label="Are you able make the required time commitment?"
+            ></v-checkbox
+          ></v-col>
         </v-row>
         <v-row>
           <v-col>
@@ -96,7 +95,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col >
+          <v-col>
             <v-text-field
               v-model="joinUsForm.discord"
               label="Discord Name (e.g. Payno#1234)"
@@ -104,11 +103,10 @@
             >
             </v-text-field>
           </v-col>
-          <v-col >
+          <v-col>
             <v-select
               v-model="joinUsForm.preferred_airframe"
               :items="filterModulesByType('aircraft')"
-
               label="Preferred Airframe"
               hint="Select the airframe you intend to start training with"
               persistent-hint
@@ -160,7 +158,9 @@ export default {
     ...mapActions(["getDcsModules"]),
     postApplication: function () {
       if (this.$refs.form.validate()) {
-        this.joinUsForm.preferred_airframe = this.dcsModules.find((x) => this.joinUsForm.preferred_airframe === x.name ).id
+        this.joinUsForm.preferred_airframe = this.dcsModules.find(
+          (x) => this.joinUsForm.preferred_airframe === x.name
+        ).id;
 
         axios
           .post("/api/roster/prospective_aviators/detail/", this.joinUsForm)
@@ -169,8 +169,10 @@ export default {
       }
     },
     filterModulesByType: function (type) {
-      let modules = this.dcsModules.filter((x) => x.module_type === type && x.supported);
-      return  modules.map((x) => x.name);
+      let modules = this.dcsModules.filter(
+        (x) => x.module_type === type && x.supported
+      );
+      return modules.map((x) => x.name);
     },
   },
   mounted() {
