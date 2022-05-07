@@ -86,7 +86,7 @@ class DCSModules(models.Model):
                                null=True,
                                max_length=64)
 
-    supported = models.BooleanField(default=True)
+    supported = models.BooleanField(default=False)
 
     def __str__(self):
 
