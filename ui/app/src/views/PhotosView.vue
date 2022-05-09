@@ -15,7 +15,13 @@
           aspect-ratio="16:9"
           cover
           lazy-src="https://dummyimage.com/600x400/bfbfbf/bfbfbf.png"
+          @click="openDialog(photo.url || photo.file)"
         >
+          <v-dialog v-model="dialog">
+            <v-card width="60vw" height="80vh">
+              <v-img :src="selectedURL" aspect-ratio="16:9"></v-img>
+            </v-card>
+          </v-dialog>
         </v-img>
       </v-col>
     </v-row>
@@ -26,12 +32,21 @@
 import { mapGetters, mapActions } from "vuex";
 export default {
   name: "PhotosView",
-  data: () => ({}),
+  data: function () {
+    return {
+      dialog: false,
+      selectedURL: "",
+    };
+  },
   computed: {
     ...mapGetters(["photos"]),
   },
   methods: {
     ...mapActions(["getPhotos"]),
+    openDialog: function (source) {
+      this.dialog = true;
+      this.selectedURL = source;
+    },
   },
   mounted() {
     this.getPhotos();
