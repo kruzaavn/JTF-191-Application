@@ -19,7 +19,7 @@
         >
           <v-dialog v-model="dialog">
             <v-card width="60vw" height="80vh">
-              <v-img :src="selectedURL" aspect-ratio="16:9"></v-img>
+              <v-img :src="selectedURL" aspect-ratio="16:9" lazy-src="https://dummyimage.com/600x400/bfbfbf/bfbfbf.png"></v-img>
             </v-card>
           </v-dialog>
         </v-img>
