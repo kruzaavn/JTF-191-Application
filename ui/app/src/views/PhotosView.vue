@@ -15,13 +15,13 @@
           aspect-ratio="16:9"
           cover
           lazy-src="https://dummyimage.com/600x400/bfbfbf/bfbfbf.png"
-          @click="openDialog(photo.url || photo.file)"
+          @click="dialog = true"
         >
-          <v-dialog v-model="dialog">
-            <v-card width="60vw" height="80vh">
-              <v-img :src="selectedURL" aspect-ratio="16:9" lazy-src="https://dummyimage.com/600x400/bfbfbf/bfbfbf.png"></v-img>
-            </v-card>
-          </v-dialog>
+<!--          <v-dialog v-model="dialog">-->
+<!--            <v-card width="60vw" height="80vh">-->
+<!--              <v-img :src="photo.url || photo.file" aspect-ratio="16:9" lazy-src="https://dummyimage.com/600x400/bfbfbf/bfbfbf.png"></v-img>-->
+<!--            </v-card>-->
+<!--          </v-dialog>-->
         </v-img>
       </v-col>
     </v-row>
@@ -35,7 +35,6 @@ export default {
   data: function () {
     return {
       dialog: false,
-      selectedURL: "",
     };
   },
   computed: {
@@ -43,10 +42,6 @@ export default {
   },
   methods: {
     ...mapActions(["getPhotos"]),
-    openDialog: function (source) {
-      this.dialog = true;
-      this.selectedURL = source;
-    },
   },
   mounted() {
     this.getPhotos();
