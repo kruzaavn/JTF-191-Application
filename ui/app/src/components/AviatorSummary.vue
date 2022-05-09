@@ -88,7 +88,6 @@
 import moment from "moment";
 import axios from "axios";
 import GChart from "vue3-googl-chart";
-import { Duration } from "luxon/build/es6/luxon";
 
 export default {
   name: "AviatorSummary",
@@ -147,23 +146,19 @@ export default {
       ).kills;
     },
     formatTime(timestring) {
-
-      const separatedString = timestring.split(' ')
+      const separatedString = timestring.split(" ");
 
       if (separatedString.length < 2) {
-
-        const time = separatedString[0].split(':')
+        const time = separatedString[0].split(":");
 
         return `${time[0]}:${time[1]}`;
-
       } else {
+        const separatedTimeString = separatedString[1].split(":");
 
-        const separatedTimeString = separatedString[1].split(':')
-
-        return `${parseInt(separatedTimeString[0]) + parseInt(separatedString[0]) * 24}:${separatedTimeString[1]}`;
+        return `${
+          parseInt(separatedTimeString[0]) + parseInt(separatedString[0]) * 24
+        }:${separatedTimeString[1]}`;
       }
-
-
     },
     toKillsTable(kills) {
       let data = [];
