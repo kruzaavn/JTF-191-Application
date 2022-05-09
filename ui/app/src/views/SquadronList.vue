@@ -22,7 +22,8 @@
             :key="squadron.id"
             md="4"
             lg="3"
-            sm="12"
+            sm="6"
+            cols="12"
             class="d-flex child-flex"
           >
             <v-container>
@@ -35,7 +36,7 @@
                   >
                     <v-img
                       :src="squadron.img"
-                      min-height="33vh"
+                      height="33vh"
                       aspect-ratio="16:9"
                     >
                     </v-img>

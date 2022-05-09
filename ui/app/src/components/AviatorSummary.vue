@@ -146,10 +146,24 @@ export default {
         { kills: 0 }
       ).kills;
     },
-    formatTime(timestamp) {
-      const time = Duration.fromISOTime(timestamp);
+    formatTime(timestring) {
 
-      return `${time.hours}:${time.minutes}`;
+      const separatedString = timestring.split(' ')
+
+      if (separatedString.length < 2) {
+
+        const time = separatedString[0].split(':')
+
+        return `${time[0]}:${time[1]}`;
+
+      } else {
+
+        const separatedTimeString = separatedString[1].split(':')
+
+        return `${parseInt(separatedTimeString[0]) + parseInt(separatedString[0]) * 24}:${separatedTimeString[1]}`;
+      }
+
+
     },
     toKillsTable(kills) {
       let data = [];
