@@ -1,9 +1,9 @@
 <template>
   <v-container style="min-height: 100vh">
-    <div id="registrationform" v-if="!submitted">
+    <div id="registrationForm" v-if="!submitted">
       <h1>
         User Registration for
-        {{ roster.find((x) => x.id === parseInt(id)).callsign }}
+        {{ aviator.callsign }}
       </h1>
       <v-form ref="form">
         <v-row>
@@ -72,8 +72,11 @@ import router from "../router";
 export default {
   name: "RegisterView",
   props: ["id"],
+  mounted() {
+    this.getAviator(this.id)
+  },
   computed: {
-    ...mapGetters(["roster"]),
+    ...mapGetters(["aviator"]),
     passwordMatchesRule() {
       return () =>
         this.registerForm.password === this.validatePassword ||
@@ -81,7 +84,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["getDcsModules"]),
+    ...mapActions(['getAviator']),
     postApplication: function () {
       if (this.$refs.form.validate()) {
         axios
