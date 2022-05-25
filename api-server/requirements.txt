@@ -10,7 +10,7 @@ channels_redis
 redis
 daphne
 Pillow
-PyJWT==2.1.0
+PyJWT==2.4.0
 djangorestframework_simplejwt
 django-storages[azure]==1.11.1
 Wand
