@@ -48,10 +48,16 @@ export default {
           interactionPlugin,
         ],
         initialView: "listWeek",
+        customButtons: {
+          newEventButton: {
+            text: 'Create Event',
+            click: this.handleNewEventButton
+          }
+        },
         headerToolbar: {
           left: "prev,next today",
           center: "title",
-          right: "listWeek,timeGridWeek,dayGridMonth",
+          right: "newEventButton listWeek,timeGridWeek,dayGridMonth",
         },
         selectable: true,
         selectMirror: true,
@@ -74,23 +80,45 @@ export default {
       this.dialog = !this.dialog;
       this.selectedEvent = clickInfo.event;
     },
+    handleNewEventButton: function(){
+      this.dialog = !this.dialog;
+      let calendarApi = this.$refs.fullCalendar.getApi()
+      let start = new Date()
+
+
+      start.setSeconds(0)
+      start.setMinutes((Math.round(start.getMinutes() / 30)) * 30)
+
+      let end = new Date(start)
+
+      end.setMinutes(end.getMinutes() + 30)
+
+      this.selectedEvent = this.createNewEvent(calendarApi, start, end)
+    },
     handleDateSelect(selectInfo) {
       let calendarApi = selectInfo.view.calendar;
-
       calendarApi.unselect(); // clear date selection
+      this.selectedEvent = this.createNewEvent(calendarApi, selectInfo.start, selectInfo.end)
+    },
+    createNewEvent: function (calendarApi, start, end) {
 
-      const Event = calendarApi.addEvent({
+      const eventObject = {
         title: "NewEvent",
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
+        start: start,
+        end: end,
         backgroundColor: "#F6AE2D",
         textColor: "black",
         editable: true,
         extendedProps: {
           description: "",
         },
-      });
+      };
+
+      const event = calendarApi.addEvent(eventObject)
+
+      return event
     },
+
     handleEnterEvent(mouseEnterInfo) {
       mouseEnterInfo.event.setProp("borderColor", "red");
     },

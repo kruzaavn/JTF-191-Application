@@ -46,6 +46,9 @@
               >{{ title }}</v-toolbar-title
             ></v-toolbar
           >
+          <div class="pa-4">
+          {{this.event.start.toLocaleDateString()}} {{this.event.start.toLocaleTimeString()}} - {{this.event.end.toLocaleTimeString()}}
+          </div>
           <MarkdownComponent
             :content="description"
             class="pa-4"
