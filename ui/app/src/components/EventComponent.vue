@@ -9,9 +9,13 @@
             value="description"
             @click="gotoMenuPage('edit')"
           ></v-list-item>
-        </v-list>
-        <v-spacer></v-spacer>
-        <v-list nav>
+          <v-list-item
+            prepend-icon="mdi-clock"
+            title="Date / Time"
+            value="timespan"
+            @click="gotoMenuPage('timespan')"
+          >
+          </v-list-item>
           <v-list-item
             v-if="!event.id"
             prepend-icon="mdi-repeat"
@@ -25,7 +29,7 @@
             value="save"
             @click="commitEvent"
           ></v-list-item>
-          <v-spacer></v-spacer>
+
           <v-list-item
             class="fixedBottom"
             prepend-icon="mdi-trash-can-outline"
@@ -47,14 +51,17 @@
             ></v-toolbar
           >
           <div class="pa-4">
-            {{ this.start.toLocaleDateString() }}
-            {{ this.start.toLocaleTimeString() }} -
-            {{
-              this.start.toLocaleDateString() === this.end.toLocaleDateString()
-                ? ""
-                : this.end.toLocaleDateString()
-            }}
-            {{ this.end.toLocaleTimeString() }}
+            <h3>
+              {{ this.start.toLocaleDateString() }}
+              {{ this.start.toLocaleTimeString() }} -
+              {{
+                this.start.toLocaleDateString() ===
+                this.end.toLocaleDateString()
+                  ? ""
+                  : this.end.toLocaleDateString()
+              }}
+              {{ this.end.toLocaleTimeString() }}
+            </h3>
           </div>
           <MarkdownComponent
             :content="description"
@@ -73,40 +80,7 @@
                 v-model:model-value="title"
               ></v-text-field></v-toolbar-title
           ></v-toolbar>
-
           <v-form class="pt-4">
-            <v-row class="pb-4">
-              <v-col cols="6">
-                <Datepicker
-                  class="px-4"
-                  v-model="start"
-                  minutesIncrement="30"
-                  minutesGridIncrement="30"
-                  :is24="false"
-                  inline
-                  textInput
-                  inlineWithInput
-                  autoApply
-                  :flow="['calendar', 'time']"
-                  :clearable="false"
-                ></Datepicker>
-              </v-col>
-              <v-col cols="6">
-                <Datepicker
-                  class="px-4"
-                  v-model="end"
-                  minutesIncrement="30"
-                  minutesGridIncrement="30"
-                  :is24="false"
-                  :flow="['calendar', 'time']"
-                  inline
-                  textInput
-                  inlineWithInput
-                  autoApply
-                  :clearable="false"
-                ></Datepicker>
-              </v-col>
-            </v-row>
             <v-select
               :items="getSourceNames()"
               class="px-4"
@@ -129,6 +103,53 @@
               placeholder="Markdown Supported Text Area"
               label="Event Description"
             ></v-textarea>
+          </v-form>
+        </div>
+        <div id="menu-page-edit" v-if="menuPage === 'timespan'">
+          <v-toolbar :color="getEventBackgroundColor()" class="d-flex"
+            ><v-toolbar-title
+              :style="{
+                color: getEventTextColor(),
+              }"
+              >{{ title }}</v-toolbar-title
+            ></v-toolbar
+          >
+
+          <v-form class="pt-4">
+            <v-row class="pb-4">
+              <v-col cols="6">
+                <h3 class="px-4">Event Start</h3>
+                <Datepicker
+                  class="px-4"
+                  v-model="start"
+                  minutesIncrement="30"
+                  minutesGridIncrement="30"
+                  :is24="false"
+                  inline
+                  textInput
+                  inlineWithInput
+                  autoApply
+                  :flow="['calendar', 'time']"
+                  :clearable="false"
+                ></Datepicker>
+              </v-col>
+              <v-col cols="6">
+                <h3 class="px-4">Event End</h3>
+                <Datepicker
+                  class="px-4"
+                  v-model="end"
+                  minutesIncrement="30"
+                  minutesGridIncrement="30"
+                  :is24="false"
+                  :flow="['calendar', 'time']"
+                  inline
+                  textInput
+                  inlineWithInput
+                  autoApply
+                  :clearable="false"
+                ></Datepicker>
+              </v-col>
+            </v-row>
           </v-form>
         </div>
         <div id="menu-page-recurring" v-if="menuPage === 'recurring'">
