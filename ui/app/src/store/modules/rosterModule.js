@@ -11,7 +11,7 @@ const state = {
   storesList: [],
   munitionList: [],
   operationList: [],
-  aviator: { callsign: ''},
+  aviator: { callsign: "" },
   leavesOfAbsence: [],
 };
 
@@ -165,10 +165,12 @@ const actions = {
     );
     commit("setAviator", response.data);
   },
-  async getAviator({commit}, aviatorId) {
-    const response = await axios.get(`/api/roster/aviators/detail/${aviatorId}/`)
-    commit("setAviator", response.data)
-  }
+  async getAviator({ commit }, aviatorId) {
+    const response = await axios.get(
+      `/api/roster/aviators/detail/${aviatorId}/`
+    );
+    commit("setAviator", response.data);
+  },
 };
 
 export default {

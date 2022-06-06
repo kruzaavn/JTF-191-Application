@@ -73,7 +73,7 @@ export default {
   name: "RegisterView",
   props: ["id"],
   mounted() {
-    this.getAviator(this.id)
+    this.getAviator(this.id);
   },
   computed: {
     ...mapGetters(["aviator"]),
@@ -84,7 +84,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['getAviator']),
+    ...mapActions(["getAviator"]),
     postApplication: function () {
       if (this.$refs.form.validate()) {
         axios

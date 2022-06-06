@@ -14,6 +14,7 @@ auth = aiohttp.BasicAuth(login=user, password=password)
 dt_format = '%Y-%m-%dT%H:%M:%S%z'
 date_format = '%Y-%m-%d'
 
+
 class Event:
 
     def __init__(self, **kwargs):
@@ -50,7 +51,7 @@ class Client(discord.Client):
     async def on_ready(self):
         print('Scheduler is online', flush=True)
         print(f'{datetime.strftime(self.now, dt_format)}, TZ:{self.now.tzinfo}')
-        events = await self.get_schedule()
+        events = await self.get_schedule('operation') + self.get_schedule('training') + self.get_schedule('admin')
 
         if events:
 
@@ -67,24 +68,27 @@ class Client(discord.Client):
 
         await self.close()
 
-    async def get_schedule(self):
+    async def get_schedule(self, event_type):
 
         async with aiohttp.ClientSession(auth=auth) as session:
 
             yesterday = datetime.strftime(self.now - timedelta(days=1), date_format)
             tomorrow = datetime.strftime(self.now + timedelta(days=1), date_format)
 
-            async with session.get(f'http://api-server:8000/api/roster/event/list/{yesterday}/{tomorrow}') as r:
-                response_message = await r.json()
+            query_params = {'start': yesterday, 'end': tomorrow, 'type': event_type}
 
-                if r.ok:
-                    events = [Event(**x) for x in response_message]
-                    events = list(filter(lambda x: x.start.date() == self.now.date(), events))
-                    events.sort(key=lambda x: x.start)
-                    return events
+            async with session.get(f'http://api-server:8000/api/roster/event/list/', params=query_params, ) as r:
 
-                else:
-                    print(response_message)
+                    response_message = await r.json()
+
+                    if r.ok:
+                        events = [Event(**x) for x in response_message]
+                        events = list(filter(lambda x: x.start.date() == self.now.date(), events))
+                        events.sort(key=lambda x: x.start)
+                        return events
+
+                    else:
+                        print(response_message)
 
     async def send_event_to_squadron_channels(self, event):
 
