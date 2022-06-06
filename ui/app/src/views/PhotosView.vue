@@ -17,11 +17,11 @@
           lazy-src="https://dummyimage.com/600x400/bfbfbf/bfbfbf.png"
           @click="dialog = true"
         >
-<!--          <v-dialog v-model="dialog">-->
-<!--            <v-card width="60vw" height="80vh">-->
-<!--              <v-img :src="photo.url || photo.file" aspect-ratio="16:9" lazy-src="https://dummyimage.com/600x400/bfbfbf/bfbfbf.png"></v-img>-->
-<!--            </v-card>-->
-<!--          </v-dialog>-->
+          <!--          <v-dialog v-model="dialog">-->
+          <!--            <v-card width="60vw" height="80vh">-->
+          <!--              <v-img :src="photo.url || photo.file" aspect-ratio="16:9" lazy-src="https://dummyimage.com/600x400/bfbfbf/bfbfbf.png"></v-img>-->
+          <!--            </v-card>-->
+          <!--          </v-dialog>-->
         </v-img>
       </v-col>
     </v-row>

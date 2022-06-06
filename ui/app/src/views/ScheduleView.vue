@@ -50,9 +50,9 @@ export default {
         initialView: "listWeek",
         customButtons: {
           newEventButton: {
-            text: 'Create Event',
-            click: this.handleNewEventButton
-          }
+            text: "Create Event",
+            click: this.handleNewEventButton,
+          },
         },
         headerToolbar: {
           left: "prev,next today",
@@ -80,28 +80,30 @@ export default {
       this.dialog = !this.dialog;
       this.selectedEvent = clickInfo.event;
     },
-    handleNewEventButton: function(){
+    handleNewEventButton: function () {
       this.dialog = !this.dialog;
-      let calendarApi = this.$refs.fullCalendar.getApi()
-      let start = new Date()
+      let calendarApi = this.$refs.fullCalendar.getApi();
+      let start = new Date();
 
+      start.setSeconds(0);
+      start.setMinutes(Math.round(start.getMinutes() / 30) * 30);
 
-      start.setSeconds(0)
-      start.setMinutes((Math.round(start.getMinutes() / 30)) * 30)
+      let end = new Date(start);
 
-      let end = new Date(start)
+      end.setMinutes(end.getMinutes() + 30);
 
-      end.setMinutes(end.getMinutes() + 30)
-
-      this.selectedEvent = this.createNewEvent(calendarApi, start, end)
+      this.selectedEvent = this.createNewEvent(calendarApi, start, end);
     },
     handleDateSelect(selectInfo) {
       let calendarApi = selectInfo.view.calendar;
       calendarApi.unselect(); // clear date selection
-      this.selectedEvent = this.createNewEvent(calendarApi, selectInfo.start, selectInfo.end)
+      this.selectedEvent = this.createNewEvent(
+        calendarApi,
+        selectInfo.start,
+        selectInfo.end
+      );
     },
     createNewEvent: function (calendarApi, start, end) {
-
       const eventObject = {
         title: "NewEvent",
         start: start,
@@ -114,9 +116,9 @@ export default {
         },
       };
 
-      const event = calendarApi.addEvent(eventObject)
+      const event = calendarApi.addEvent(eventObject);
 
-      return event
+      return event;
     },
 
     handleEnterEvent(mouseEnterInfo) {

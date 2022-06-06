@@ -47,7 +47,9 @@
             ></v-toolbar
           >
           <div class="pa-4">
-          {{this.event.start.toLocaleDateString()}} {{this.event.start.toLocaleTimeString()}} - {{this.event.end.toLocaleTimeString()}}
+            {{ this.start.toLocaleDateString() }}
+            {{ this.start.toLocaleTimeString() }} -
+            {{ this.end.toLocaleTimeString() }}
           </div>
           <MarkdownComponent
             :content="description"
@@ -169,6 +171,8 @@ export default {
         ? this.event.source.internalEventSource.meta.extraParams.type
         : null,
       recurring: "Never",
+      start: this.event.start,
+      end: this.event.end,
       recurrences: 0,
     };
   },
@@ -223,8 +227,8 @@ export default {
       if (this.event.id) {
         const updated_event = {
           id: this.event.id,
-          start: this.event.startStr,
-          end: this.event.endStr,
+          start: this.start.toISOString(),
+          end: this.end.toISOString(),
           ...common_event_properties,
         };
 
