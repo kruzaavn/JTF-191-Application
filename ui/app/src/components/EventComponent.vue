@@ -52,15 +52,16 @@
           >
           <div class="pa-4">
             <h3>
-            {{ this.start.toLocaleDateString() }}
-            {{ this.start.toLocaleTimeString() }} -
-            {{
-              this.start.toLocaleDateString() === this.end.toLocaleDateString()
-                ? ""
-                : this.end.toLocaleDateString()
-            }}
-            {{ this.end.toLocaleTimeString() }}
-              </h3>
+              {{ this.start.toLocaleDateString() }}
+              {{ this.start.toLocaleTimeString() }} -
+              {{
+                this.start.toLocaleDateString() ===
+                this.end.toLocaleDateString()
+                  ? ""
+                  : this.end.toLocaleDateString()
+              }}
+              {{ this.end.toLocaleTimeString() }}
+            </h3>
           </div>
           <MarkdownComponent
             :content="description"
@@ -117,7 +118,7 @@
           <v-form class="pt-4">
             <v-row class="pb-4">
               <v-col cols="6">
-                <h3                   class="px-4">Event Start</h3>
+                <h3 class="px-4">Event Start</h3>
                 <Datepicker
                   class="px-4"
                   v-model="start"
@@ -133,7 +134,7 @@
                 ></Datepicker>
               </v-col>
               <v-col cols="6">
-                <h3                   class="px-4">Event End</h3>
+                <h3 class="px-4">Event End</h3>
                 <Datepicker
                   class="px-4"
                   v-model="end"
