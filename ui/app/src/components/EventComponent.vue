@@ -49,6 +49,11 @@
           <div class="pa-4">
             {{ this.start.toLocaleDateString() }}
             {{ this.start.toLocaleTimeString() }} -
+            {{
+              this.start.toLocaleDateString() === this.end.toLocaleDateString()
+                ? ""
+                : this.end.toLocaleDateString()
+            }}
             {{ this.end.toLocaleTimeString() }}
           </div>
           <MarkdownComponent
@@ -68,7 +73,40 @@
                 v-model:model-value="title"
               ></v-text-field></v-toolbar-title
           ></v-toolbar>
-          <v-form class="py-4">
+
+          <v-form class="pt-4">
+            <v-row class="pb-4">
+              <v-col cols="6">
+                <Datepicker
+                  class="px-4"
+                  v-model="start"
+                  minutesIncrement="30"
+                  minutesGridIncrement="30"
+                  :is24="false"
+                  inline
+                  textInput
+                  inlineWithInput
+                  autoApply
+                  :flow="['calendar', 'time']"
+                  :clearable="false"
+                ></Datepicker>
+              </v-col>
+              <v-col cols="6">
+                <Datepicker
+                  class="px-4"
+                  v-model="end"
+                  minutesIncrement="30"
+                  minutesGridIncrement="30"
+                  :is24="false"
+                  :flow="['calendar', 'time']"
+                  inline
+                  textInput
+                  inlineWithInput
+                  autoApply
+                  :clearable="false"
+                ></Datepicker>
+              </v-col>
+            </v-row>
             <v-select
               :items="getSourceNames()"
               class="px-4"
@@ -147,6 +185,8 @@
 
 <script>
 import MarkdownComponent from "./MarkdownComponent.vue";
+import Datepicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 import { mapGetters } from "vuex";
 import { eventSources } from "../assets/js/eventSources";
 import axios from "axios";
@@ -155,7 +195,7 @@ import { DateTime } from "luxon";
 
 export default {
   name: "EventComponent",
-  components: { MarkdownComponent },
+  components: { MarkdownComponent, Datepicker },
   props: ["event"],
   emits: ["dialogClose"],
   data: function () {
@@ -224,6 +264,14 @@ export default {
           .map((x) => x.id),
       };
 
+      if (this.end < this.start) {
+        let end = new Date(this.start);
+
+        end.setMinutes(end.getMinutes() + 30);
+
+        this.end = end;
+      }
+
       if (this.event.id) {
         const updated_event = {
           id: this.event.id,
@@ -234,8 +282,8 @@ export default {
 
         await this.updateSchedule(updated_event.id, updated_event);
       } else {
-        const start = DateTime.fromJSDate(this.event.start);
-        const end = DateTime.fromJSDate(this.event.end);
+        const start = DateTime.fromJSDate(this.start);
+        const end = DateTime.fromJSDate(this.end);
         const timeDelta = end.diff(start);
 
         for (const occurrence of this.computeRecurrences) {
