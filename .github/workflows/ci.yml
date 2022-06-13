@@ -55,9 +55,12 @@ jobs:
       - uses: actions/checkout@v1
 
       # Sign into azure
-      - uses: azure/aks-set-context@v1
+      - uses: azure/login@v1
         with:
           creds: '${{ secrets.AZURE_CREDENTIALS }}'
+
+      - uses: azure/aks-set-context@v2
+        with:
           cluster-name: ${{ env.CLUSTER_NAME }}
           resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
 
