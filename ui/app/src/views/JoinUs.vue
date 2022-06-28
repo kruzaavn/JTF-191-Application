@@ -197,7 +197,7 @@ export default {
     valueStatement: false,
     submitted: false,
     rules: {
-      blank: [(v) => v.length > 0 || "must not be blank"],
+      blank: [(v) => v.replace(/\s+/g, '').length > 0 || "must not be blank"],
     },
   }),
 };

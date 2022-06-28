@@ -173,7 +173,7 @@ class Pilot(models.Model):
         abstract = True
 
     def __str__(self):
-        return f'{self.callsign}'
+        return f'{self.callsign}' or f"I'm not cool enough for a callsign {self.pk}"
 
 
 class DocumentationModule(models.Model):
