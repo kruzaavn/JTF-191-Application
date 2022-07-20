@@ -281,13 +281,6 @@ export default {
           clearInterval(this.timer);
         });
     },
-    toggle() {
-      if (this.allSquadronsSelected) {
-        this.selected_squadrons = [];
-      } else {
-        this.selected_squadrons = this.squadrons.slice();
-      }
-    },
   },
   beforeUnmount() {
     clearInterval(this.timer);
