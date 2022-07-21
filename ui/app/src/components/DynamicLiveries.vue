@@ -3,7 +3,7 @@
     <v-card-title>Livery actions</v-card-title>
     <v-card-text>
       <div>
-        <h4>Download and unzip the content of the "liveries" folder intothe relevant DCS folder</h4>
+        <h4>Download and unzip the content of the "liveries" folder into the relevant DCS folder</h4>
       </div>
       <div v-if="isAdmin">
         <h5>
