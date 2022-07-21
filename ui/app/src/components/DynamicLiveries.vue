@@ -3,57 +3,23 @@
     <v-card-title>Livery actions</v-card-title>
     <v-card-text>
       <div>
-        To download the most up to date liveries please use the button below.
-        Make sure to unzip and move the content of the "liveries" folder into
-        your DCS folder.
+        <h4>Download and unzip the content of the "liveries" folder into the relevant DCS folder</h4>
       </div>
       <div v-if="isAdmin">
-        <p>
-          To create a new livery package, please click the button below. This
-          will recreate all the aviators' liveries and store them in our
-          database. Anybody can then click the "Download livery package" button
-          to get the updated ones.
-        </p>
-        <p>
-          To start please select below one or more squadrons to create or
-          download liveries for that selection.
-        </p>
-      </div>
-      <div v-if="!isAdmin">
-        <p>
-          To start please select below one or more squadrons to download
-          liveries for that selection.
-        </p>
+        <h5>
+          The livery creation will recreate all the aviators' liveries and store them in our system.
+          Anybody can then click the "Download livery package" button.
+        </h5>
       </div>
       <div>
         <v-select
           v-model="selected_squadrons"
-          :items="squadrons"
-          label="Select livery context"
-          dense
-          item-text="name"
-          item-value="id"
+          item-title="designation"
+          item-value="name"
+          :items="this.squadrons"
+          label="Select the squadrons"
           multiple
-          class="my-10"
-        >
-          <template v-slot:prepend-item>
-            <v-list-item ripple @mousedown.prevent @click="toggle">
-              <v-list-item-action>
-                <v-icon
-                  :color="
-                    selected_squadrons.length > 0 ? 'indigo darken-4' : ''
-                  "
-                >
-                  {{ icon }}
-                </v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-title> All </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider class="mt-2"></v-divider>
-          </template>
-        </v-select>
+        />
       </div>
     </v-card-text>
     <v-card-actions class="justify-center">
@@ -173,11 +139,8 @@ export default {
     allSquadronsSelected() {
       return this.selected_squadrons.length === this.squadrons.length;
     },
-    icon() {
-      if (this.allSquadronsSelected) return "mdi-close-box";
-      if (0 < this.selected_squadrons.length && !this.allSquadronsSelected)
-        return "mdi-minus-box";
-      return "mdi-checkbox-blank-outline";
+    someSquadronsSelected () {
+      return this.selected_squadrons.length > 0
     },
   },
   mounted() {
@@ -188,9 +151,21 @@ export default {
       .catch((error) => {
         console.log(error);
       });
+    this.getSquadrons().then(() => {
+        this.squadrons.map(function(entry){
+          // new vuetify does not work without this it seems
+          // i tried using item-title and item-value with no luck
+          entry.title = entry.name;
+          entry.value = entry.id;
+          return entry;
+        })
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
   methods: {
-    ...mapActions(["getAviatorFromUser", "getUser"]),
+    ...mapActions(["getAviatorFromUser", "getUser", "getSquadrons"]),
     downloadLiveryPackage() {
       if (this.selected_squadrons.length == 0) {
         this.snackbar_text = "Please select at least one squadron";
@@ -305,19 +280,6 @@ export default {
           this.show_snackbar = true;
           clearInterval(this.timer);
         });
-    },
-    toggle() {
-      this.$nextTick(() => {
-        if (this.selected_squadrons.length == this.squadrons.length) {
-          this.selected_squadrons = [];
-        } else {
-          this.selected_squadrons = this.squadrons
-            .map(function (item) {
-              return item["id"];
-            })
-            .slice();
-        }
-      });
     },
   },
   beforeUnmount() {
