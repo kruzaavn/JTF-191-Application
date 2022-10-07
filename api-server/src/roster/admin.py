@@ -87,7 +87,7 @@ convert_to_aviator.short_description = 'Accept Prospective Aviator'
 class ProspectiveAviatorAdmin(admin.ModelAdmin):
     search_fields = ('callsign',)
 
-    list_display = ('callsign', 'status')
+    list_display = ('callsign', 'discord', 'submitted', 'status')
 
     actions = [convert_to_aviator]
 

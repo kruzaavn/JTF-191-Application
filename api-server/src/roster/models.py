@@ -173,7 +173,15 @@ class Pilot(models.Model):
         abstract = True
 
     def __str__(self):
-        return f'{self.callsign}' or f"I'm not cool enough for a callsign {self.pk}"
+
+        callsign = f'{self.callsign}'
+
+        if callsign.strip():
+
+            return callsign
+
+        else:
+            return f"I'm not cool enough for a callsign here is my pk {self.pk}"
 
 
 class DocumentationModule(models.Model):
