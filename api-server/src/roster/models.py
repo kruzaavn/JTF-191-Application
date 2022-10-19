@@ -311,7 +311,7 @@ class Aviator(Pilot):
 
     division = models.IntegerField(default=4, validators=[MinValueValidator(1),
                                                           MaxValueValidator(
-                                                              4)])
+                                                              8)])
     division_position = models.IntegerField(default=4,
                                             validators=[MinValueValidator(1),
                                                         MaxValueValidator(4)])
