@@ -167,9 +167,21 @@ class LiveryLuaSectionAdmin(admin.ModelAdmin):
 
 @admin.register(FlightLog)
 class FlightLogAdmin(admin.ModelAdmin):
+
+    def flight_duration(self, obj):
+
+        logs = FlightLog.objects.filter(flight_id=obj.flight_id, aviator=obj.aviator).order_by('time')
+
+        if len(logs) == 1:
+            return None
+
+        return logs.last().time - logs.first().time
+
+    flight_duration.short_description = 'Duration'
+
     date_hierarchy = 'time'
 
-    list_display = ('flight_id', 'time', 'type', 'aviator', 'server')
+    list_display = ('flight_id', 'time', 'type', 'aviator', 'server', 'flight_duration')
 
     list_filter = ('aviator__squadron__designation', 'aviator__squadron__hq__name', 'server')
 
