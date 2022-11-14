@@ -183,7 +183,7 @@ class FlightLogAdmin(admin.ModelAdmin):
 
     list_display = ('flight_id', 'time', 'type', 'aviator', 'server', 'flight_duration')
 
-    list_filter = ('aviator__squadron__designation', 'aviator__squadron__hq__name', 'server', 'flight_duration')
+    list_filter = ('aviator__squadron__designation', 'aviator__squadron__hq__name', 'server')
 
     search_fields = ('flight_id', 'aviator__callsign', 'server')
 
