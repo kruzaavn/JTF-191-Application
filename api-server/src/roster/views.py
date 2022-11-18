@@ -98,10 +98,9 @@ class HQListView(ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
-class DCSModuleListView(ListCreateAPIView):
+class DCSModuleListView(ListAPIView):
     queryset = DCSModules.objects.all()
     serializer_class = DCSModuleSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class ProspectiveAviatorDetailView(CreateAPIView):
