@@ -14,6 +14,9 @@ auth = aiohttp.BasicAuth(login=user, password=password)
 dt_format = '%Y-%m-%dT%H:%M:%S%z'
 date_format = '%Y-%m-%d'
 
+intents = discord.Intents.default()
+intents.message_content = True
+
 
 class Event:
 
@@ -114,5 +117,5 @@ class Client(discord.Client):
 
 if __name__ == '__main__':
 
-    client = Client()
+    client = Client(intents=intents)
     client.run(token)

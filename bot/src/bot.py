@@ -13,6 +13,7 @@ supported_image_formats = ['jpg', 'jpeg', 'png', 'tiff', 'bmp']
 auth = aiohttp.BasicAuth(login=user, password=password)
 
 intents = discord.Intents.default()
+intents.message_content = True
 
 
 class Client(discord.Client):
