@@ -43,7 +43,7 @@ class AviatorListView(ListCreateAPIView):
 
     serializer_class = AviatorSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    queryset = Aviator.objects.all().order_by('-rank_code', 'position_code')
+    queryset = Aviator.objects.all().filter(squadron__isnull=False).order_by('-rank_code', 'position_code')
 
 
 class AviatorFromUserListView(RetrieveUpdateDestroyAPIView):
