@@ -3,9 +3,9 @@ kind: Service
 metadata:
   annotations:
     service.beta.kubernetes.io/azure-load-balancer-resource-group: jtf191.app.server_group
+    service.beta.kubernetes.io/azure-load-balancer-ipv4: {{.Values.relayIp}}
   name: api-relay
 spec:
-  loadBalancerIP: {{.Values.relayIp}}
   type: LoadBalancer
   ports:
     - protocol: TCP
