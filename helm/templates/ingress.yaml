@@ -4,15 +4,26 @@ metadata:
   name: api
   annotations:
     cert-manager.io/issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/server-snippets: |
+      location /ws {
+       proxy_set_header Upgrade $http_upgrade;
+       proxy_http_version 1.1;
+       proxy_set_header X-Forwarded-Host $http_host;
+       proxy_set_header X-Forwarded-Proto $scheme;
+       proxy_set_header X-Forwarded-For $remote_addr;
+       proxy_set_header Host $host;
+       proxy_set_header Connection "upgrade";
+       proxy_cache_bypass $http_upgrade;
+       }
 spec:
   ingressClassName: nginx
   tls:
     - hosts:
          - jtf191.com
-         - www.jtf191.com
       secretName: tls-cert
   rules:
-    - http:
+    - host: jtf191.com
+      http:
         paths:
           - path: /api
             pathType: Prefix
@@ -35,3 +46,10 @@ spec:
                 name: ui
                 port:
                   number: 443
+          - path: /ws
+            pathType: Prefix
+            backend:
+              service:
+                name: api-server
+                port:
+                  number: 8000
