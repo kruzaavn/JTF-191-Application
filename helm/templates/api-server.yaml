@@ -12,35 +12,6 @@ spec:
   selector:
     app: api-server
 
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: api-server-gci-migrations-pvc
-spec:
-  storageClassName: default
-  accessModes:
-   - ReadWriteOnce
-  resources:
-   requests:
-    storage: 0.1Gi
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: api-server-roster-migrations-pvc
-spec:
-  storageClassName: default
-  accessModes:
-   - ReadWriteOnce
-  resources:
-   requests:
-    storage: 0.1Gi
-
 ---
 
 apiVersion: apps/v1
