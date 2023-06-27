@@ -4,6 +4,7 @@ metadata:
   name: api
   annotations:
     cert-manager.io/issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
     nginx.ingress.kubernetes.io/server-snippets: |
       location /ws {
        proxy_set_header Upgrade $http_upgrade;
@@ -19,10 +20,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-         - jtf191.com
+         - www.jtf191.com
       secretName: tls-cert
   rules:
-    - host: jtf191.com
+    - host: www.jtf191.com
       http:
         paths:
           - path: /api
