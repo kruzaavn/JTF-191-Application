@@ -3,9 +3,9 @@ kind: Service
 metadata:
   annotations:
     service.beta.kubernetes.io/azure-load-balancer-resource-group: jtf191.app.server_group
+    service.beta.kubernetes.io/azure-load-balancer-ipv4: {{.Values.relayIp}}
   name: gci-relay
 spec:
-  loadBalancerIP: {{.Values.relayIp}}
   type: LoadBalancer
   ports:
     - protocol: TCP
@@ -25,7 +25,7 @@ metadata:
   labels:
     app: gci-relay
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: gci-relay

@@ -12,9 +12,7 @@ spec:
   selector:
     app: api-server
 
-
 ---
-
 
 apiVersion: apps/v1
 kind: Deployment
@@ -68,7 +66,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: db-postgresql
-                key: postgresql-password
+                key: postgres-password
           - name: AZURE_STORAGE_KEY
             valueFrom:
               secretKeyRef:
