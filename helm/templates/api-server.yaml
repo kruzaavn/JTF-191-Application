@@ -61,7 +61,7 @@ spec:
                 key: djangoKey
                 name: secret
           - name: EMAIL_HOST
-            value: "jtf191@gmail.com"
+            value: "noreply.jtf191@gmail.com"
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
